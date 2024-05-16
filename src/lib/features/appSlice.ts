@@ -23,4 +23,4 @@ const appSlice = createSlice({
 
 export const { setIsDark, setThemeFalse } = appSlice.actions;
 
-export const appReducer = appSlice.reducer;
+export const app = appSlice.reducer;
