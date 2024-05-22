@@ -1,7 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
-import type { AppState } from "@/types";
+import type { AppState } from '@/types';
 
 const initialState: AppState = {
   isDark: false,
@@ -9,18 +9,15 @@ const initialState: AppState = {
 };
 
 const appSlice = createSlice({
-  name: "app",
+  name: 'app',
   initialState,
   reducers: {
-    setIsDark: (state, action: PayloadAction<boolean>) => {
-      state.isDark = action.payload;
-    },
-    setThemeFalse: (state) => {
-      state.theme = false;
+    setIsDark: (state) => {
+      state.isDark = !state.isDark;
     },
   },
 });
 
-export const { setIsDark, setThemeFalse } = appSlice.actions;
+export const { setIsDark } = appSlice.actions;
 
 export const app = appSlice.reducer;

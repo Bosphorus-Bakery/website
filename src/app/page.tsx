@@ -1,9 +1,11 @@
-const App = () => {
+import { Home } from '@/components';
+
+export default function App() {
   return (
     <main>
-      <div className="hello">Hello World</div>
+      <div>
+        <Home />
+      </div>
     </main>
   );
-};
-
-export default App;
+}
