@@ -1,10 +1,10 @@
-import { Contact } from '@/components';
+import { About } from '@/components';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contact Us',
+  title: 'About Us',
 };
 
 export default function Page() {
-  return <Contact />;
+  return <About />;
 }

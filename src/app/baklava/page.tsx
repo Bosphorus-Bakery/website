@@ -1,10 +1,10 @@
-import { Contact } from '@/components';
+import { Baklava } from '@/components';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contact Us',
+  title: 'Our Baklava',
 };
 
 export default function Page() {
-  return <Contact />;
+  return <Baklava />;
 }

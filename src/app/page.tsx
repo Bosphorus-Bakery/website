@@ -1,14 +1,11 @@
-"use client";
-import Providers from "@/components/Providers";
+import { Home } from '@/components';
 
-const App = () => {
+export default function App() {
   return (
     <main>
-      <Providers>
-        <div className="hello">Hello World</div>
-      </Providers>
+      <div>
+        <Home />
+      </div>
     </main>
   );
-};
-
-export default App;
+}
