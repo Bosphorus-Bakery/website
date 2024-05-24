@@ -1,19 +1,12 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import '@/public/globals.css';
-import StoreProvider from '@/components/StoreProvider';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: {
-    default: 'Bosphorus Bakery',
-    template: '%s | Bosphorus Bakery',
-  },
-  description: 'The Official Bosphorus Bakery Website.',
-  robots: { index: false, follow: false },
+  title: "Bosphorus Bakery",
+  description: "The official Bosphorus Bakery Website.",
 };
 
 export default function RootLayout({
@@ -23,11 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Navbar></Navbar>
-        <StoreProvider>{children}</StoreProvider>
-        <Footer></Footer>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

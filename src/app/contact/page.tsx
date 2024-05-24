@@ -1,10 +1,5 @@
-import { Contact } from '@/components';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Contact Us',
+const Contact = () => {
+  return <div>contact</div>;
 };
 
-export default function Page() {
-  return <Contact />;
-}
+export default Contact;
