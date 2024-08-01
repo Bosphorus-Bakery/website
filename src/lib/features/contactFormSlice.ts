@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-// import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ContactFormState } from '@/types';
 // import { stringify } from 'querystring';
 
@@ -7,33 +7,47 @@ const initialState: ContactFormState = {
   firstName: '',
   lastName: '',
   email: '',
-  phoneNumber: '',
+  phone: '',
   subject: '',
   description: '',
+  isSubmitting: false,
+  error: null
 }
 
 const contactFormSlice = createSlice({
   name: 'contactForm',
   initialState,
   reducers: {
-    // Accept initial state + action and returns new state obj
-    setFirstName: (state, action) => {
 
-      // Immer "updates" the state under hood
+    // Accept initial state + action and returns new state obj
+    setFirstName: (state, action: PayloadAction<string>) => {
       state.firstName = action.payload 
     },
-    setLastName: (state, action) => {
+    // Action's Payload explicitly typed so we expect a string
+    setLastName: (state, action: PayloadAction<string>) => {
       state.lastName = action.payload 
     },
-    setEmail: (state, action) => {
+    setEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload 
     },
-    setSubject: (state, action) => {
-      state.phoneNumber = action.payload 
+    setPhone: (state, action: PayloadAction<string>) => {
+      state.phone = action.payload 
     },
-    setDescription: (state, action) => {
+    setSubject: (state, action: PayloadAction<string>) => {
+      state.subject = action.payload 
+    },
+    setDescription: (state, action: PayloadAction< name: string>) => {
       state.description = action.payload 
-    }
+    },
+    submitForm: (state, action: PayloadAction<boolean>) => {
+      state.isSubmitting = true;
+      state.submitForm = action.payload 
+    },
+    submitFormSuccess: (state)
+    setError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload 
+    },
+    clearError:
   }
 })
 

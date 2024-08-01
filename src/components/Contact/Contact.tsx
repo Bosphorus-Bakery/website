@@ -9,7 +9,7 @@ interface ContactFormProps {
 const ContactForm: React.FC<ContactFormProps> = () => {
   const dispatch = useDispatch();
 
-  // useSelector hook to take entire store state and returns desired property
+  // useSelector hook to take entire store state and extracts desired value
   const firstName = useSelector((state: RootState) => state.contactForm.firstName);
   const lastName = useSelector((state: RootState) => state.contactForm.lastName);
   const email = useSelector((state: RootState) => state.contactForm.email);
@@ -19,7 +19,10 @@ const ContactForm: React.FC<ContactFormProps> = () => {
   const isSubmitting = useSelector((state: RootState) => state.contactForm.isSubmitting);
   const error = useSelector((state: RootState) => state.contactForm.error);
   
-
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    dispatch(submitForm({ firstName, lastName, email, phone, subject, description }));
+  }
 
 
 
