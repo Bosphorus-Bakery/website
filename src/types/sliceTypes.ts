@@ -7,7 +7,9 @@ export interface ContactFormState {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string;
+  phone: string;
   subject: string;
   description: string;
+  isSubmitting: boolean;
+  error: string | null;
 }

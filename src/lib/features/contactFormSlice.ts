@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+// import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ContactFormState } from '@/types';
-import { stringify } from 'querystring';
+// import { stringify } from 'querystring';
 
 const initialState: ContactFormState = {
   firstName: '',
@@ -38,4 +38,4 @@ const contactFormSlice = createSlice({
 })
 
 export const { setFirstName, setLastName, setEmail, setSubject, setDescription } = contactFormSlice.actions;
-export const contactForm = contactFormSlice.reducer;
+export const contactFormReducer = contactFormSlice.reducer;

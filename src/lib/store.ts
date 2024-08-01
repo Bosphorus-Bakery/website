@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { app } from "@/lib";
+import { contactFormReducer } from "@/lib/features"
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
+      contactForm: contactFormReducer,
       app,
     },
   });
