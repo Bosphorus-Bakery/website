@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/lib'; // Import the root state type from your store
+import {
+  setFirstName,
+  setLastName,
+  setEmail,
+  setPhone,
+  setSubject,
+  setDescription,
+  submitForm,
+  clearError,
+} from '@/lib/features/contactFormSlice';
 
 interface ContactFormProps {
 
