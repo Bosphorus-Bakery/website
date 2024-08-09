@@ -1,3 +1,6 @@
+// Render as client-side component to handle User interactivity
+"use client";
+
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/lib'; // Import the root state type from your store
@@ -40,6 +43,7 @@ const ContactForm: React.FC<ContactFormProps> = () => {
     dispatch(clearError());
   }
 
+  console.log('Client Render:', { firstName, lastName, email, phone, subject, description });
 
   return (
     <form onSubmit={handleSubmit}>
