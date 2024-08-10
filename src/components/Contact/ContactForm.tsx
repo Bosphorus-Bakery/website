@@ -1,4 +1,4 @@
-// Render as client-side component to handle User interactivity
+// Render as client-side component for form interact  
 "use client";
 
 import React, { useState } from 'react';
@@ -43,7 +43,7 @@ const ContactForm: React.FC<ContactFormProps> = () => {
     dispatch(clearError());
   }
 
-  console.log('Client Render:', { firstName, lastName, email, phone, subject, description });
+  console.log('Client Render:', { firstName, lastName, email, phone, subject, description, isSubmitting, error });
 
   return (
     <form onSubmit={handleSubmit}>
@@ -101,10 +101,12 @@ const ContactForm: React.FC<ContactFormProps> = () => {
           onChange={(e) => dispatch(setDescription(e.target.value))}
         />
       </div>
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Submitting...' : 'Send'} {/* Disable button and show loading text while form submitting
- */}
-      </button>
+      <div>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Send'} {/* Disable button and show loading text while form submitting
+  */}
+        </button>
+      </div>
       {error &&(
         <div>
           <p className="error">{error}</p>
