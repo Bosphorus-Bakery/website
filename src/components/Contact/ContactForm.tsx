@@ -36,6 +36,7 @@ const ContactForm: React.FC<ContactFormProps> = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     dispatch(submitForm({ firstName, lastName, email, phone, subject, description }));
+      console.log('Form Submitting:', { firstName, lastName, email, phone, subject, description, isSubmitting, error });
   }
 
   // Dispatches action from submitForm reducer to update the state properties
