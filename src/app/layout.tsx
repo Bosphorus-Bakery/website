@@ -8,14 +8,15 @@ import Footer from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(`https://www.bosphorusbakery.com`),
   title: {
-    default: 'Bosphorus Bakery',
+    default: 'Home | Bosphorus Bakery',
     template: '%s | Bosphorus Bakery',
   },
-  description: 'The Official Bosphorus Bakery Website.',
+  description: '%s',
   robots: { index: true, follow: true },
   alternates: {
-    canonical: 'https://bosphorusbakery.com',
+    canonical: './',
   },
   icons: {
     icon: '/favicon.ico',
