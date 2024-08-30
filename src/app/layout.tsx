@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import '@/public/globals.css';
+import '@/styles/globals.css';
 import StoreProvider from '@/components/StoreProvider';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   },
   description: 'The Official Bosphorus Bakery Website.',
   robots: { index: false, follow: false },
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
