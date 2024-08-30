@@ -13,7 +13,10 @@ export const metadata: Metadata = {
     template: '%s | Bosphorus Bakery',
   },
   description: 'The Official Bosphorus Bakery Website.',
-  robots: { index: false, follow: false },
+  robots: { index: true, follow: true },
+  alternates: {
+    canonical: 'https://bosphorusbakery.com',
+  },
   icons: {
     icon: '/favicon.ico',
   },
