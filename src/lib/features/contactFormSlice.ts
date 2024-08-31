@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ContactFormState } from '@/types';
-// import { stringify } from 'querystring';
 
 const initialState: ContactFormState = {
   firstName: '',
@@ -23,7 +22,7 @@ const contactFormSlice = createSlice({
     setFirstName: (state, action: PayloadAction<string>) => {
       state.firstName = action.payload; 
     },
-    // Action's Payload explicitly typed to expect a string
+    // Action's Payload expects a string
     setLastName: (state, action: PayloadAction<string>) => {
       state.lastName = action.payload; 
     },

@@ -1,37 +1,14 @@
 // Render as client-side component for form interact  
 "use client";
 
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/lib'; // Import the root state type from your store
-import {
-  setFirstName,
-  setLastName,
-  setEmail,
-  setPhone,
-  setSubject,
-  setDescription,
-  submitForm,
-  clearError,
-} from '@/lib/features/contactFormSlice';
+import { useAppSelector, useAppDispatch, setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, clearError } from '@/lib'; // Import the root state type from your store
 
-interface ContactFormProps {
-
-}
-// React.FC is a generic type and will accept props of ContactFormProps interface shape
-const ContactForm: React.FC<ContactFormProps> = () => {
-  const dispatch = useDispatch();
+const ContactForm = () => {
+  const dispatch = useAppDispatch();
 
   // useSelector hook to take entire store state and extracts desired value
-  const firstName = useSelector((state: RootState) => state.contactForm.firstName);
-  const lastName = useSelector((state: RootState) => state.contactForm.lastName);
-  const email = useSelector((state: RootState) => state.contactForm.email);
-  const phone = useSelector((state: RootState) => state.contactForm.phone);
-  const subject = useSelector((state: RootState) => state.contactForm.subject);
-  const description = useSelector((state: RootState) => state.contactForm.description);
-  const isSubmitting = useSelector((state: RootState) => state.contactForm.isSubmitting);
-  const error = useSelector((state: RootState) => state.contactForm.error);
-  
+  const { firstName, lastName, email, phone, subject, description, isSubmitting, error } = useAppSelector((state) => state.contactForm);
+
   // Dispatches action from submitForm reducer to update the state properties
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -49,7 +26,7 @@ const ContactForm: React.FC<ContactFormProps> = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="firstName">First Name: </label>
+        <label htmlFor="firstName">First Name:</label>
         <input
         id="firstName"
         type="text"
@@ -59,7 +36,7 @@ const ContactForm: React.FC<ContactFormProps> = () => {
         />
       </div>
       <div>
-        <label htmlFor="lastName">Last Name: </label>
+        <label htmlFor="lastName">Last Name:</label>
         <input
         id="lastName"
         type="text"

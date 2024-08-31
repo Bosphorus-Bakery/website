@@ -17,7 +17,7 @@ const mockStore = configureStore([]);
 describe('ContactForm Component', () => {
   let store: MockStoreEnhanced<RootState>; // Type the mock store variable
 
-  // Runs state before each test case
+  // Reset state before each test case
   beforeEach(() => {
     const store = mockStore({
       contactForm: {
@@ -40,14 +40,12 @@ describe('ContactForm Component', () => {
         <ContactForm />
       </Provider>
     );
-
-    expect(screen.getByLabelText(/first name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/last name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/phone/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/subject/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
-  });
-
-  
+    // Checks if element with "first name:" (case-insensitive) exists in DOM
+    expect(screen.getByLabelText(/first name:/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/last name:/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/email:/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/phone:/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/subject:/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/description:/i)).toBeInTheDocument();
+  });  
 });
