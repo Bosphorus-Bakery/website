@@ -1,27 +1,35 @@
 // Render as client-side component for form interact  
 "use client";
 
-import { useAppSelector, useAppDispatch, setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, clearError } from '@/lib'; // Import the root state type from your store
+import { useAppSelector, useAppDispatch, setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, clearError } from '@/lib';
+
+// TO DO: Import Regex patterns from Regex.tsx
 
 const ContactForm = () => {
+  
   const dispatch = useAppDispatch();
 
-  // useSelector hook to take entire store state and extracts desired value
+  // useAppSelector hook to extract desired values from state object
   const { firstName, lastName, email, phone, subject, description, isSubmitting, error } = useAppSelector((state) => state.contactForm);
 
-  // Dispatches action from submitForm reducer to update the state properties
+  // TO DO: Feed email details into email to bosphorusbakery
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch(submitForm({ firstName, lastName, email, phone, subject, description }));
+
       console.log('Form Submitting:', { firstName, lastName, email, phone, subject, description, isSubmitting, error });
+
+      // C
+      if (firstName || lastName || email || phone || subject || description == ""){
+      
+        // TO DO: Error logic
+        console.log('Required fields must be filled');
+      }
   }
 
   // Dispatches action from submitForm reducer to update the state properties
   const handleClearError = () => {
     dispatch(clearError());
   }
-
-  console.log('Client Render:', { firstName, lastName, email, phone, subject, description, isSubmitting, error });
 
   return (
     <form onSubmit={handleSubmit}>

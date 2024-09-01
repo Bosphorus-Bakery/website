@@ -38,27 +38,7 @@ const contactFormSlice = createSlice({
     setDescription: (state, action: PayloadAction<string>) => {
       state.description = action.payload; 
     },
-    submitForm: (
-      state, 
-      // Destructure form fields
-      action: PayloadAction<{ 
-        firstName: string, 
-        lastName: string, 
-        email: string, 
-        phone: string, 
-        subject: string, 
-        description: string 
-      }>
-    ) => {
-
-      // Each state property is updated from payload
-      const { firstName, lastName, email, phone, subject, description } = action.payload
-      state.firstName = firstName;
-      state.lastName = lastName;
-      state.email = email;
-      state.phone = phone;
-      state.subject = subject;
-      state.description = description;
+    submitForm: (state) => {
       state.isSubmitting = true;
     },
     submitFormSuccess: (state) => {
