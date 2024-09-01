@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-// import { Link } from 'react-router-dom';
-
-const Navbar = () => {
-  return ( <nav>
-    <li>
-      {/* <Link to={'/contact'}></Link> */}
-    </li>
-    Navigation
-    </nav>
-  )
-=======
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -43,7 +30,6 @@ const Navbar = () => {
       </div>
     </nav>
   );
->>>>>>> origin/master
 };
 
 export default Navbar;
