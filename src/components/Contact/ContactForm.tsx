@@ -4,13 +4,28 @@
 import { useAppSelector, useAppDispatch, setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, clearError } from '@/lib';
 
 // TO DO: Import Regex patterns from Regex.tsx
+import { nameRegex } from '@/components/Contact/Regex';
+
 
 const ContactForm = () => {
   
-  const dispatch = useAppDispatch();
-
   // useAppSelector hook to extract desired values from state object
   const { firstName, lastName, email, phone, subject, description, isSubmitting, error } = useAppSelector((state) => state.contactForm);
+
+  const dispatch = useAppDispatch();
+
+  // Validate name with Regex and update state if valid
+  const onNameChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const nameValue: string = e.currentTarget.value;
+
+    if (nameRegex.test(nameValue)) {
+      console.log('Valid name');
+      console.log(`First name - state: ${firstName}`);
+      dispatch(setFirstName(nameValue));
+    } else {
+      console.log('Invalid name');
+    }
+  }
 
   // TO DO: Feed email details into email to bosphorusbakery
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -18,7 +33,7 @@ const ContactForm = () => {
 
       console.log('Form Submitting:', { firstName, lastName, email, phone, subject, description, isSubmitting, error });
 
-      // C
+      // TO DO: Check all fields complete before submitting
       if (firstName || lastName || email || phone || subject || description == ""){
       
         // TO DO: Error logic
@@ -40,7 +55,7 @@ const ContactForm = () => {
         type="text"
         value={firstName}
         // On change dispatches an action creator to update state.firstName with User input
-        onChange={(e) => dispatch(setFirstName(e.target.value))}
+        onChange={onNameChange}
         />
       </div>
       <div>

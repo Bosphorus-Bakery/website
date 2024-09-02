@@ -1,4 +1,4 @@
-// '^' amd '$' marks start and end of string while '+' matches preceding pattern 1 or more times
-export const namePattern: RegExp = /^[a-zA-Z]+$/;
+// '^' amd '$' marks start and end of match
+export const nameRegex: RegExp = /^[a-zA-Z]{1,50}$/;
 
 // TO DO: Regex patterns for name, email, phone, subj, description
