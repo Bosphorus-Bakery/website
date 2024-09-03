@@ -4,6 +4,7 @@ import type { ContactFormState } from '@/types';
 
 const initialState: ContactFormState = {
   firstName: '',
+  firstNameError: false,
   lastName: '',
   email: '',
   phone: '',
@@ -21,6 +22,9 @@ const contactFormSlice = createSlice({
     // Accepts initial state plus action and returns new state object
     setFirstName: (state, action: PayloadAction<string>) => {
       state.firstName = action.payload; 
+    },
+    toggleFirstNameError: (state) => {
+      state.firstNameError = !state.firstNameError
     },
     // Action's Payload expects a string
     setLastName: (state, action: PayloadAction<string>) => {
@@ -63,5 +67,5 @@ const contactFormSlice = createSlice({
   },
 });
 
-export const { setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, submitFormSuccess, clearError } = contactFormSlice.actions;
+export const { setFirstName, toggleFirstNameError, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, submitFormSuccess, clearError } = contactFormSlice.actions;
 export const contactFormReducer = contactFormSlice.reducer;

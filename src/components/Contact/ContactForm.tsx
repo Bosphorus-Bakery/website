@@ -1,7 +1,7 @@
 // Render as client-side component for form interact  
 "use client";
 
-import { useAppSelector, useAppDispatch, setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, clearError } from '@/lib';
+import { useAppSelector, useAppDispatch, setFirstName, toggleFirstNameError, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, clearError } from '@/lib';
 
 // TO DO: Import Regex patterns from Regex.tsx
 import { nameRegex } from '@/components/Contact/Regex';
@@ -10,21 +10,39 @@ import { nameRegex } from '@/components/Contact/Regex';
 const ContactForm = () => {
   
   // useAppSelector hook to extract desired values from state object
-  const { firstName, lastName, email, phone, subject, description, isSubmitting, error } = useAppSelector((state) => state.contactForm);
+  const { firstName, firstNameError, lastName, email, phone, subject, description, isSubmitting, error } = useAppSelector((state) => state.contactForm);
 
   const dispatch = useAppDispatch();
 
-  // Validate name with Regex and update state if valid
-  const onNameChange = (e: React.FormEvent<HTMLInputElement>) => {
+  // Validate name with Regex if valid then update state. TO DO: Troubleshoot backspaces as first char cannot be deleted.
+  const updateFirstName = (e: React.FormEvent<HTMLInputElement>) => {
     const nameValue: string = e.currentTarget.value;
-
     if (nameRegex.test(nameValue)) {
-      console.log('Valid name');
-      console.log(`First name - state: ${firstName}`);
+
+      // Update firstName state
       dispatch(setFirstName(nameValue));
+      
+      // If firstName error was True, then toggle it to False because valid character was entered
+      if (firstNameError) {
+        dispatch(toggleFirstNameError());
+      }
+
+    // If validation fails, render error message.
     } else {
-      console.log('Invalid name');
+
+      // If firstNameError is False, then toggle it to True bc invalid character was entered
+      if (!firstNameError){
+        dispatch(toggleFirstNameError());
+      }    
     }
+  }
+
+  const NameError = () => {
+    return (
+      <span>
+        Only letters and accented characters allowed.
+      </span>
+    )
   }
 
   // TO DO: Feed email details into email to bosphorusbakery
@@ -36,7 +54,7 @@ const ContactForm = () => {
       // TO DO: Check all fields complete before submitting
       if (firstName || lastName || email || phone || subject || description == ""){
       
-        // TO DO: Error logic
+        // TO DO: Form submission failure logic
         console.log('Required fields must be filled');
       }
   }
@@ -55,8 +73,9 @@ const ContactForm = () => {
         type="text"
         value={firstName}
         // On change dispatches an action creator to update state.firstName with User input
-        onChange={onNameChange}
+        onChange={updateFirstName}
         />
+        {firstNameError ? (<NameError></NameError>) : null}
       </div>
       <div>
         <label htmlFor="lastName">Last Name:</label>

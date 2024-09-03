@@ -6,6 +6,7 @@ export interface AppState {
 // Defines the contact form's state structure
 export interface ContactFormState {
   firstName: string;
+  firstNameError: boolean;
   lastName: string;
   email: string;
   phone: string;
