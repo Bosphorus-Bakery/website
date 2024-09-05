@@ -6,6 +6,7 @@ const initialState: ContactFormState = {
   firstName: '',
   firstNameError: false,
   lastName: '',
+  lastNameError: false,
   email: '',
   phone: '',
   subject: '',
@@ -29,6 +30,9 @@ const contactFormSlice = createSlice({
     // Action's Payload expects a string
     setLastName: (state, action: PayloadAction<string>) => {
       state.lastName = action.payload; 
+    },
+    toggleLastNameError: (state) => {
+      state.lastNameError = !state.lastNameError
     },
     setEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload; 
@@ -67,5 +71,5 @@ const contactFormSlice = createSlice({
   },
 });
 
-export const { setFirstName, toggleFirstNameError, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, submitFormSuccess, clearError } = contactFormSlice.actions;
+export const { setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, setPhone, setSubject, setDescription, submitForm, submitFormSuccess, clearError } = contactFormSlice.actions;
 export const contactFormReducer = contactFormSlice.reducer;

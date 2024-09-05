@@ -1,42 +1,55 @@
 // Render as client-side component for form interact  
 "use client";
 
-import { useAppSelector, useAppDispatch, setFirstName, toggleFirstNameError, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, clearError } from '@/lib';
+// Import hooks and actions 
+import { useAppSelector, useAppDispatch, setFirstName, toggleFirstNameError, toggleLastNameError, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, clearError } from '@/lib';
 
-// TO DO: Import Regex patterns from Regex.tsx
+// TO DO: Import all Regex patterns from Regex.tsx
 import { nameRegex } from '@/components/Contact/Regex';
-
 
 const ContactForm = () => {
   
-  // useAppSelector hook to extract desired values from state object
-  const { firstName, firstNameError, lastName, email, phone, subject, description, isSubmitting, error } = useAppSelector((state) => state.contactForm);
+  // useAppSelector hook extracts desired values from state object
+  const { firstName, firstNameError, lastName, lastNameError, email, phone, subject, description, isSubmitting, error } = useAppSelector((state) => state.contactForm);
 
+  // useAppDispatch hook dispatches actions defined in slice
   const dispatch = useAppDispatch();
 
-  // Validate name with Regex if valid then update state. TO DO: Troubleshoot backspaces as first char cannot be deleted.
-  const updateFirstName = (e: React.FormEvent<HTMLInputElement>) => {
-    const nameValue: string = e.currentTarget.value;
-    if (nameRegex.test(nameValue)) {
+  // Validates then updates input in firstName field
+  const handleFirstName = (e: React.FormEvent<HTMLInputElement>) => {
+    const firstNameValue: string = e.currentTarget.value;
 
-      // Update firstName state
-      dispatch(setFirstName(nameValue));
+    // Update state if valid input
+    if (nameRegex.test(firstNameValue)) {
+      dispatch(setFirstName(firstNameValue));
       
-      // If firstName error was True, then toggle it to False because valid character was entered
+      // If error state was true then toggle off
       if (firstNameError) {
         dispatch(toggleFirstNameError());
       }
-
-    // If validation fails, render error message.
+    // Do not update state if invalid input
     } else {
 
-      // If firstNameError is False, then toggle it to True bc invalid character was entered
+      // If error state was false then toggle on
       if (!firstNameError){
         dispatch(toggleFirstNameError());
       }    
     }
   }
 
+const handleLastName = (e: React.FormEvent<HTMLInputElement>) => {
+  const nameValue: string = e.currentTarget.value;
+  if (nameRegex.test(nameValue)) {
+    dispatch(setLastName(nameValue));
+    if (lastNameError) {
+      dispatch(toggleLastNameError());
+    }
+  } else {
+    if (!lastNameError){
+      dispatch(toggleLastNameError());
+    }    
+  }
+}
   const NameError = () => {
     return (
       <span>
@@ -59,11 +72,6 @@ const ContactForm = () => {
       }
   }
 
-  // Dispatches action from submitForm reducer to update the state properties
-  const handleClearError = () => {
-    dispatch(clearError());
-  }
-
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -73,7 +81,7 @@ const ContactForm = () => {
         type="text"
         value={firstName}
         // On change dispatches an action creator to update state.firstName with User input
-        onChange={updateFirstName}
+        onChange={handleFirstName}
         />
         {firstNameError ? (<NameError></NameError>) : null}
       </div>
@@ -83,8 +91,9 @@ const ContactForm = () => {
         id="lastName"
         type="text"
         value={lastName}
-        onChange={(e) => dispatch(setLastName(e.target.value))}
+        onChange={handleLastName}
         />
+        {lastNameError ? (<NameError></NameError>) : null}
       </div>
       <div>
         <label htmlFor="email">Email:</label>
@@ -127,12 +136,6 @@ const ContactForm = () => {
   */}
         </button>
       </div>
-      {error &&(
-        <div>
-          <p className="error">{error}</p>
-          <button type="button" onClick={handleClearError}>OK</button>
-        </div>
-      ) }
     </form>
   )
 }

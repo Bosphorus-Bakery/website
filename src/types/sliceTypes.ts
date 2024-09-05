@@ -8,6 +8,7 @@ export interface ContactFormState {
   firstName: string;
   firstNameError: boolean;
   lastName: string;
+  lastNameError: boolean;
   email: string;
   phone: string;
   subject: string;
