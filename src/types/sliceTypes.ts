@@ -3,7 +3,7 @@ export interface AppState {
   theme: boolean;
 }
 
-// Defines the contact form's state structure
+// Defines structure of Contact Form state
 export interface ContactFormState {
   firstName: string;
   firstNameError: boolean;
