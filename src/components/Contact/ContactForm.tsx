@@ -1,55 +1,38 @@
 "use client";
-
 import { useAppSelector, useAppDispatch, setFirstName, toggleFirstNameError, toggleLastNameError, setLastName, setEmail, setPhone, setSubject, setDescription, submitForm, clearError } from '@/lib';
-
-// TO DO: Import all Regex patterns from Regex.tsx
 import { nameRegex, emailRegex } from '@/components/Contact/Regex';
 
 const ContactForm = () => {
 
-  interface FormElements extends HTMLFormControlsCollection {
-    firstNameInput: HTMLInputElement,
-    lastNameInput: HTMLInputElement
-  }
-  
-  // useAppSelector hook extracts desired values from state object
+  // Get values from state object
   const { firstName, firstNameError, lastName, lastNameError, email, phone, subject, description, isSubmitting, error } = useAppSelector((state) => state.contactForm);
-
   const dispatch = useAppDispatch();
 
-  // Validates then updates firstName state
-  const handleFirstName = (e: React.FormEvent<HTMLInputElement>) => {
-    const firstNameValue: string = e.currentTarget.value;
-
-    if (nameRegex.test(firstNameValue)) {
-      dispatch(setFirstName(firstNameValue));
-      
-      // Toggles off error if value was valid
-      if (firstNameError) {
-        dispatch(toggleFirstNameError());
-      }
-    } else {
-
-      // Toggles on error if value was invalid
+  // Function that validates and updates firstName state
+  const handleFirstName = (firstNameValue: string) => {
+    if (nameRegex.test(firstNameValue)) { // If firstName input is valid then updates firstName state
+      dispatch(setFirstName(firstNameValue)); 
+      if (firstNameError) { // Toggles off firstName error
+        dispatch(toggleFirstNameError()); 
+      } 
+    } else { // If firstName input is invalid then toggle on firstNameError 
       if (!firstNameError){
         dispatch(toggleFirstNameError());
       }    
     }
-  }
-
-const handleLastName = (e: React.FormEvent<HTMLInputElement>) => {
-  const nameValue: string = e.currentTarget.value;
-  if (nameRegex.test(nameValue)) {
-    dispatch(setLastName(nameValue));
-    if (lastNameError) {
-      dispatch(toggleLastNameError());
+  }  // Function that validates and updates lastName state
+  const handleLastName = (lastNameValue: string) => {
+    if (nameRegex.test(lastNameValue)) { // If lastName input is valid then updates lastName state
+      dispatch(setLastName(lastNameValue));
+      if (lastNameError) { // Toggles off lastName error
+        dispatch(toggleLastNameError());
+      }
+    } else { // If lastName input is invalid then toggle on lastNameError
+      if (!lastNameError){
+        dispatch(toggleLastNameError());
+      }    
     }
-  } else {
-    if (!lastNameError){
-      dispatch(toggleLastNameError());
-    }    
   }
-}
   const NameError = () => {
     return (
       <span>
@@ -58,20 +41,19 @@ const handleLastName = (e: React.FormEvent<HTMLInputElement>) => {
     )
   }
 
-  // TO DO: Feed email details into email to bosphorusbakery
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // Interface types the form fields using the field's name attribute
+  interface FormElements extends HTMLFormControlsCollection {
+    firstName: HTMLInputElement;
+    lastName: HTMLInputElement;
+  } 
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => { // Handles submission of all <form> relevant info
     e.preventDefault();
-    console.log('Form Submitted')
-
-      // Check all fields complete before submitting
-      if (firstName || lastName || email || phone || subject || description == ""){
-      
-        // TO DO: Form submission failure logic
-        console.log('Empty fields detected');
-      }
-    
-      handleFirstName(e: React.FormEvent<HTMLInputElement>)
-
+    const form = e.currentTarget.elements as FormElements // Type form elements with FormsElements interface
+    const firstNameValue = form.firstName.value;
+    const lastNameValue = form.lastName.value;
+    handleFirstName(firstNameValue);
+    handleLastName(lastNameValue);
   }
 
   return (
@@ -80,6 +62,7 @@ const handleLastName = (e: React.FormEvent<HTMLInputElement>) => {
         <label htmlFor="firstName">First Name:</label>
         <input
         id="firstName"
+        name="firstName"
         type="text"
         />
         {firstNameError ? (<NameError></NameError>) : null}
@@ -88,6 +71,7 @@ const handleLastName = (e: React.FormEvent<HTMLInputElement>) => {
         <label htmlFor="lastName">Last Name:</label>
         <input
         id="lastName"
+        name="lastName"
         type="text"
         />
         {lastNameError ? (<NameError></NameError>) : null}
