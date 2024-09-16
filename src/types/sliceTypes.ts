@@ -3,14 +3,16 @@ export interface AppState {
   theme: boolean;
 }
 
-// Defines structure of Contact Form state
+// Types the fields in the Contact us form
 export interface ContactFormState {
   firstName: string;
   firstNameError: boolean;
   lastName: string;
   lastNameError: boolean;
   email: string;
+  emailError: boolean;
   phone: string;
+  phoneError: boolean;
   subject: string;
   description: string;
   isSubmitting: boolean;

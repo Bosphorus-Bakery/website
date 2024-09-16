@@ -8,7 +8,9 @@ const initialState: ContactFormState = {
   lastName: '',
   lastNameError: false,
   email: '',
+  emailError: false,
   phone: '',
+  phoneError: false,
   subject: '',
   description: '',
   isSubmitting: false,
@@ -37,8 +39,14 @@ const contactFormSlice = createSlice({
     setEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload; 
     },
+    toggleEmailError: (state) => {
+      state.emailError = !state.emailError;
+    },
     setPhone: (state, action: PayloadAction<string>) => {
       state.phone = action.payload; 
+    },
+    togglePhoneError: (state) => {
+      state.phoneError = !state.phoneError;
     },
     setSubject: (state, action: PayloadAction<string>) => {
       state.subject = action.payload; 
@@ -71,5 +79,5 @@ const contactFormSlice = createSlice({
   },
 });
 
-export const { setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, setPhone, setSubject, setDescription, submitForm, submitFormSuccess, clearError } = contactFormSlice.actions;
+export const { setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, setDescription, submitForm, submitFormSuccess, clearError } = contactFormSlice.actions;
 export const contactFormReducer = contactFormSlice.reducer;
