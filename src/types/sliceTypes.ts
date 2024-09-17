@@ -1,3 +1,5 @@
+import { LargeNumberLike } from "crypto";
+
 export interface AppState {
   isDark: boolean;
   theme: boolean;
@@ -14,7 +16,11 @@ export interface ContactFormState {
   phone: string;
   phoneError: boolean;
   subject: string;
+  subjectError: boolean;
+  subjectCounter: number;
   description: string;
+  descriptionError: boolean;
+  descriptionCounter: number;
   isSubmitting: boolean;
   error: string | null;
 }
