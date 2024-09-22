@@ -80,6 +80,14 @@ const ContactForm = () => {
   //     }    
   //   }
   // } 
+
+  // Function that tracks subject character count as user inputs
+  const handleSubjectCounter = (e: React.FormEvent<HTMLInputElement>) => {
+    console.log('handleSubjectCount called')
+    const subjectLength =  e.currentTarget.value.length;
+    dispatch(setSubjectCounter(subjectLength));
+  }
+
   // Error message for first and last name field
   const NameError = () => {
     return (
@@ -105,14 +113,14 @@ const ContactForm = () => {
   const SubjectError = () => {
     return (
       <span>
-        Please use 100 characters or less.
+        Please use 60 characters or less.
       </span>
     )
   }
   const DescriptionError = () => {
     return (
       <span>
-        Please use 100 characters or less.
+        Please use 250 characters or less.
       </span>
     )
   }
@@ -126,7 +134,7 @@ const ContactForm = () => {
       <span>{descriptionCounter}/250</span>
     )
   }
-  // Custom interface explicitly typing each field
+  // Custom interface to type each form field
   interface FormElements extends HTMLFormControlsCollection { // HTMLFormControlsCollection represents all the form controls
     firstName: HTMLInputElement;
     lastName: HTMLInputElement;
@@ -138,13 +146,15 @@ const ContactForm = () => {
   // Function that handles form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget.elements as FormElements // Elements property from HTMLFormControlsCollection to access all fields 
-    const firstNameValue = form.firstName.value; // Value property from HTMLInputElement
+    const form = e.currentTarget.elements as FormElements // Forms constant represents all fields 
+    // Extract values from each field  
+    const firstNameValue = form.firstName.value; // Value property comes from HTMLInputElement type
     const lastNameValue = form.lastName.value;
     const emailValue = form.email.value;
     const phoneValue = form.phone.value;
     const subjectValue = form.phone.value;
     const descriptionValue = form.phone.value;
+    // Execute field handling function for all fields
     handleField(firstNameValue, nameRegex, firstNameError, setFirstName, toggleFirstNameError);
     handleField(lastNameValue, nameRegex, lastNameError, setLastName, toggleLastNameError);
     handleField(emailValue, emailRegex, emailError, setEmail, toggleEmailError);
@@ -197,9 +207,10 @@ const ContactForm = () => {
           id="subject"
           name="subject"
           type="text"
+          onChange={handleSubjectCounter}
         />
         <SubjectCounter></SubjectCounter>
-        {SubjectError ? (<SubjectError></SubjectError>) : null}
+        {subjectError ? (<SubjectError></SubjectError>) : null}
       </div>
       <div>
         <label htmlFor="description">Description:</label>
