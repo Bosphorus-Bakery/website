@@ -17,8 +17,7 @@ const initialState: ContactFormState = {
   description: '',
   descriptionError: false,
   descriptionCounter: 0,
-  isSubmitting: false,
-  error: null
+  requiredError: true
 };
 
 const contactFormSlice = createSlice({
@@ -70,30 +69,11 @@ const contactFormSlice = createSlice({
     setDescriptionCounter: (state, action: PayloadAction<number>) => {
       state.descriptionCounter = action.payload; 
     },
-    submitForm: (state) => {
-      state.isSubmitting = true;
-    },
-    submitFormSuccess: (state) => {
-      state.isSubmitting = false; 
-      state.error = null;
-
-      // Clear form fields after successful form submission
-      state.firstName = '';
-      state.lastName = '';
-      state.email = '';
-      state.phone = '';
-      state.subject = '';
-      state.description = '';
-    },
-    submitFormFailure: (state, action: PayloadAction<string>) => {
-      state.isSubmitting = false;
-      state.error = action.payload;
-    },
-    clearError: (state) => {
-      state.error = null;
-    },
+    toggleRequiredError: (state) => {
+      state.requiredError = !state.requiredError;
+    }
   },
 });
 
-export const { setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, toggleSubjectError, setSubjectCounter, setDescription, toggleDescriptionError, setDescriptionCounter, submitForm, submitFormSuccess, clearError } = contactFormSlice.actions;
+export const { setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, toggleSubjectError, setSubjectCounter, setDescription, toggleDescriptionError, setDescriptionCounter, toggleRequiredError } = contactFormSlice.actions;
 export const contactFormReducer = contactFormSlice.reducer;

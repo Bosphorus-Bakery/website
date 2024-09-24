@@ -1,12 +1,12 @@
 "use client";
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { useAppSelector, useAppDispatch, setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, toggleSubjectError, setSubjectCounter, setDescription, toggleDescriptionError, setDescriptionCounter, submitForm, clearError } from '@/lib';
-import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex } from '@/components/Contact/Regex';
-
+import { useAppSelector, useAppDispatch, setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, toggleSubjectError, setSubjectCounter, setDescription, toggleDescriptionError, setDescriptionCounter, toggleRequiredError } from '@/lib';
+import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex } from '@/components/Contact';
+import { NameError, EmailError, PhoneError, SubjectError, DescriptionError, RequiredError } from '@/components/Contact';
 const ContactForm = () => {
 
-  // Get values from state object
-  const { firstName, firstNameError, lastName, lastNameError, email, emailError, phone, phoneError, subject, subjectError, subjectCounter, description, descriptionError, descriptionCounter, isSubmitting, error } = useAppSelector((state) => state.contactForm);
+  // To access values from state object
+  const { firstName, firstNameError, lastName, lastNameError, email, emailError, phone, phoneError, subject, subjectError, subjectCounter, description, descriptionError, descriptionCounter } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch();
 
   // Generic function to handle form field's validation and state
@@ -29,111 +29,31 @@ const ContactForm = () => {
     }
   }
 
-  // // Function that validates and updates firstName state
-  // const handleFirstName = (firstNameValue: string) => {
-  //   if (nameRegex.test(firstNameValue)) { // If firstName input is valid then updates firstName state
-  //     dispatch(setFirstName(firstNameValue)); 
-  //     if (firstNameError) { // Toggles off firstName error
-  //       dispatch(toggleFirstNameError()); 
-  //     } 
-  //   } else { // If firstName input is invalid then toggle on firstNameError 
-  //     if (!firstNameError) {
-  //       dispatch(toggleFirstNameError());
-  //     }    
-  //   }
-  // }  // Function that validates and updates lastName state
-  // const handleLastName = (lastNameValue: string) => {
-  //   if (nameRegex.test(lastNameValue)) { // If lastName input is valid then updates lastName state
-  //     dispatch(setLastName(lastNameValue));
-  //     if (lastNameError) { // Toggles off lastName error
-  //       dispatch(toggleLastNameError());
-  //     }
-  //   } else { // If lastName input is invalid then toggle on lastNameError
-  //     if (!lastNameError) {
-  //       dispatch(toggleLastNameError());
-  //     }    
-  //   }
-  // } // Function that validates and updates email state
-  // const handleEmail = (emailValue: string) => {
-  //   if (emailRegex.test(emailValue)) {
-  //     dispatch(setEmail(emailValue));
-  //     if (emailError) {
-  //       dispatch(toggleEmailError());
-  //     }
-  //   } else { // If email input is invalid then toggle error
-  //     if (!emailError) {
-  //       dispatch(toggleEmailError());
-  //     }    
-  //   }
-  // }
-
-  // // Function that validates and updates phone state
-  // const handlePhone = (phoneValue: string) => {
-  //   if (phoneRegex.test(phoneValue)) {
-  //     dispatch(setPhone(phoneValue));
-  //     if (phoneError) {
-  //       dispatch(togglePhoneError());
-  //     }
-  //   } else { // If phone input is invalid then toggle error
-  //     if (!phoneError) {
-  //       dispatch(togglePhoneError());
-  //     }    
-  //   }
-  // } 
-
-  // Function that tracks subject character count as user inputs
-  const handleSubjectCounter = (e: React.FormEvent<HTMLInputElement>) => {
-    console.log('handleSubjectCount called')
-    const subjectLength =  e.currentTarget.value.length;
-    dispatch(setSubjectCounter(subjectLength));
-  }
-
-  // Error message for first and last name field
-  const NameError = () => {
-    return (
-      <span>
-        Only letters and accented characters allowed.
-      </span>
-    )
-  } // Error message for email field
-  const EmailError = () => {
-    return (
-      <span>
-        Please enter a valid email address.
-      </span>
-    )
-  } // Error message for phone number field
-  const PhoneError = () => {
-    return (
-      <span>
-        Please enter a valid phone number.
-      </span>
-    )
-  }
-  const SubjectError = () => {
-    return (
-      <span>
-        Please use 60 characters or less.
-      </span>
-    )
-  }
-  const DescriptionError = () => {
-    return (
-      <span>
-        Please use 250 characters or less.
-      </span>
-    )
-  }
+  // Displays subject character count
   const SubjectCounter = () => {
     return (
       <span>{subjectCounter}/60</span>
     )
-  }
+  } 
+  // Displays description character count
   const DescriptionCounter = () => {
     return (
       <span>{descriptionCounter}/250</span>
     )
   }
+
+  // Function that tracks subject character count as user inputs
+  const handleSubjectCounter = (e: React.FormEvent<HTMLInputElement>) => {
+    const subjectLength =  e.currentTarget.value.length;
+    dispatch(setSubjectCounter(subjectLength));
+  }
+
+  // Function that tracks description character count as user inputs
+  const handleDescriptionCounter = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    const descriptionLength =  e.currentTarget.value.length;
+    dispatch(setDescriptionCounter(descriptionLength));
+  }
+
   // Custom interface to type each form field
   interface FormElements extends HTMLFormControlsCollection { // HTMLFormControlsCollection represents all the form controls
     firstName: HTMLInputElement;
@@ -141,12 +61,14 @@ const ContactForm = () => {
     email: HTMLInputElement;
     phone: HTMLInputElement;
     subject: HTMLInputElement;
-    description: HTMLInputElement;
+    description: HTMLTextAreaElement;
   } 
   // Function that handles form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const form = e.currentTarget.elements as FormElements // Forms constant represents all fields 
+
     // Extract values from each field  
     const firstNameValue = form.firstName.value; // Value property comes from HTMLInputElement type
     const lastNameValue = form.lastName.value;
@@ -154,13 +76,24 @@ const ContactForm = () => {
     const phoneValue = form.phone.value;
     const subjectValue = form.phone.value;
     const descriptionValue = form.phone.value;
-    // Execute field handling function for all fields
+
+    // Update each field's state
     handleField(firstNameValue, nameRegex, firstNameError, setFirstName, toggleFirstNameError);
     handleField(lastNameValue, nameRegex, lastNameError, setLastName, toggleLastNameError);
     handleField(emailValue, emailRegex, emailError, setEmail, toggleEmailError);
     handleField(phoneValue, phoneRegex, phoneError, setPhone, togglePhoneError);
     handleField(subjectValue, subjectRegex, subjectError, setSubject, toggleSubjectError);
     handleField(descriptionValue, descriptionRegex, descriptionError, setDescription, toggleDescriptionError);
+
+    /* Once a user clicks submit:
+    Each field's value is grabbed, validated, and used to update the state if passed regex
+    When to check if fields are empty? 
+    
+
+
+
+    */
+
   }
 
   return (
@@ -217,9 +150,10 @@ const ContactForm = () => {
         <textarea
           id="description"
           name="description"
+          onChange={handleDescriptionCounter}
         />
         <DescriptionCounter></DescriptionCounter>
-        {DescriptionError ? (<DescriptionError></DescriptionError>) : null}
+        {descriptionError ? (<DescriptionError></DescriptionError>) : null}
       </div>
       <div>
         <button

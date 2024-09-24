@@ -21,6 +21,5 @@ export interface ContactFormState {
   description: string;
   descriptionError: boolean;
   descriptionCounter: number;
-  isSubmitting: boolean;
-  error: string | null;
+  requiredError: boolean;
 }
