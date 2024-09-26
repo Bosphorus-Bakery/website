@@ -1,8 +1,7 @@
 "use client";
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { useAppSelector, useAppDispatch, setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, toggleSubjectError, setSubjectCounter, setDescription, toggleDescriptionError, setDescriptionCounter, toggleRequiredError } from '@/lib';
-import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex } from '@/components/Contact';
-import { NameError, EmailError, PhoneError, SubjectError, DescriptionError, RequiredError } from '@/components/Contact';
+import { useAppSelector, useAppDispatch, setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, toggleSubjectError, setSubjectCounter, setDescription, toggleDescriptionError, setDescriptionCounter, toggleRequiredError, setSubjectError } from '@/lib';
+import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage } from '@/lib/constants';
 const ContactForm = () => {
 
   // To access values from state object
@@ -15,20 +14,27 @@ const ContactForm = () => {
     regex: RegExp, // Regex to validate the field
     errorState: boolean, // Current error state of field
     setFieldAction: (value: string) => PayloadAction<string>, // Action creator to set field's state
-    toggleErrorAction: () => PayloadAction<void> // Action creator to toggle field's error state
+    setErrorAction: (value: boolean) => PayloadAction<boolean> // Action creator to toggle field's error state
   ) => {
     if (regex.test(fieldValue)) { // If input is valid then update state and toggle off error
       dispatch(setFieldAction(fieldValue)); 
       if (errorState) {
-        dispatch(toggleErrorAction());
+        dispatch(setErrorAction(false));
       }
     } else { // If input is invalid then toggle on error
       if (!errorState) {
-        dispatch(toggleErrorAction());
+        dispatch(setErrorAction(true));
       }
     }
   }
-
+  // Error message component code
+  const ErrorMessage = (fieldError: string) => {
+    return (
+      <span>
+        {fieldError}
+      </span>
+    )
+  }
   // Displays subject character count
   const SubjectCounter = () => {
     return (
@@ -40,18 +46,6 @@ const ContactForm = () => {
     return (
       <span>{descriptionCounter}/250</span>
     )
-  }
-
-  // Function that tracks subject character count as user inputs
-  const handleSubjectCounter = (e: React.FormEvent<HTMLInputElement>) => {
-    const subjectLength =  e.currentTarget.value.length;
-    dispatch(setSubjectCounter(subjectLength));
-  }
-
-  // Function that tracks description character count as user inputs
-  const handleDescriptionCounter = (e: React.FormEvent<HTMLTextAreaElement>) => {
-    const descriptionLength =  e.currentTarget.value.length;
-    dispatch(setDescriptionCounter(descriptionLength));
   }
 
   // Custom interface to type each form field
@@ -66,7 +60,6 @@ const ContactForm = () => {
   // Function that handles form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const form = e.currentTarget.elements as FormElements // Forms constant represents all fields 
 
     // Extract values from each field  
@@ -74,26 +67,34 @@ const ContactForm = () => {
     const lastNameValue = form.lastName.value;
     const emailValue = form.email.value;
     const phoneValue = form.phone.value;
-    const subjectValue = form.phone.value;
-    const descriptionValue = form.phone.value;
+
+    /* Once a user clicks submit:
+    Each field's value is grabbed, validated, and used to update the state if passed regex
+    When to check if fields are empty?  
+    */
 
     // Update each field's state
     handleField(firstNameValue, nameRegex, firstNameError, setFirstName, toggleFirstNameError);
     handleField(lastNameValue, nameRegex, lastNameError, setLastName, toggleLastNameError);
     handleField(emailValue, emailRegex, emailError, setEmail, toggleEmailError);
     handleField(phoneValue, phoneRegex, phoneError, setPhone, togglePhoneError);
-    handleField(subjectValue, subjectRegex, subjectError, setSubject, toggleSubjectError);
+    // handleField(subjectValue, subjectRegex, subjectError, setSubject, toggleSubjectError);
+    // handleField(descriptionValue, descriptionRegex, descriptionError, setDescription, toggleDescriptionError);
+
+    // TO DO: Generate and send email to bakery 
+  }
+
+  // Function that tracks subject field input and length
+  const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const subjectValue = e.currentTarget.value;
+    handleField(subjectValue, subjectRegex, subjectError, setSubject, setSubjectError);
+    dispatch(setSubjectCounter(subjectValue.length));
+  }
+  // Function that tracks descriptions field input and length
+  const handleDescriptionCounter = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const descriptionValue = e.currentTarget.value;
     handleField(descriptionValue, descriptionRegex, descriptionError, setDescription, toggleDescriptionError);
-
-    /* Once a user clicks submit:
-    Each field's value is grabbed, validated, and used to update the state if passed regex
-    When to check if fields are empty? 
-    
-
-
-
-    */
-
+    dispatch(setDescriptionCounter(descriptionValue.length));
   }
 
   return (
@@ -105,7 +106,7 @@ const ContactForm = () => {
           name="firstName"
           type="text"
         /> {/* Renders error message if error state is true */}
-        {firstNameError ? (<NameError></NameError>) : null}
+        {firstNameError ? ErrorMessage(nameErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="lastName">Last Name:</label>
@@ -114,7 +115,7 @@ const ContactForm = () => {
           name="lastName"
           type="text"
         /> {/* Renders error message if error state is true */}
-        {lastNameError ? (<NameError></NameError>) : null}
+        {lastNameError ? ErrorMessage(nameErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="email">Email:</label>
@@ -123,7 +124,7 @@ const ContactForm = () => {
           name="email"
           type="email"
           /> {/* Renders error message if error state is true */}
-        {emailError ? (<EmailError></EmailError>) : null}
+        {emailError ? ErrorMessage(emailErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="phone">Phone:</label>
@@ -132,7 +133,7 @@ const ContactForm = () => {
           name="phone"
           type="tel"
         /> {/* Renders error message if error state is true */}
-        {phoneError ? (<PhoneError></PhoneError>) : null}
+        {phoneError ? ErrorMessage(phoneErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="subject">Subject:</label>
@@ -140,10 +141,10 @@ const ContactForm = () => {
           id="subject"
           name="subject"
           type="text"
-          onChange={handleSubjectCounter}
+          onChange={handleSubjectChange}
         />
         <SubjectCounter></SubjectCounter>
-        {subjectError ? (<SubjectError></SubjectError>) : null}
+        {subjectError ? ErrorMessage(subjectErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="description">Description:</label>
@@ -153,7 +154,7 @@ const ContactForm = () => {
           onChange={handleDescriptionCounter}
         />
         <DescriptionCounter></DescriptionCounter>
-        {descriptionError ? (<DescriptionError></DescriptionError>) : null}
+        {descriptionError ? ErrorMessage(descriptionErrorMessage) : null}
       </div>
       <div>
         <button

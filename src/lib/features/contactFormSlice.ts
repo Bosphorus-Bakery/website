@@ -54,8 +54,12 @@ const contactFormSlice = createSlice({
     setSubject: (state, action: PayloadAction<string>) => {
       state.subject = action.payload; 
     },
-    toggleSubjectError: (state) => {
-      state.subjectError = !state.subjectError;
+    // toggleSubjectError: (state) => {
+    //   state.subjectError = !state.subjectError;
+    // },
+    //
+    setSubjectError: (state, action: PayloadAction<boolean>) => {
+      state.subjectError = action.payload
     },
     setSubjectCounter: (state, action: PayloadAction<number>) => {
       state.subjectCounter = action.payload; 
@@ -75,5 +79,5 @@ const contactFormSlice = createSlice({
   },
 });
 
-export const { setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, toggleSubjectError, setSubjectCounter, setDescription, toggleDescriptionError, setDescriptionCounter, toggleRequiredError } = contactFormSlice.actions;
+export const { setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, setSubjectError, setSubjectCounter, setDescription, toggleDescriptionError, setDescriptionCounter, toggleRequiredError } = contactFormSlice.actions;
 export const contactFormReducer = contactFormSlice.reducer;
