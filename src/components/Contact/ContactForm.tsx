@@ -1,32 +1,40 @@
 "use client";
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { useAppSelector, useAppDispatch, setFirstName, toggleFirstNameError, setLastName, toggleLastNameError, setEmail, toggleEmailError, setPhone, togglePhoneError, setSubject, toggleSubjectError, setSubjectCounter, setDescription, toggleDescriptionError, setDescriptionCounter, toggleRequiredError, setSubjectError } from '@/lib';
+import { useAppSelector, useAppDispatch, setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, 
+setFirstNameError, setLastNameError, setEmailError, setPhoneError, setSubjectError, setDescriptionError, setRequiredError, setSubjectCounter, setDescriptionCounter } from '@/lib';
 import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage } from '@/lib/constants';
-const ContactForm = () => {
 
+const ContactForm = () => {
   // To access values from state object
   const { firstName, firstNameError, lastName, lastNameError, email, emailError, phone, phoneError, subject, subjectError, subjectCounter, description, descriptionError, descriptionCounter } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch();
 
-  // Generic function to handle form field's validation and state
+  // Generic function to handle validation and state of user's info fields
   const handleField = (
-    fieldValue: string, // Value of input field
+    value: string, // Value of input field
     regex: RegExp, // Regex to validate the field
     errorState: boolean, // Current error state of field
     setFieldAction: (value: string) => PayloadAction<string>, // Action creator to set field's state
-    setErrorAction: (value: boolean) => PayloadAction<boolean> // Action creator to toggle field's error state
+    setErrorAction: (value: boolean) => PayloadAction<boolean> // Action creator to set field's error state
   ) => {
-    if (regex.test(fieldValue)) { // If input is valid then update state and toggle off error
-      dispatch(setFieldAction(fieldValue)); 
-      if (errorState) {
-        dispatch(setErrorAction(false));
+    if (regex.test(value)) { // If input is valid
+      dispatch(setFieldAction(value));  // Then update state
+      if (errorState) { // If error was toggled on
+        dispatch(setErrorAction(false)); // Then toggle error off
       }
-    } else { // If input is invalid then toggle on error
-      if (!errorState) {
-        dispatch(setErrorAction(true));
+    } else { // If input is invalid
+      if (!errorState) { // And if error state was toggled off
+        dispatch(setErrorAction(true)); // Then toggle error on
       }
     }
   }
+ // Generic function to handle validation, state, and count of message details
+ const handleDetailsChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, regex: RegExp, errorState: boolean, setValue: (value: string) => PayloadAction<string>, setError: (value: boolean) => PayloadAction<boolean>, setCounter: (value: number) => PayloadAction<number>) => {
+    const detailValue = e.currentTarget.value;
+    handleField(detailValue, regex, errorState, setValue, setError);
+    dispatch(setCounter(detailValue.length));
+  }
+
   // Error message component code
   const ErrorMessage = (fieldError: string) => {
     return (
@@ -68,33 +76,15 @@ const ContactForm = () => {
     const emailValue = form.email.value;
     const phoneValue = form.phone.value;
 
-    /* Once a user clicks submit:
-    Each field's value is grabbed, validated, and used to update the state if passed regex
-    When to check if fields are empty?  
+    /* Once a user clicks submit: Each field's value is grabbed, validated, and used to update the state if passed regex. When to check if fields are empty?  
     */
 
     // Update each field's state
-    handleField(firstNameValue, nameRegex, firstNameError, setFirstName, toggleFirstNameError);
-    handleField(lastNameValue, nameRegex, lastNameError, setLastName, toggleLastNameError);
-    handleField(emailValue, emailRegex, emailError, setEmail, toggleEmailError);
-    handleField(phoneValue, phoneRegex, phoneError, setPhone, togglePhoneError);
-    // handleField(subjectValue, subjectRegex, subjectError, setSubject, toggleSubjectError);
-    // handleField(descriptionValue, descriptionRegex, descriptionError, setDescription, toggleDescriptionError);
-
+    handleField(firstNameValue, nameRegex, firstNameError, setFirstName, setFirstNameError);
+    handleField(lastNameValue, nameRegex, lastNameError, setLastName, setLastNameError);
+    handleField(emailValue, emailRegex, emailError, setEmail, setEmailError);
+    handleField(phoneValue, phoneRegex, phoneError, setPhone, setPhoneError);
     // TO DO: Generate and send email to bakery 
-  }
-
-  // Function that tracks subject field input and length
-  const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const subjectValue = e.currentTarget.value;
-    handleField(subjectValue, subjectRegex, subjectError, setSubject, setSubjectError);
-    dispatch(setSubjectCounter(subjectValue.length));
-  }
-  // Function that tracks descriptions field input and length
-  const handleDescriptionCounter = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const descriptionValue = e.currentTarget.value;
-    handleField(descriptionValue, descriptionRegex, descriptionError, setDescription, toggleDescriptionError);
-    dispatch(setDescriptionCounter(descriptionValue.length));
   }
 
   return (
@@ -141,7 +131,7 @@ const ContactForm = () => {
           id="subject"
           name="subject"
           type="text"
-          onChange={handleSubjectChange}
+          onChange={(e) => handleDetailsChange(e, subjectRegex, subjectError, setSubject, setSubjectError, setSubjectCounter)}
         />
         <SubjectCounter></SubjectCounter>
         {subjectError ? ErrorMessage(subjectErrorMessage) : null}
@@ -151,7 +141,7 @@ const ContactForm = () => {
         <textarea
           id="description"
           name="description"
-          onChange={handleDescriptionCounter}
+          onChange={(e) => handleDetailsChange(e, descriptionRegex, descriptionError, setDescription, setDescriptionError, setDescriptionCounter)}
         />
         <DescriptionCounter></DescriptionCounter>
         {descriptionError ? ErrorMessage(descriptionErrorMessage) : null}
