@@ -5,34 +5,46 @@ import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, name
 
 const ContactForm = () => {
   // To access values from state object
-  const { firstNameError, lastNameError, emailError, phoneError, subject, subjectError, subjectCounter, description, descriptionError, descriptionCounter } = useAppSelector((state) => state.contactForm);
+  const { description, firstNameError, lastNameError, emailError, phoneError, subjectError, requiredError, descriptionError, subjectCounter, descriptionCounter } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch();
 
-  // Generic function to handle validation and state of user's info fields
+  // Generic function handles validation, value state, and error state of form fields
   const handleField = (
-    value: string, // Value of input field
-    regex: RegExp, // Regex to validate the field
-    errorState: boolean, // Current error state of field
-    setFieldAction: (value: string) => PayloadAction<string>, // Action creator to set field's state
+    value: string,
+    regex: RegExp,
+    errorState: boolean,
+    setFieldAction: (value: string) => PayloadAction<string>, // Action creator to set field's value state
     setErrorAction: (value: boolean) => PayloadAction<boolean> // Action creator to set field's error state
   ) => {
     if (regex.test(value)) { // If input is valid
       dispatch(setFieldAction(value));  // Then update state
-      if (errorState) { // If error was toggled on
-        dispatch(setErrorAction(false)); // Then toggle error off
+      if (errorState) { // If error was toggled on then toggle off
+        dispatch(setErrorAction(false)); 
       }
     } else { // If input is invalid
-      if (!errorState) { // And if error state was toggled off
-        dispatch(setErrorAction(true)); // Then toggle error on
-      }
-    }
-  }
- // Generic function to handle validation, state, and count of message details
+      if (!errorState) { // And if error state was toggled off then toggle on
+        dispatch(setErrorAction(true));
+      };
+    };
+  };
+ // Function handles validation, value state, error state, and character count of subject and description
  const handleDetailsChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, regex: RegExp, errorState: boolean, setValue: (value: string) => PayloadAction<string>, setError: (value: boolean) => PayloadAction<boolean>, setCounter: (value: number) => PayloadAction<number>) => {
     const detailValue = e.currentTarget.value;
     handleField(detailValue, regex, errorState, setValue, setError);
     dispatch(setCounter(detailValue.length));
-  }
+  };
+
+  // Function returns all the empty fields
+  const findEmptyFields = (fields: { [key: string]: string }): string[] => {
+    const emptyFields: string[] = []; // Array to store all empty fields
+    for (const [fieldName, value] of Object.entries(fields)){ // Converts key:value to [key,value]
+      if (value.trim() === '') { // Push all empty fields to array
+        emptyFields.push(fieldName);
+      };
+    };
+    return emptyFields;
+  };
+
 
   // Error message component code
   const ErrorMessage = (fieldError: string) => {
@@ -67,32 +79,24 @@ const ContactForm = () => {
   // Function that handles form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget.elements as FormElements // Forms constant represents all fields 
-
+    const form = e.currentTarget.elements as FormElements // Forms constant represents all form elements
     // Extract values from each field  
     const firstNameValue = form.firstName.value; // Value property comes from HTMLInputElement type
     const lastNameValue = form.lastName.value;
     const emailValue = form.email.value;
     const phoneValue = form.phone.value;
 
-    // Function accepts object of field names and their value returning the field name 
-    const findEmptyFields = (fields: { [key: string]: string }): string[] => { 
-      const emptyFields: string[] = [] // Array to store all empty fields
-      for (const [fieldName, value] of Object.entries(fields)){ // Converts object's key:value to [key,value] tuple
-        if (value.trim() === '') { // Add empty fields to array
-          emptyFields.push(fieldName);
-        }
-      }
-      return emptyFields;
-    } // Check if required fields are filled
+    // Checks if required fields are filled
     const emptyFields = findEmptyFields({
       firstName: firstNameValue,
       lastName: lastNameValue,
       email: emailValue,
       description: description
     });
-    
-    console.log(emptyFields);
+    // If any required fields are empty, highlight empty required fields in red and display error message
+    if (emptyFields.length > 0) {
+      
+    }
 
     // Update each field's state
     handleField(firstNameValue, nameRegex, firstNameError, setFirstName, setFirstNameError);
@@ -162,6 +166,7 @@ const ContactForm = () => {
         {descriptionError ? ErrorMessage(descriptionErrorMessage) : null}
       </div>
       <div>
+      {Error ? ErrorMessage(requiredErrorMessage) : null}
         <button
          type="submit"> Submit 
         </button>

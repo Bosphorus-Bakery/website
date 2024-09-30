@@ -2,75 +2,80 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ContactFormState } from '@/types';
 
-const initialState: ContactFormState = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  subject: '',
-  description: '',
-  firstNameError: false,
-  lastNameError: false,
-  emailError: false,
-  phoneError: false,
-  subjectError: false,
-  requiredError: true,
-  descriptionError: false,
-  subjectCounter: 0,
-  descriptionCounter: 0,
+const initialContactFormState: ContactFormState = {
+  firstName: { value: '', error: false },
+  lastName: { value: '', error: false },
+  email: { value: '', error: false },
+  phone: { value: '', error: false },
+  subject: { value: '', error: false, counter: 0 },
+  description: { value: '', error: false, counter: 0 },
 };
-
+// TO DO: Refactor actions creators to make more dynamic: setFieldValue, setFieldError, setRequiredError, setCounter
 const contactFormSlice = createSlice({
   name: 'contactForm',
-  initialState,
+  initialState: initialContactFormState,
   reducers: { // Action creators that update field's state value
-    setFirstName: (state, action: PayloadAction<string>) => {
-      state.firstName = action.payload; 
+    setFirstNameValue: (state, action: PayloadAction<string>) => {
+      state.firstName.value = action.payload; 
     },
-    setLastName: (state, action: PayloadAction<string>) => {
-      state.lastName = action.payload; 
+    setLastNameValue: (state, action: PayloadAction<string>) => {
+      state.lastName.value = action.payload; 
     },
-    setEmail: (state, action: PayloadAction<string>) => {
-      state.email = action.payload; 
+    setEmailValue: (state, action: PayloadAction<string>) => {
+      state.email.value = action.payload; 
     },
-    setPhone: (state, action: PayloadAction<string>) => {
-      state.phone = action.payload; 
+    setPhoneValue: (state, action: PayloadAction<string>) => {
+      state.phone.value = action.payload; 
     },
-    setSubject: (state, action: PayloadAction<string>) => {
-      state.subject = action.payload; 
+    setSubjectValue: (state, action: PayloadAction<string>) => {
+      state.subject.value = action.payload; 
     },
-    setDescription: (state, action: PayloadAction<string>) => {
-      state.description = action.payload; 
+    setDescriptionValue: (state, action: PayloadAction<string>) => {
+      state.description.value = action.payload; 
     }, // Action creators that update field's error state boolean
     setFirstNameError: (state, action: PayloadAction<boolean>) => {
-      state.firstNameError = action.payload;
+      state.firstName.error = action.payload;
     },
     setLastNameError: (state, action: PayloadAction<boolean>) => {
-      state.lastNameError = action.payload;
+      state.lastName.error = action.payload;
     },
     setEmailError: (state, action: PayloadAction<boolean>) => {
-      state.emailError = action.payload;
+      state.email.error = action.payload;
     },
     setPhoneError: (state, action: PayloadAction<boolean>) => {
-      state.phoneError = action.payload;
+      state.phone.error = action.payload;
     },
     setSubjectError: (state, action: PayloadAction<boolean>) => {
-      state.subjectError = action.payload
+      state.subject.error = action.payload
     },
     setDescriptionError: (state, action: PayloadAction<boolean>) => {
-      state.descriptionError = action.payload;
+      state.description.error = action.payload;
     }, 
-    setRequiredError: (state, action: PayloadAction<boolean>) => {
-      state.requiredError = action.payload;
-    }, // Action creators that update subject and description
+    // Action creators that update subject and description
     setSubjectCounter: (state, action: PayloadAction<number>) => {
-      state.subjectCounter = action.payload; 
+      state.subject.counter = action.payload; 
     },
     setDescriptionCounter: (state, action: PayloadAction<number>) => {
-      state.descriptionCounter = action.payload; 
+      state.description.counter = action.payload; 
     }
   },
 });
 
-export const { setFirstName, setFirstNameError, setLastName, setLastNameError, setEmail, setEmailError, setPhone, setPhoneError, setSubject, setSubjectError, setSubjectCounter, setDescription, setDescriptionError, setDescriptionCounter, setRequiredError } = contactFormSlice.actions;
+export const { 
+  setFirstNameValue, 
+  setFirstNameError, 
+  setLastNameValue, 
+  setLastNameError, 
+  setEmailValue, 
+  setEmailError, 
+  setPhoneValue, 
+  setPhoneError, 
+  setSubjectValue, 
+  setSubjectError, 
+  setSubjectCounter, 
+  setDescriptionValue, 
+  setDescriptionError, 
+  setDescriptionCounter, 
+} = contactFormSlice.actions;
+
 export const contactFormReducer = contactFormSlice.reducer;
