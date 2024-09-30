@@ -1,12 +1,11 @@
 "use client";
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { useAppSelector, useAppDispatch, setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, 
-setFirstNameError, setLastNameError, setEmailError, setPhoneError, setSubjectError, setDescriptionError, setRequiredError, setSubjectCounter, setDescriptionCounter } from '@/lib';
+import { useAppSelector, useAppDispatch, setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, setFirstNameError, setLastNameError, setEmailError, setPhoneError, setSubjectError, setDescriptionError, setRequiredError, setSubjectCounter, setDescriptionCounter } from '@/lib';
 import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage } from '@/lib/constants';
 
 const ContactForm = () => {
   // To access values from state object
-  const { firstName, firstNameError, lastName, lastNameError, email, emailError, phone, phoneError, subject, subjectError, subjectCounter, description, descriptionError, descriptionCounter } = useAppSelector((state) => state.contactForm);
+  const { firstNameError, lastNameError, emailError, phoneError, subject, subjectError, subjectCounter, description, descriptionError, descriptionCounter } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch();
 
   // Generic function to handle validation and state of user's info fields
@@ -76,8 +75,24 @@ const ContactForm = () => {
     const emailValue = form.email.value;
     const phoneValue = form.phone.value;
 
-    /* Once a user clicks submit: Each field's value is grabbed, validated, and used to update the state if passed regex. When to check if fields are empty?  
-    */
+    // Function accepts object of field names and their value returning the field name 
+    const findEmptyFields = (fields: { [key: string]: string }): string[] => { 
+      const emptyFields: string[] = [] // Array to store all empty fields
+      for (const [fieldName, value] of Object.entries(fields)){ // Converts object's key:value to [key,value] tuple
+        if (value.trim() === '') { // Add empty fields to array
+          emptyFields.push(fieldName);
+        }
+      }
+      return emptyFields;
+    } // Check if required fields are filled
+    const emptyFields = findEmptyFields({
+      firstName: firstNameValue,
+      lastName: lastNameValue,
+      email: emailValue,
+      description: description
+    });
+    
+    console.log(emptyFields);
 
     // Update each field's state
     handleField(firstNameValue, nameRegex, firstNameError, setFirstName, setFirstNameError);
