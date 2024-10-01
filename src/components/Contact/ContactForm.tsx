@@ -1,32 +1,43 @@
 "use client";
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { useAppSelector, useAppDispatch, setFirstName, setLastName, setEmail, setPhone, setSubject, setDescription, setFirstNameError, setLastNameError, setEmailError, setPhoneError, setSubjectError, setDescriptionError, setRequiredError, setSubjectCounter, setDescriptionCounter } from '@/lib';
+import { useAppSelector, useAppDispatch, setFieldValue, setFieldError, setFieldErrorMessage, setFieldCounter, setFieldRequired  } from '@/lib';
 import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage } from '@/lib/constants';
+import type { ContactFormState } from '@/types';
 
 const ContactForm = () => {
   // To access values from state object
-  const { description, firstNameError, lastNameError, emailError, phoneError, subjectError, requiredError, descriptionError, subjectCounter, descriptionCounter } = useAppSelector((state) => state.contactForm);
+  const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch();
 
   // Generic function handles validation, value state, and error state of form fields
   const handleField = (
-    value: string,
-    regex: RegExp,
-    errorState: boolean,
-    setFieldAction: (value: string) => PayloadAction<string>, // Action creator to set field's value state
-    setErrorAction: (value: boolean) => PayloadAction<boolean> // Action creator to set field's error state
+    field: string, // 'firstName', 'lastName', 'email', 'phone', 'subject', or 'description'
+    inputValue: string, // Arg 1: Current value in input field
+    regex: RegExp, // Arg 2: Regex pattern
+    errorState: boolean, // Arg 3: Current error state
+    setFieldValueAction: (payload: { field: string, value: string }) => PayloadAction<{ field: string; value: string }>, // Arg 4: Action creator to set field's value state
+    setFieldErrorAction: (payload: { field: string, value: boolean }) => PayloadAction<{ field: string; value: boolean }> // Arg 5: Action creator to set field's error state
   ) => {
-    if (regex.test(value)) { // If input is valid
-      dispatch(setFieldAction(value));  // Then update state
+    if (regex.test(inputValue)) { // If input matches regex pattern
+      dispatch(setFieldValueAction( {field, value: inputValue }));  // Then update state
       if (errorState) { // If error was toggled on then toggle off
-        dispatch(setErrorAction(false)); 
+        dispatch(setFieldErrorAction({ field, value: false })); 
       }
     } else { // If input is invalid
       if (!errorState) { // And if error state was toggled off then toggle on
-        dispatch(setErrorAction(true));
+        dispatch(setFieldErrorAction({ field, value: true }));
       };
     };
   };
+
+  // TO DO: Separate validation into another function
+  // const validateField = (
+  //   value:string,
+  //   regex: RegExp, 
+  //   errorState: boolean): boolean {
+    
+  // }
+
  // Function handles validation, value state, error state, and character count of subject and description
  const handleDetailsChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, regex: RegExp, errorState: boolean, setValue: (value: string) => PayloadAction<string>, setError: (value: boolean) => PayloadAction<boolean>, setCounter: (value: number) => PayloadAction<number>) => {
     const detailValue = e.currentTarget.value;
@@ -57,13 +68,13 @@ const ContactForm = () => {
   // Displays subject character count
   const SubjectCounter = () => {
     return (
-      <span>{subjectCounter}/60</span>
+      <span>{subject.counter}/60</span>
     )
   } 
   // Displays description character count
   const DescriptionCounter = () => {
     return (
-      <span>{descriptionCounter}/250</span>
+      <span>{description.counter}/250</span>
     )
   }
 
@@ -80,29 +91,28 @@ const ContactForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget.elements as FormElements // Forms constant represents all form elements
-    // Extract values from each field  
+
+    // Values currently inputted by user
     const firstNameValue = form.firstName.value; // Value property comes from HTMLInputElement type
     const lastNameValue = form.lastName.value;
     const emailValue = form.email.value;
     const phoneValue = form.phone.value;
+    const descriptionValue = form.description.value;
 
     // Checks if required fields are filled
     const emptyFields = findEmptyFields({
       firstName: firstNameValue,
       lastName: lastNameValue,
       email: emailValue,
-      description: description
+      description: descriptionValue
     });
     // If any required fields are empty, highlight empty required fields in red and display error message
-    if (emptyFields.length > 0) {
-      
-    }
 
     // Update each field's state
-    handleField(firstNameValue, nameRegex, firstNameError, setFirstName, setFirstNameError);
-    handleField(lastNameValue, nameRegex, lastNameError, setLastName, setLastNameError);
-    handleField(emailValue, emailRegex, emailError, setEmail, setEmailError);
-    handleField(phoneValue, phoneRegex, phoneError, setPhone, setPhoneError);
+    handleField('firstName', firstNameValue, nameRegex, firstName.error, setFieldValue, setFieldError)
+    // handleField(lastNameValue, nameRegex, lastNameError, setLastName, setLastNameError);
+    // handleField(emailValue, emailRegex, emailError, setEmail, setEmailError);
+    // handleField(phoneValue, phoneRegex, phoneError, setPhone, setPhoneError);
     // TO DO: Generate and send email to bakery 
   }
 
