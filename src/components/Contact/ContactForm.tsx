@@ -5,46 +5,45 @@ import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, name
 import type { ContactFormState } from '@/types';
 
 const ContactForm = () => {
-  // To access values from state object
+
+  // Access values from state object with useAppSelector hook
   const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch();
 
-  // Generic function handles validation, value state, and error state of form fields
+  // Field is limited to interface keys: firstName, lastName, etc
+  type ContactFormField = keyof ContactFormState; 
+
+  // Function that handles validation and updates value state, error state, and character counter state
   const handleField = (
-    field: string, // 'firstName', 'lastName', 'email', 'phone', 'subject', or 'description'
-    inputValue: string, // Arg 1: Current value in input field
-    regex: RegExp, // Arg 2: Regex pattern
-    errorState: boolean, // Arg 3: Current error state
-    setFieldValueAction: (payload: { field: string, value: string }) => PayloadAction<{ field: string; value: string }>, // Arg 4: Action creator to set field's value state
-    setFieldErrorAction: (payload: { field: string, value: boolean }) => PayloadAction<{ field: string; value: boolean }> // Arg 5: Action creator to set field's error state
+    field: ContactFormField, // Accepts field name
+    inputValue: string, // Accepts current value in input field
+    regex: RegExp, // Accepts a Regex pattern
+    errorState: boolean, // Accepts current error state
+    setFieldValueAction: (payload: { field: ContactFormField, value: string }) // Accepts value state action creator function
+     => PayloadAction<{ field: string; value: string }>,
+    setFieldErrorAction: (payload: { field: ContactFormField, value: boolean }) // Accepts error state action creator function
+     => PayloadAction<{ field: string; value: boolean }>,
+    setFieldCounterAction?: (payload: {field: ContactFormField, value: number }) // Accepts counter state action creator function
+     => PayloadAction<{ field: string; value: number }> 
   ) => {
-    if (regex.test(inputValue)) { // If input matches regex pattern
-      dispatch(setFieldValueAction( {field, value: inputValue }));  // Then update state
-      if (errorState) { // If error was toggled on then toggle off
-        dispatch(setFieldErrorAction({ field, value: false })); 
+
+    // If input matches regex pattern
+    if (regex.test(inputValue)) {
+      dispatch(setFieldValueAction( {field: field, value: inputValue })); // Update field's state with current value
+      if (errorState) { // If error was toggled on
+        dispatch(setFieldErrorAction({ field: field, value: false })); //  Then toggle error off
       }
-    } else { // If input is invalid
-      if (!errorState) { // And if error state was toggled off then toggle on
-        dispatch(setFieldErrorAction({ field, value: true }));
-      };
-    };
+      // If field is subject or description
+      if (field === 'subject' || field === 'description') {
+        setFieldCounterAction && dispatch(setFieldCounterAction({ field: field, value: inputValue.length })); // Then update counter
+      }
+    // If input does not match regex pattern
+    } else {
+      if (!errorState) { // And if error state was toggled off
+        dispatch(setFieldErrorAction({ field: field, value: true })); // Then toggle error on
+      }
+    }
   };
-
-  // TO DO: Separate validation into another function
-  // const validateField = (
-  //   value:string,
-  //   regex: RegExp, 
-  //   errorState: boolean): boolean {
-    
-  // }
-
- // Function handles validation, value state, error state, and character count of subject and description
- const handleDetailsChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, regex: RegExp, errorState: boolean, setValue: (value: string) => PayloadAction<string>, setError: (value: boolean) => PayloadAction<boolean>, setCounter: (value: number) => PayloadAction<number>) => {
-    const detailValue = e.currentTarget.value;
-    handleField(detailValue, regex, errorState, setValue, setError);
-    dispatch(setCounter(detailValue.length));
-  };
-
   // Function returns all the empty fields
   const findEmptyFields = (fields: { [key: string]: string }): string[] => {
     const emptyFields: string[] = []; // Array to store all empty fields
@@ -56,7 +55,6 @@ const ContactForm = () => {
     return emptyFields;
   };
 
-
   // Error message component code
   const ErrorMessage = (fieldError: string) => {
     return (
@@ -65,7 +63,7 @@ const ContactForm = () => {
       </span>
     )
   }
-  // Displays subject character count
+  // TO DO: display length within field value and not subject state's length. Counter should be able to exceed limit 
   const SubjectCounter = () => {
     return (
       <span>{subject.counter}/60</span>
@@ -77,6 +75,10 @@ const ContactForm = () => {
       <span>{description.counter}/250</span>
     )
   }
+  // TO DO: Make dynamic character counter for subject and description
+  // const messageCounter = () => {
+  //   <span>{counter}/{charLimit}</span>
+  // }
 
   // Custom interface to type each form field
   interface FormElements extends HTMLFormControlsCollection { // HTMLFormControlsCollection represents all the form controls
@@ -106,14 +108,14 @@ const ContactForm = () => {
       email: emailValue,
       description: descriptionValue
     });
-    // If any required fields are empty, highlight empty required fields in red and display error message
+    // TO DO: If any required fields are empty, highlight empty required fields in red and display error message
 
-    // Update each field's state
-    handleField('firstName', firstNameValue, nameRegex, firstName.error, setFieldValue, setFieldError)
-    // handleField(lastNameValue, nameRegex, lastNameError, setLastName, setLastNameError);
-    // handleField(emailValue, emailRegex, emailError, setEmail, setEmailError);
-    // handleField(phoneValue, phoneRegex, phoneError, setPhone, setPhoneError);
-    // TO DO: Generate and send email to bakery 
+    // Executes validation and state update for first name, last name, email, and phone fields
+    handleField('firstName', firstNameValue, nameRegex, firstName.error, setFieldValue, setFieldError);
+    handleField('lastName', lastNameValue, nameRegex, lastName.error, setFieldValue, setFieldError)
+    handleField('email', emailValue, emailRegex, email.error, setFieldValue, setFieldError)
+    handleField('phone', phoneValue, phoneRegex, phone.error, setFieldValue, setFieldError)
+    // TO DO: Invoke function that generates and sends email to test email 
   }
 
   return (
@@ -125,7 +127,7 @@ const ContactForm = () => {
           name="firstName"
           type="text"
         /> {/* Renders error message if error state is true */}
-        {firstNameError ? ErrorMessage(nameErrorMessage) : null}
+        {firstName.error ? ErrorMessage(nameErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="lastName">Last Name:</label>
@@ -134,7 +136,7 @@ const ContactForm = () => {
           name="lastName"
           type="text"
         /> {/* Renders error message if error state is true */}
-        {lastNameError ? ErrorMessage(nameErrorMessage) : null}
+        {lastName.error ? ErrorMessage(nameErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="email">Email:</label>
@@ -143,7 +145,7 @@ const ContactForm = () => {
           name="email"
           type="email"
           /> {/* Renders error message if error state is true */}
-        {emailError ? ErrorMessage(emailErrorMessage) : null}
+        {email.error ? ErrorMessage(emailErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="phone">Phone:</label>
@@ -152,7 +154,7 @@ const ContactForm = () => {
           name="phone"
           type="tel"
         /> {/* Renders error message if error state is true */}
-        {phoneError ? ErrorMessage(phoneErrorMessage) : null}
+        {phone.error ? ErrorMessage(phoneErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="subject">Subject:</label>
@@ -160,23 +162,42 @@ const ContactForm = () => {
           id="subject"
           name="subject"
           type="text"
-          onChange={(e) => handleDetailsChange(e, subjectRegex, subjectError, setSubject, setSubjectError, setSubjectCounter)}
+          onChange={(e) => {
+            handleField(
+              'subject',
+              e.currentTarget.value,
+              subjectRegex,
+              subject.error,
+              setFieldValue,
+              setFieldError,
+              setFieldCounter
+            )
+          }}
         />
         <SubjectCounter></SubjectCounter>
-        {subjectError ? ErrorMessage(subjectErrorMessage) : null}
+        {subject.error ? ErrorMessage(subjectErrorMessage) : null}
       </div>
       <div>
         <label htmlFor="description">Description:</label>
         <textarea
           id="description"
           name="description"
-          onChange={(e) => handleDetailsChange(e, descriptionRegex, descriptionError, setDescription, setDescriptionError, setDescriptionCounter)}
+          onChange={(e) => {
+            handleField(
+              'description',
+              e.currentTarget.value,
+              descriptionRegex,
+              description.error,
+              setFieldValue,
+              setFieldError,
+              setFieldCounter
+            )
+          }}
         />
         <DescriptionCounter></DescriptionCounter>
-        {descriptionError ? ErrorMessage(descriptionErrorMessage) : null}
+        {description.error ? ErrorMessage(descriptionErrorMessage) : null}
       </div>
       <div>
-      {Error ? ErrorMessage(requiredErrorMessage) : null}
         <button
          type="submit"> Submit 
         </button>

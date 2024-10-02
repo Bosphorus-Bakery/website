@@ -17,9 +17,9 @@ const contactFormSlice = createSlice({
   reducers: {
     setFieldValue: ( // Generic action creator to update state's value of any field in ContactFormState
       state, // Accepts current state object
-      action: PayloadAction<{ field: keyof ContactFormState; value: string }> // Field can only be ''firstName' | 'lastName' | 'email' | 'phone' | 'subject' | 'description'
-    ) => { // Updates current state's field's value to the payload's value 
-      state[action.payload.field].value = action.payload.value;
+      action: PayloadAction<{ field: keyof ContactFormState; value: string }> // Accepts ContactFormState key : input value
+    ) => { 
+      state[action.payload.field].value = action.payload.value; // Updates the field's state
     },
     setFieldError: (
       state,
