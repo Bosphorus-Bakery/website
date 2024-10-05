@@ -5,25 +5,6 @@ export interface AppState {
   theme: boolean;
 }
 
-// Types the fields in the Contact us form
-// export interface ContactFormState {
-//   firstName: string;
-//   firstNameError: object;
-//   lastName: string;
-//   lastNameError: boolean;
-//   email: string;
-//   emailError: boolean;
-//   phone: string;
-//   phoneError: boolean;
-//   subject: string;
-//   subjectError: boolean;
-//   subjectCounter: number;
-//   description: string;
-//   descriptionError: boolean;
-//   descriptionCounter: number;
-//   requiredError: boolean;
-// }
-
 interface FieldState {
   value: string;
   error: boolean;
@@ -39,4 +20,14 @@ export interface ContactFormState {
   phone: FieldState;
   subject: FieldState;
   description: FieldState;
+}
+
+// Type limits to only interface keys: firstName, lastName, etc
+export type ContactFormField = keyof ContactFormState; 
+
+export interface FieldLength {
+  fieldName: ContactFormField; // Field name in the Redux state
+  regex: RegExp; // Validation pattern
+  maxLength: number; // Maximum length for the input field
+  label: string; // Label for the input field
 }
