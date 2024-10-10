@@ -45,50 +45,6 @@ const contactFormSlice = createSlice({
     ) => {
       state[action.payload.field].required = action.payload.value;
     }
-    // ,
-    // setFirstNameValue: (state, action: PayloadAction<string>) => {
-    //   state.firstName.value = action.payload; 
-    // },
-    // setLastNameValue: (state, action: PayloadAction<string>) => {
-    //   state.lastName.value = action.payload; 
-    // },
-    // setEmailValue: (state, action: PayloadAction<string>) => {
-    //   state.email.value = action.payload; 
-    // },
-    // setPhoneValue: (state, action: PayloadAction<string>) => {
-    //   state.phone.value = action.payload; 
-    // },
-    // setSubjectValue: (state, action: PayloadAction<string>) => {
-    //   state.subject.value = action.payload; 
-    // },
-    // setDescriptionValue: (state, action: PayloadAction<string>) => {
-    //   state.description.value = action.payload; 
-    // }, // Action creators that update field's error state boolean
-    // setFirstNameError: (state, action: PayloadAction<boolean>) => {
-    //   state.firstName.error = action.payload;
-    // },
-    // setLastNameError: (state, action: PayloadAction<boolean>) => {
-    //   state.lastName.error = action.payload;
-    // },
-    // setEmailError: (state, action: PayloadAction<boolean>) => {
-    //   state.email.error = action.payload;
-    // },
-    // setPhoneError: (state, action: PayloadAction<boolean>) => {
-    //   state.phone.error = action.payload;
-    // },
-    // setSubjectError: (state, action: PayloadAction<boolean>) => {
-    //   state.subject.error = action.payload
-    // },
-    // setDescriptionError: (state, action: PayloadAction<boolean>) => {
-    //   state.description.error = action.payload;
-    // }, 
-    // // Action creators that update subject and description
-    // setSubjectCounter: (state, action: PayloadAction<number>) => {
-    //   state.subject.counter = action.payload; 
-    // },
-    // setDescriptionCounter: (state, action: PayloadAction<number>) => {
-    //   state.description.counter = action.payload; 
-    // }
   },
 });
 

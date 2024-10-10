@@ -1,7 +1,7 @@
 "use client";
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { useAppSelector, useAppDispatch, setFieldValue, setFieldError, setFieldErrorMessage, setFieldCounter, setFieldRequired  } from '@/lib';
-import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage } from '@/lib/constants';
+import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage, subjectLimit, descriptionLimit } from '@/lib/constants';
 import type { ContactFormState, ContactFormField, FieldLength } from '@/types';
 
 const ContactForm = () => {
@@ -10,7 +10,7 @@ const ContactForm = () => {
   const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch();
 
-  // Function that handles validation and updates value state, error state, and character counter state
+  // Function that handles validation and updates value state, error state, and character counter state upon form submission
   const handleField = (
     field: ContactFormField, // Accepts field name
     inputValue: string, // Accepts current value in input field
@@ -36,7 +36,7 @@ const ContactForm = () => {
     }
   };
 
- // TO DO: Function that updates field's counter state.
+ // On change handler that updates field's character counter
  const handleCounter = (field: ContactFormField, 
   e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, 
   setFieldCounter: (payload: {field: ContactFormField, value: number }) // Accepts counter state action creator function
@@ -45,17 +45,21 @@ const ContactForm = () => {
   dispatch(setFieldCounter({ field: field, value: currentInputLength }));
  }
 
-  // Function returns all the empty fields
-  const findEmptyFields = (fields: { [key: string]: string }): string[] => {
+  // Helper function accepts object of fieldName: value and returns all the empty fields
+  const findEmptyFields = (fieldsObject: { [key: string]: string }): string[] => {
     const emptyFields: string[] = []; // Array to store all empty fields
-    for (const [fieldName, value] of Object.entries(fields)){ // Converts key:value to [key,value]
-      if (value.trim() === '') { // Push all empty fields to array
-        emptyFields.push(fieldName);
+    for (const [fieldName, value] of Object.entries(fieldsObject)){ // Converts key : value pair to [key, value] tuple
+      if (value.trim() === '') { // Check if fields are empty
+        emptyFields.push(fieldName); // Push all empty fields to array
       };
-    };
-    return emptyFields;
+    }; 
+    return emptyFields
   };
 
+  // TO DO: Add hasInput state property to each field, Apply .error-border CSS class to TSX to required fields without input, Display a requried error message
+  const highlightEmptyFields = (emptyFieldsArray: ContactFormField[]) => {
+
+  }
 
   // Custom interface to type each form field
   interface FormElements extends HTMLFormControlsCollection { // HTMLFormControlsCollection represents all the form controls
@@ -80,7 +84,7 @@ const ContactForm = () => {
     const subjectValue = form.subject.value;
     const descriptionValue = form.description.value;
 
-    // Checks if required fields are filled
+    // Gets array of empty fields
     const emptyFields = findEmptyFields({
       firstName: firstNameValue,
       lastName: lastNameValue,
@@ -88,6 +92,8 @@ const ContactForm = () => {
       subject: subjectValue,
       description: descriptionValue
     });
+
+    console.log(emptyFields);
     // TO DO: If any required fields are empty, highlight empty required fields in red and display error message
 
     // Executes validation and state update for first name, last name, email, and phone fields
@@ -95,9 +101,8 @@ const ContactForm = () => {
     handleField('lastName', lastNameValue, nameRegex, lastName.error, setFieldValue, setFieldError)
     handleField('email', emailValue, emailRegex, email.error, setFieldValue, setFieldError)
     handleField('phone', phoneValue, phoneRegex, phone.error, setFieldValue, setFieldError)
-    handleField('subject', subjectValue, subjectRegex, subject.error, setFieldValue, setFieldError
-      // , setFieldCounter
-    )
+    handleField('subject', subjectValue, subjectRegex, subject.error, setFieldValue, setFieldError)
+    handleField('description', descriptionValue, descriptionRegex, description.error, setFieldValue, setFieldError)
     // TO DO: Invoke function that generates and sends email to test email 
   }
 
@@ -109,15 +114,14 @@ const ContactForm = () => {
       </span>
     )
   }
-  // TO DO: Define character limits
+  // Character counter component code
   const CharacterCounter = (counter: number, characterLimit: number) => {
     return (
       <span>{counter}/{characterLimit}</span>
-  
+
     )
   }
-
-
+  // Contact form component code
   return (
     <form onSubmit={handleSubmit} noValidate>
       <div>
@@ -169,8 +173,8 @@ const ContactForm = () => {
               setFieldCounter
             )
           }}
-        />
-        {/* <SubjectCounter></SubjectCounter> */}
+        /> {/* Counter is optional field and defaults to 0 as fallback */}
+        {CharacterCounter(subject.counter ??  0, subjectLimit)}
         {subject.error ? ErrorMessage(subjectErrorMessage) : null}
       </div>
       <div>
@@ -186,7 +190,7 @@ const ContactForm = () => {
             )
           }}
         />
-        {/* <DescriptionCounter></DescriptionCounter> */}
+        {CharacterCounter(description.counter ??  0, descriptionLimit)}
         {description.error ? ErrorMessage(descriptionErrorMessage) : null}
       </div>
       <div>
