@@ -1,8 +1,9 @@
 "use client";
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { useAppSelector, useAppDispatch, setFieldValue, setFieldError, setFieldErrorMessage, setFieldCounter, setFieldRequired  } from '@/lib';
+import { useAppSelector, useAppDispatch, setFieldValue, setFieldError, setFieldErrorMessage, setFieldCounter, setHasValue } from '@/lib';
 import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage, subjectLimit, descriptionLimit } from '@/lib/constants';
 import type { ContactFormState, ContactFormField, FieldLength } from '@/types';
+// import styles from '@/styles';
 
 const ContactForm = () => {
 
@@ -36,16 +37,17 @@ const ContactForm = () => {
     }
   };
 
- // On change handler that updates field's character counter
+ // Function that updates field's character counter on change
  const handleCounter = (field: ContactFormField, 
   e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, 
-  setFieldCounter: (payload: {field: ContactFormField, value: number }) // Accepts counter state action creator function
- => PayloadAction<{ field: string; value: number }> ) => {
+//   setFieldCounter: (payload: {field: ContactFormField, value: number }) // Accepts counter state action creator function
+//  => PayloadAction<{ field: string; value: number }> 
+) => {
   const currentInputLength = e.currentTarget.value.length;
   dispatch(setFieldCounter({ field: field, value: currentInputLength }));
  }
 
-  // Helper function accepts object of fieldName: value and returns all the empty fields
+  // Function accepts object of field names and their value returns all the empty fields
   const findEmptyFields = (fieldsObject: { [key: string]: string }): string[] => {
     const emptyFields: string[] = []; // Array to store all empty fields
     for (const [fieldName, value] of Object.entries(fieldsObject)){ // Converts key : value pair to [key, value] tuple
@@ -56,11 +58,6 @@ const ContactForm = () => {
     return emptyFields
   };
 
-  // TO DO: Add hasInput state property to each field, Apply .error-border CSS class to TSX to required fields without input, Display a requried error message
-  const highlightEmptyFields = (emptyFieldsArray: ContactFormField[]) => {
-
-  }
-
   // Custom interface to type each form field
   interface FormElements extends HTMLFormControlsCollection { // HTMLFormControlsCollection represents all the form controls
     firstName: HTMLInputElement;
@@ -70,6 +67,22 @@ const ContactForm = () => {
     subject: HTMLInputElement;
     description: HTMLTextAreaElement;
   } 
+  // TO DO: Apply .error-border class to required fields without value, display required error message, implement validation from handleField
+  const myOnBlur = (field: ContactFormField, e: React.FocusEvent<HTMLInputElement> 
+    // | React.FocusEvent<HTMLTextAreaElement>
+  ) => {
+
+    console.log('myOnBlur invoked')
+
+    const fieldValue = e.currentTarget.value // Get field's value
+    if (fieldValue.trim() === '') { // Check if field is empty
+      dispatch(setHasValue({ field: field, value: false }))
+    } else {
+      dispatch(setHasValue({ field: field, value: true }))
+    };
+  }
+
+
   // Function that handles form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -93,7 +106,6 @@ const ContactForm = () => {
       description: descriptionValue
     });
 
-    console.log(emptyFields);
     // TO DO: If any required fields are empty, highlight empty required fields in red and display error message
 
     // Executes validation and state update for first name, last name, email, and phone fields
@@ -130,6 +142,9 @@ const ContactForm = () => {
           id="firstName"
           name="firstName"
           type="text"
+          onBlur={(e) => {
+              myOnBlur('firstName', e)
+          }}
         /> {/* Renders error message if error state is true */}
         {firstName.error ? ErrorMessage(nameErrorMessage) : null}
       </div>
@@ -168,10 +183,7 @@ const ContactForm = () => {
           type="text"
           onChange={(e) => {
             handleCounter(
-              'subject', 
-              e,
-              setFieldCounter
-            )
+              'subject', e)
           }}
         /> {/* Counter is optional field and defaults to 0 as fallback */}
         {CharacterCounter(subject.counter ??  0, subjectLimit)}
@@ -183,11 +195,7 @@ const ContactForm = () => {
           id="description"
           name="description"
           onChange={(e) => {
-            handleCounter(
-              'description', 
-              e,
-              setFieldCounter
-            )
+            handleCounter('description', e)
           }}
         />
         {CharacterCounter(description.counter ??  0, descriptionLimit)}

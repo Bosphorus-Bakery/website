@@ -3,10 +3,10 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ContactFormState } from '@/types';
 
 const initialContactFormState: ContactFormState = {
-  firstName: { value: '', error: false, required: true },
-  lastName: { value: '', error: false, required: true },
-  email: { value: '', error: false, required: true },
-  phone: { value: '', error: false, required: false },
+  firstName: { value: '', error: false, hasValue: false },
+  lastName: { value: '', error: false },
+  email: { value: '', error: false },
+  phone: { value: '', error: false },
   subject: { value: '', error: false, counter: 0 },
   description: { value: '', error: false, counter: 0 },
 };
@@ -20,6 +20,12 @@ const contactFormSlice = createSlice({
       action: PayloadAction<{ field: keyof ContactFormState; value: string }> // Accepts ContactFormState key : input value
     ) => { 
       state[action.payload.field].value = action.payload.value; // Updates the field's state
+    },
+    setHasValue: (
+      state,
+      action: PayloadAction<{ field: keyof ContactFormState; value: boolean }>
+    ) => { 
+      state[action.payload.field].hasValue = action.payload.value;
     },
     setFieldError: (
       state,
@@ -39,12 +45,12 @@ const contactFormSlice = createSlice({
     ) => {
       state[action.payload.field].counter = action.payload.value;
     },
-    setFieldRequired: (
-      state,
-      action: PayloadAction<{ field: keyof ContactFormState; value: boolean }>
-    ) => {
-      state[action.payload.field].required = action.payload.value;
-    }
+    // setFieldRequired: (
+    //   state,
+    //   action: PayloadAction<{ field: keyof ContactFormState; value: boolean }>
+    // ) => {
+    //   state[action.payload.field].required = action.payload.value;
+    // }
   },
 });
 
@@ -53,7 +59,8 @@ export const {
   setFieldError, 
   setFieldErrorMessage, 
   setFieldCounter, 
-  setFieldRequired 
+  setHasValue
+  // setFieldRequired 
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;

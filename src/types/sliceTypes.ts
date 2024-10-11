@@ -10,7 +10,7 @@ interface FieldState {
   error: boolean;
   errorMessage?: string; // Optional error message for more detailed errors
   counter?: number; // Optional character counter for fields with max length
-  required?: boolean
+  hasValue?: boolean // Optional property for required fields
 }
 
 export interface ContactFormState {
