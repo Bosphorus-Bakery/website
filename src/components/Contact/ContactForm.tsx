@@ -2,8 +2,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { useAppSelector, useAppDispatch, setFieldValue, setFieldError, setFieldErrorMessage, setFieldCounter, setHasValue } from '@/lib';
 import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage, subjectLimit, descriptionLimit } from '@/lib/constants';
-import type { ContactFormState, ContactFormField, FieldLength } from '@/types';
-// import styles from '@/styles';
+import type { FieldState, ContactFormState, ContactFormField, FieldLength } from '@/types';
+import { contactFormStyles } from '@/styles';
 
 const ContactForm = () => {
 
@@ -67,19 +67,30 @@ const ContactForm = () => {
     subject: HTMLInputElement;
     description: HTMLTextAreaElement;
   } 
-  // TO DO: Apply .error-border class to required fields without value, display required error message, implement validation from handleField
-  const myOnBlur = (field: ContactFormField, e: React.FocusEvent<HTMLInputElement> 
-    // | React.FocusEvent<HTMLTextAreaElement>
+  // On change function that detects if input field has value
+  const myOnChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, field: ContactFormField
   ) => {
 
-    console.log('myOnBlur invoked')
+    console.log('myOnBlur invoked');
 
     const fieldValue = e.currentTarget.value // Get field's value
-    if (fieldValue.trim() === '') { // Check if field is empty
-      dispatch(setHasValue({ field: field, value: false }))
+
+    // Updates hasValue state 
+    if (fieldValue.trim() === '') {
+      dispatch(setHasValue({ field: field, value: false }));
     } else {
-      dispatch(setHasValue({ field: field, value: true }))
+      dispatch(setHasValue({ field: field, value: true }));
     };
+
+    // TO DO: Incorporate handleField logic 
+  }
+  // On blur function that applies error styling if required field is empty or has invalid input
+  const myOnBlur = (e: React.FocusEvent<HTMLInputElement>, fieldState: FieldState) => {
+    // Perform check is hasValue is false or error message is true then apply red outline
+    console.log(`Error state: ${fieldState.error}`);
+    console.log(`hasValue state: ${fieldState.hasValue}`);
+    // TO DO: If hasValue is false || error is true then apply error styling
+    fieldState.hasValue? e.currentTarget.className = '' : e.currentTarget.className = contactFormStyles.errorBorder;
   }
 
 
@@ -142,9 +153,11 @@ const ContactForm = () => {
           id="firstName"
           name="firstName"
           type="text"
+          onChange={(e) => {myOnChange(e, 'firstName')}}
           onBlur={(e) => {
-              myOnBlur('firstName', e)
+              myOnBlur(e, firstName)
           }}
+          // className={firstName.hasValue ? '' : contactFormStyles.errorBorder}
         /> {/* Renders error message if error state is true */}
         {firstName.error ? ErrorMessage(nameErrorMessage) : null}
       </div>

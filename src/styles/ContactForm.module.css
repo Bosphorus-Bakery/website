@@ -1,4 +1,4 @@
-.error-border {
+.errorBorder {
   border: 2px solid red;
   border-radius: 4px;
   transition: border-color 0.3s ease;

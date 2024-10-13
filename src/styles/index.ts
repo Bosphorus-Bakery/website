@@ -1,2 +1,3 @@
-import './globals.css';
-import './ContactForm.module.css';
+import contactFormStyles from "./ContactForm.module.css";
+
+export { contactFormStyles }

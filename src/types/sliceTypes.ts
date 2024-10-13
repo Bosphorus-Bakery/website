@@ -5,7 +5,7 @@ export interface AppState {
   theme: boolean;
 }
 
-interface FieldState {
+export interface FieldState {
   value: string;
   error: boolean;
   errorMessage?: string; // Optional error message for more detailed errors
