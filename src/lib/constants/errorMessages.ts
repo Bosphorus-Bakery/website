@@ -7,4 +7,11 @@ export const errorMessages = {
   requiredErrorMessage: "Please fill all required fields."
 };
 
-export const { nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage } = errorMessages
+export const { 
+  nameErrorMessage, 
+  emailErrorMessage, 
+  phoneErrorMessage, 
+  subjectErrorMessage, 
+  descriptionErrorMessage, 
+  requiredErrorMessage 
+} = errorMessages;

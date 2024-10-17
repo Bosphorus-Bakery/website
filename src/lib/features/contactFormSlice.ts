@@ -3,12 +3,12 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ContactFormState } from '@/types';
 
 const initialContactFormState: ContactFormState = {
-  firstName: { value: '', error: false, hasValue: false },
-  lastName: { value: '', error: false },
-  email: { value: '', error: false },
-  phone: { value: '', error: false },
-  subject: { value: '', error: false, counter: 0 },
-  description: { value: '', error: false, counter: 0 },
+  firstName: { value: '', validInput: false, hasValue: false },
+  lastName: { value: '', validInput: false },
+  email: { value: '', validInput: false },
+  phone: { value: '', validInput: false },
+  subject: { value: '', validInput: false, counter: 0 },
+  description: { value: '', validInput: false, counter: 0 },
 };
 
 const contactFormSlice = createSlice({
@@ -31,7 +31,7 @@ const contactFormSlice = createSlice({
       state,
       action: PayloadAction<{ field: keyof ContactFormState; value: boolean }>
     ) => {
-      state[action.payload.field].error = action.payload.value;
+      state[action.payload.field].validInput = action.payload.value;
     },
     setFieldErrorMessage: (
       state,
@@ -45,12 +45,6 @@ const contactFormSlice = createSlice({
     ) => {
       state[action.payload.field].counter = action.payload.value;
     },
-    // setFieldRequired: (
-    //   state,
-    //   action: PayloadAction<{ field: keyof ContactFormState; value: boolean }>
-    // ) => {
-    //   state[action.payload.field].required = action.payload.value;
-    // }
   },
 });
 
@@ -60,7 +54,6 @@ export const {
   setFieldErrorMessage, 
   setFieldCounter, 
   setHasValue
-  // setFieldRequired 
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;

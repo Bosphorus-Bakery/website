@@ -7,7 +7,7 @@ export interface AppState {
 
 export interface FieldState {
   value: string;
-  error: boolean;
+  validInput: boolean;
   errorMessage?: string; // Optional error message for more detailed errors
   counter?: number; // Optional character counter for fields with max length
   hasValue?: boolean // Optional property for required fields
