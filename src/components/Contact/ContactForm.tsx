@@ -1,16 +1,36 @@
 "use client";
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { useAppSelector, useAppDispatch, setFieldValue, setFieldError, setFieldCounter, setHasValue } from '@/lib';
-import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage, subjectLimit, descriptionit } from '@/lib/constants';
-// TO DO: Import isRequired obj from fieldRequirements
-import type { FieldState, ContactFormState, ContactFormField, FieldLength } from '@/types';
+import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid, setFieldCounter, setErrorMessage } from '@/lib';
+import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, 
+  nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage, 
+  subjectLimit, descriptionLimit } from '@/lib/constants';
+import requiredFields from '@/lib/constants/requiredFields';
+import type { FieldState, ContactFormState, ContactFormField } from '@/types';
 import { contactFormStyles } from '@/styles';
 
 const ContactForm = () => {
 
-  // Access values from state object with useAppSelector hook
+  // The useAppSelector hook lets us access the state of each field
   const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch();
+
+  const validateInput = (inputValue: string, regex: RegExp) => {
+    return regex.test(inputValue) ? true : false;
+  }
+
+  // On change function that detects if input field has value
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, field: ContactFormField, regex: RegExp
+  ) => {
+    const value = e.currentTarget.value
+    // Check if field has a value and update hasValue accordingly
+    if (value.trim() === '') {
+      dispatch(setHasValue({ field: field, value: false }));
+    } else {
+      dispatch(setHasValue({ field: field, value: true }));
+        // Check is value is valid and update isValid accordingly
+      validateInput(value, regex) ? setIsValid({ field: field, value: true }) : setIsValid({ field: field, value: false  })
+    }    
+  };
 
   // Function that handles validation and updates value state, error state, and character counter state upon form submission
   const handleField = (
@@ -55,16 +75,7 @@ const ContactForm = () => {
     subject: HTMLInputElement;
     description: HTMLTextAreaElement;
   } 
-  // On change function that detects if input field has value
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, field: ContactFormField
-  ) => {
-    const fieldValue = e.currentTarget.value // Get field's value
-    if (fieldValue.trim() === '') {
-      dispatch(setHasValue({ field: field, value: false })); // If empty then set hasValue to false
-    } else {
-      dispatch(setHasValue({ field: field, value: true })); // If filled then set hasValue to true
-    };
-  }
+
   // On blur function that applies error styling if required field is empty or has invalid input
   // TO DO: Treat required fields differently from optional fields
   const myOnBlur = (e: React.FocusEvent<HTMLInputElement>, fieldState: FieldState) => {
