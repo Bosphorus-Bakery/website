@@ -2,64 +2,79 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid, setFieldCounter, setErrorMessage } from '@/lib';
 import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, 
-  nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage, 
+  // nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage, 
+  errorMessages,
   subjectLimit, descriptionLimit } from '@/lib/constants';
 import requiredFields from '@/lib/constants/requiredFields';
-import type { FieldState, ContactFormState, ContactFormField } from '@/types';
+import type { FieldState, ContactFormState, FormFieldName } from '@/types';
 import { contactFormStyles } from '@/styles';
 
 const ContactForm = () => {
+  const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm); // Access the state of each field using the useAppSelector hook
+  const dispatch = useAppDispatch(); // Dispatches actions with useAppDispatch hook
 
-  // The useAppSelector hook lets us access the state of each field
-  const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm);
-  const dispatch = useAppDispatch();
-
+  // Helper function that validates field's input
   const validateInput = (inputValue: string, regex: RegExp) => {
     return regex.test(inputValue) ? true : false;
   }
 
-  // On change function that detects if input field has value
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, field: ContactFormField, regex: RegExp
+  // On change function that detects presence of value and validates value
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, fieldName: FormFieldName, regex: RegExp
   ) => {
-    const value = e.currentTarget.value
-    // Check if field has a value and update hasValue accordingly
-    if (value.trim() === '') {
-      dispatch(setHasValue({ field: field, value: false }));
-    } else {
-      dispatch(setHasValue({ field: field, value: true }));
-        // Check is value is valid and update isValid accordingly
-      validateInput(value, regex) ? setIsValid({ field: field, value: true }) : setIsValid({ field: field, value: false  })
+    const value = e.currentTarget.value;
+
+    // Check if field has a value
+    if (value.trim() === '') { // If field does not have value
+      dispatch(setHasValue({ field: fieldName, value: false })); // Set field's hasValue state false
+    } else { // If field has a value
+      dispatch(setHasValue({ field: fieldName, value: true })); // Set field's hasValue state true
+
+      // Validate value with corresponding regex
+      if (validateInput(value, regex)) { // If value is valid
+        dispatch(setIsValid({ field: fieldName, value: true })); // Set field's isValid state true
+      } else { // If value is invalid
+        dispatch(setIsValid({ field: fieldName, value: false  })); // Set field's isValid state false
+      } 
     }    
   };
 
-  // Function that handles validation and updates value state, error state, and character counter state upon form submission
-  const handleField = (
-    field: ContactFormField, // Accepts field name
-    inputValue: string, // Accepts current value in input field
-    regex: RegExp, // Accepts a Regex pattern
-    errorState: boolean, // Accepts current error state
-    setFieldValueAction: (payload: { field: ContactFormField, value: string }) // Accepts value state action creator function
-     => PayloadAction<{ field: string; value: string }>,
-    setFieldErrorAction: (payload: { field: ContactFormField, value: boolean }) // Accepts error state action creator function
-     => PayloadAction<{ field: string; value: boolean }>
-  ) => {
+  // On blur function that reads hasValue and isValid state and applies error feedback
+  const handleOnBlur = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, fieldName: FormFieldName, field: FieldState) => {
+    
+    // Check hasValue state
+    if (!field.hasValue && requiredFields[fieldName]) { // If hasValue is false and field is required
+      console.log(requiredFields[fieldName]);
+      e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling
+      dispatch(setErrorMessage({ field: fieldName, value: errorMessages['required'] })); // Set field's errorMessage state to the required error
 
-    // If input matches regex pattern
-    if (regex.test(inputValue)) {
-      dispatch(setFieldValueAction( {field: field, value: inputValue })); // Update field's state with current value
-      if (errorState) { // If error was toggled on
-        dispatch(setFieldErrorAction({ field: field, value: false })); //  Then toggle error off
-      }
-    // If input does not match regex pattern
-    } else {
-      if (!errorState) { // And if error state was toggled off
-        dispatch(setFieldErrorAction({ field: field, value: true })); // Then toggle error on
+    } else { // If field has value
+      if (!field.isValid) { // And if value is invalid
+        e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling
+        dispatch(setErrorMessage({ field: fieldName, value: errorMessages[fieldName] })); // Set validation error message
+
+      } else { // If field is valid
+        e.currentTarget.classList.remove(contactFormStyles.errorBorder);
+        dispatch(setErrorMessage({ field: fieldName, value: '' }));
       }
     }
+  }
+
+  // Form submission function that updates field's value state and sends email to User
+  const handleField = (
+    fieldName: FormFieldName, // Accepts field name
+    inputValue: string, // Accepts current value in input field
+    regex: RegExp, // Accepts a Regex pattern
+    setFieldValueAction: (payload: { field: FormFieldName, value: string }) // Accepts value state action creator function
+     => PayloadAction<{ field: string; value: string }>
+    ) => {
+      // If input matches regex pattern
+      if (regex.test(inputValue)) {
+        dispatch(setFieldValueAction( {field: fieldName, value: inputValue })); // Update field's state with current value    }
+    };
   };
 
  // Function that updates field's character counter on change
- const handleCounter = (field: ContactFormField, 
+ const handleCounter = (field: FormFieldName, 
   e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
  ) => {
   const currentInputLength = e.currentTarget.value.length;
@@ -76,21 +91,6 @@ const ContactForm = () => {
     description: HTMLTextAreaElement;
   } 
 
-  // On blur function that applies error styling if required field is empty or has invalid input
-  // TO DO: Treat required fields differently from optional fields
-  const myOnBlur = (e: React.FocusEvent<HTMLInputElement>, fieldState: FieldState) => {
-    // Perform check is hasValue is false or error message is true then apply red outline
-    console.log(`Error state: ${fieldState.validInput}`);
-    console.log(`hasValue state: ${fieldState.hasValue}`);
-    // TO DO: Only show error message on blur
-    if (!fieldState.hasValue) {
-      e.currentTarget.className = contactFormStyles.errorBorder; // Make field red if no input
-      // TO DO: Display required error message
-    } else {
-      e.currentTarget.classList.remove(contactFormStyles.errorBorder) // Remove red styling
-    }
-  }
-
   // Handle submit function that validates input and updates state
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,22 +102,22 @@ const ContactForm = () => {
     const subjectValue = form.subject.value;
     const descriptionValue = form.description.value;
 
-    handleField('firstName', firstNameValue, nameRegex, firstName.validInput, setFieldValue, setFieldError);
-    handleField('lastName', lastNameValue, nameRegex, lastName.validInput, setFieldValue, setFieldError)
-    handleField('email', emailValue, emailRegex, email.validInput, setFieldValue, setFieldError)
-    handleField('phone', phoneValue, phoneRegex, phone.validInput, setFieldValue, setFieldError)
-    handleField('subject', subjectValue, subjectRegex, subject.validInput, setFieldValue, setFieldError)
-    handleField('description', descriptionValue, descriptionRegex, description.validInput, setFieldValue, setFieldError)
+    handleField('firstName', firstNameValue, nameRegex, setFieldValue);
+    handleField('lastName', lastNameValue, nameRegex, setFieldValue)
+    handleField('email', emailValue, emailRegex, setFieldValue)
+    handleField('phone', phoneValue, phoneRegex, setFieldValue)
+    handleField('subject', subjectValue, subjectRegex, setFieldValue)
+    handleField('description', descriptionValue, descriptionRegex, setFieldValue)
     // TO DO: Invoke function that generates and sends email to test email 
   }
 
   // Error message component code
 
-  const ErrorMessage = (fieldError: string, field: FieldState) => {
-    if (!field.validInput) {
+  const ErrorMessage = (field: FieldState) => {
+    if (field.errorMessage !== '') {
       return (
         <span>
-          {fieldError}
+          {field.errorMessage}
         </span>
       )
     }
@@ -129,7 +129,7 @@ const ContactForm = () => {
     )
   }
   // const errorMessageFunction = (field: FieldState , nameErrorMessage: string) => {
-  //   if (!field.validInput) {
+  //   if (!field.isValid) {
   //     ErrorMessage(nameErrorMessage)
   //   }
   // }
@@ -144,13 +144,13 @@ const ContactForm = () => {
           id="firstName"
           name="firstName"
           type="text"
-          onChange={(e) => {handleOnChange(e, 'firstName')}}
+          onChange={(e) => {handleOnChange(e, 'firstName', nameRegex)}}
           onBlur={(e) => {
-              myOnBlur(e, firstName)
+              handleOnBlur(e, 'firstName', firstName)
           }}
         />
-        {ErrorMessage(nameErrorMessage, firstName)}
-        {/* {firstName.validInput ? null : ErrorMessage(nameErrorMessage)} */}
+        {ErrorMessage(firstName)}
+        {/* {firstName.isValid ? null : ErrorMessage(nameErrorMessage)} */}
       </div>
       <div>
         <label htmlFor="lastName">Last Name:</label>
@@ -159,7 +159,7 @@ const ContactForm = () => {
           name="lastName"
           type="text"
         />
-        {/* {lastName.validInput ? null : ErrorMessage(nameErrorMessage)} */}
+        {/* {lastName.isValid ? null : ErrorMessage(nameErrorMessage)} */}
       </div>
       <div>
         <label htmlFor="email">Email:</label>
@@ -168,7 +168,7 @@ const ContactForm = () => {
           name="email"
           type="email"
           />
-        {/* {email.validInput ? null : ErrorMessage(emailErrorMessage)} */}
+        {/* {email.isValid ? null : ErrorMessage(emailErrorMessage)} */}
       </div>
       <div>
         <label htmlFor="phone">Phone:</label>
@@ -177,7 +177,7 @@ const ContactForm = () => {
           name="phone"
           type="tel"
         />
-        {/* {phone.validInput ? null : ErrorMessage(phoneErrorMessage)} */}
+        {/* {phone.isValid ? null : ErrorMessage(phoneErrorMessage)} */}
       </div>
       <div>
         <label htmlFor="subject">Subject:</label>
@@ -191,7 +191,7 @@ const ContactForm = () => {
           }}
         /> {/* Counter is optional field and defaults to 0 as fallback */}
         {CharacterCounter(subject.counter ??  0, subjectLimit)}
-        {/* {subject.validInput ? null: ErrorMessage(subjectErrorMessage)} */}
+        {/* {subject.isValid ? null: ErrorMessage(subjectErrorMessage)} */}
       </div>
       <div>
         <label htmlFor="description">Description:</label>
@@ -203,7 +203,7 @@ const ContactForm = () => {
           }}
         />
         {CharacterCounter(description.counter ??  0, descriptionLimit)}
-        {/* {description.validInput ? null : ErrorMessage(descriptionErrorMessage)} */}
+        {/* {description.isValid ? null : ErrorMessage(descriptionErrorMessage)} */}
       </div>
       <div>
         <button

@@ -1,17 +1,11 @@
 export const errorMessages = {
-  nameErrorMessage: "Only letters and accented characters allowed.",
-  emailErrorMessage: "Please enter a valid email address.",
-  phoneErrorMessage: "Please enter a valid phone number.",
-  subjectErrorMessage: "Please use 60 characters or less.",
-  descriptionErrorMessage: "Please use 250 characters or less.",
-  requiredErrorMessage: "Please fill all required fields."
+  firstName: "Only letters and accented characters allowed.",
+  lastName: "Only letters and accented characters allowed.",
+  email: "Please enter a valid email address.",
+  phone: "Please enter a valid phone number.",
+  subject: "Please use 60 characters or less.",
+  description: "Please use 250 characters or less.",
+  required: "Please fill all required fields."
 };
 
-export const { 
-  nameErrorMessage, 
-  emailErrorMessage, 
-  phoneErrorMessage, 
-  subjectErrorMessage, 
-  descriptionErrorMessage, 
-  requiredErrorMessage 
-} = errorMessages;
+export default errorMessages;

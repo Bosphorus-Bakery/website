@@ -4,14 +4,8 @@ export interface AppState {
   isDark: boolean;
   theme: boolean;
 }
-
-export interface FieldState {
-  hasValue: boolean
-  value: string;
-  isValid: boolean;
-  errorMessage?: string; // Optional error message for more detailed errors
-  counter?: number; // Optional character counter for fields with max length
-}
+// Type limits to only interface keys: firstName, lastName, etc
+export type FormFieldName = keyof ContactFormState; 
 
 export interface ContactFormState {
   firstName: FieldState;
@@ -22,8 +16,15 @@ export interface ContactFormState {
   description: FieldState;
 }
 
-// Type limits to only interface keys: firstName, lastName, etc
-export type ContactFormField = keyof ContactFormState; 
+export interface FieldState {
+  hasValue: boolean;
+  value: string;
+  isValid: boolean;
+  showError: boolean;
+  errorMessage: string;
+  counter?: number; // Optional character counter for fields with max length
+}
+
 
 // export interface FieldLength {
 //   fieldName: ContactFormField; // Field name in the Redux state

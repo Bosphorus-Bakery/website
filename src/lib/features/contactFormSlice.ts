@@ -3,12 +3,12 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ContactFormState } from '@/types';
 
 const initialContactFormState: ContactFormState = {
-  firstName: { hasValue: false, value: '', isValid: false },
-  lastName: { hasValue: false, value: '', isValid: false },
-  email: { hasValue: false, value: '', isValid: false },
-  phone: { hasValue: false, value: '', isValid: false },
-  subject: { hasValue: false, value: '', isValid: false, counter: 0 },
-  description: { hasValue: false, value: '', isValid: false, counter: 0 },
+  firstName: { hasValue: false, value: '', isValid: false, errorMessage: '', showError: false },
+  lastName: { hasValue: false, value: '', isValid: false, errorMessage: '', showError: false },
+  email: { hasValue: false, value: '', isValid: false, errorMessage: '', showError: false },
+  phone: { hasValue: false, value: '', isValid: false, errorMessage: '', showError: false },
+  subject: { hasValue: false, value: '', isValid: false, errorMessage: '', showError: false, counter: 0 },
+  description: { hasValue: false, value: '', isValid: false, errorMessage: '', showError: false, counter: 0 },
 };
 
 const contactFormSlice = createSlice({
