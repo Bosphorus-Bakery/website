@@ -1,10 +1,19 @@
-import { Contact } from '@/components';
+import React from 'react';
+import ContactForm from '@/components/Contact/ContactForm';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
 };
 
-export default function Page() {
-  return <Contact />;
+const ContactPage = () => {
+  return (
+    <div>
+      <h1>Contact Us</h1>
+      <p>Please fill out the form below to reach out to us</p>
+      <ContactForm />
+    </div>
+  )
 }
+
+export default ContactPage
