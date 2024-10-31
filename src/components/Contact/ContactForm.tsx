@@ -13,9 +13,8 @@ const ContactForm = () => {
   const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm); // Access the state of each field using the useAppSelector hook
   const dispatch = useAppDispatch(); // Dispatches actions with useAppDispatch hook
 
-  // Helper function that validates field's input
-  const validateInput = (inputValue: string, regex: RegExp) => {
-    return regex.test(inputValue) ? true : false;
+  const validateField = (regex: RegExp, value: string) => {
+    return regex.test(value) ? true : false;
   }
 
   // On change function that detects presence of value and validates value
@@ -30,7 +29,7 @@ const ContactForm = () => {
       dispatch(setHasValue({ field: fieldName, value: true })); // Set field's hasValue state true
 
       // Validate value with corresponding regex
-      if (validateInput(value, regex)) { // If value is valid
+      if (validateField(regex, value)) { // If value is valid
         dispatch(setIsValid({ field: fieldName, value: true })); // Set field's isValid state true
       } else { // If value is invalid
         dispatch(setIsValid({ field: fieldName, value: false  })); // Set field's isValid state false
@@ -38,10 +37,10 @@ const ContactForm = () => {
     }    
   };
 
-  // On blur function that reads hasValue and isValid state and applies error feedback
+  // On blur function that reads hasValue and isValid state and displays error
   const handleOnBlur = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, fieldName: FormFieldName, field: FieldState) => {
     
-    // Check hasValue state
+    // Check hasValue state and whether field is required
     if (!field.hasValue && requiredFields[fieldName]) { // If hasValue is false and field is required
       console.log(requiredFields[fieldName]);
       e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling
@@ -53,25 +52,11 @@ const ContactForm = () => {
         dispatch(setErrorMessage({ field: fieldName, value: errorMessages[fieldName] })); // Set validation error message
 
       } else { // If field is valid
-        e.currentTarget.classList.remove(contactFormStyles.errorBorder);
-        dispatch(setErrorMessage({ field: fieldName, value: '' }));
+        e.currentTarget.classList.remove(contactFormStyles.errorBorder); // Remove error styling
+        dispatch(setErrorMessage({ field: fieldName, value: '' })); // Clear error message
       }
     }
   }
-
-  // Form submission function that updates field's value state and sends email to User
-  const handleField = (
-    fieldName: FormFieldName, // Accepts field name
-    inputValue: string, // Accepts current value in input field
-    regex: RegExp, // Accepts a Regex pattern
-    setFieldValueAction: (payload: { field: FormFieldName, value: string }) // Accepts value state action creator function
-     => PayloadAction<{ field: string; value: string }>
-    ) => {
-      // If input matches regex pattern
-      if (regex.test(inputValue)) {
-        dispatch(setFieldValueAction( {field: fieldName, value: inputValue })); // Update field's state with current value    }
-    };
-  };
 
  // Function that updates field's character counter on change
  const handleCounter = (field: FormFieldName, 
@@ -81,38 +66,54 @@ const ContactForm = () => {
   dispatch(setFieldCounter({ field: field, value: currentInputLength }));
  }
 
-  // Custom interface to type each form field
-  interface FormElements extends HTMLFormControlsCollection { // HTMLFormControlsCollection represents all the form controls
-    firstName: HTMLInputElement;
-    lastName: HTMLInputElement;
-    email: HTMLInputElement;
-    phone: HTMLInputElement;
-    subject: HTMLInputElement;
-    description: HTMLTextAreaElement;
-  } 
+  // // Custom interface to type each form field
+  // interface FormElements extends HTMLFormControlsCollection { // HTMLFormControlsCollection represents all the form controls
+  //   firstName: HTMLInputElement;
+  //   lastName: HTMLInputElement;
+  //   email: HTMLInputElement;
+  //   phone: HTMLInputElement;
+  //   subject: HTMLInputElement;
+  //   description: HTMLTextAreaElement;
+  // } 
 
   // Handle submit function that validates input and updates state
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget.elements as FormElements // Forms constant represents all form elements
-    const firstNameValue = form.firstName.value; // Get each value from all fields
-    const lastNameValue = form.lastName.value;
-    const emailValue = form.email.value;
-    const phoneValue = form.phone.value;
-    const subjectValue = form.subject.value;
-    const descriptionValue = form.description.value;
+    // Get all form field values
+    // Iterate through field values
+      // Revalidate all fields
+        // If invalid, then toggle errors and exit
+        // If valid, then update each field's value state and store in an obj to be used for email generation
 
-    handleField('firstName', firstNameValue, nameRegex, setFieldValue);
-    handleField('lastName', lastNameValue, nameRegex, setFieldValue)
-    handleField('email', emailValue, emailRegex, setFieldValue)
-    handleField('phone', phoneValue, phoneRegex, setFieldValue)
-    handleField('subject', subjectValue, subjectRegex, setFieldValue)
-    handleField('description', descriptionValue, descriptionRegex, setFieldValue)
-    // TO DO: Invoke function that generates and sends email to test email 
+    // const form = e.currentTarget.elements as FormElements // Forms constant represents all form elements
+    // const form = e.currentTarget.elements as HTMLFormControlsCollection
+    // console.log(form);
+    // console.log(Object.keys(form));
+    // const form = document.querySelectorAll('form')[0];
+    // console.log(form);
+    // console.log(typeof form);
+    // console.log(Array.from(form));
+
+    // const firstNameValue = form.firstName.value;
+    // const lastNameValue = form.lastName.value;
+    // const emailValue = form.email.value;
+    // const phoneValue = form.phone.value;
+    // const subjectValue = form.subject.value;
+    // const descriptionValue = form.description.value;
+
+    // If required fields are filled and valid then update their state 
+
+    // handleField('firstName', firstNameValue, nameRegex, setFieldValue);
+    // handleField('lastName', lastNameValue, nameRegex, setFieldValue)
+    // handleField('email', emailValue, emailRegex, setFieldValue)
+    // handleField('phone', phoneValue, phoneRegex, setFieldValue)
+    // handleField('subject', subjectValue, subjectRegex, setFieldValue)
+    // handleField('description', descriptionValue, descriptionRegex, setFieldValue)
   }
 
-  // Error message component code
+  // TO DO: Create function that accepts Obj of validated form fields and sends email
 
+  // Error message component code
   const ErrorMessage = (field: FieldState) => {
     if (field.errorMessage !== '') {
       return (
