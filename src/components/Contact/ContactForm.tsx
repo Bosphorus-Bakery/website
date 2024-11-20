@@ -2,7 +2,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid, setFieldCounter, setErrorMessage } from '@/lib';
 import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex, 
-  // nameErrorMessage, emailErrorMessage, phoneErrorMessage, subjectErrorMessage, descriptionErrorMessage, requiredErrorMessage, 
   errorMessages,
   subjectLimit, descriptionLimit } from '@/lib/constants';
 import requiredFields from '@/lib/constants/requiredFields';
@@ -28,9 +27,10 @@ const ContactForm = () => {
     } else { // If field has a value
       dispatch(setHasValue({ field: fieldName, value: true })); // Set field's hasValue state true
 
-      // Validate value with corresponding regex
+      // Check if value is valid
       if (validateField(regex, value)) { // If value is valid
         dispatch(setIsValid({ field: fieldName, value: true })); // Set field's isValid state true
+        dispatch(setFieldValue({ field: fieldName, value: value }))
       } else { // If value is invalid
         dispatch(setIsValid({ field: fieldName, value: false  })); // Set field's isValid state false
       } 
@@ -41,10 +41,10 @@ const ContactForm = () => {
   const handleOnBlur = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, fieldName: FormFieldName, field: FieldState) => {
     
     // Check hasValue state and whether field is required
-    if (!field.hasValue && requiredFields[fieldName]) { // If hasValue is false and field is required
+    if (!field.hasValue && requiredFields[fieldName]) { // If hasValue state is false and field is required
       console.log(requiredFields[fieldName]);
-      e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling
-      dispatch(setErrorMessage({ field: fieldName, value: errorMessages['required'] })); // Set field's errorMessage state to the required error
+      e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling to field
+      dispatch(setErrorMessage({ field: fieldName, value: errorMessages['required'] })); // Set required error message
 
     } else { // If field has value
       if (!field.isValid) { // And if value is invalid
@@ -58,13 +58,11 @@ const ContactForm = () => {
     }
   }
 
- // Function that updates field's character counter on change
- const handleCounter = (field: FormFieldName, 
-  e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>
- ) => {
-  const currentInputLength = e.currentTarget.value.length;
-  dispatch(setFieldCounter({ field: field, value: currentInputLength }));
- }
+  // Function that updates field's character counter on change
+  const handleCounter = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, fieldName: FormFieldName) => {
+    const length = e.currentTarget.value.length;
+    dispatch(setFieldCounter({ field: fieldName, value: length }));
+  }
 
   // // Custom interface to type each form field
   // interface FormElements extends HTMLFormControlsCollection { // HTMLFormControlsCollection represents all the form controls
@@ -76,44 +74,24 @@ const ContactForm = () => {
   //   description: HTMLTextAreaElement;
   // } 
 
-  // Handle submit function that validates input and updates state
+  // Handle submit function that generates and sends email to bosphorusbakery@gmail.com
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Get all form field values
-    // Iterate through field values
-      // Revalidate all fields
-        // If invalid, then toggle errors and exit
-        // If valid, then update each field's value state and store in an obj to be used for email generation
+  
+    const contactFormState = { firstName, lastName, email, phone, subject, description };
 
-    // const form = e.currentTarget.elements as FormElements // Forms constant represents all form elements
-    // const form = e.currentTarget.elements as HTMLFormControlsCollection
-    // console.log(form);
-    // console.log(Object.keys(form));
-    // const form = document.querySelectorAll('form')[0];
-    // console.log(form);
-    // console.log(typeof form);
-    // console.log(Array.from(form));
+    const fieldValues = Object.entries(contactFormState) // Transforms state object into array of [key, value] pairs
+    .map(([fieldName, fieldValue]) => ({ // Iterates through [key, value] pairs and extracts the key form value
+      field: fieldName,
+      value: fieldValue
+     }))
 
-    // const firstNameValue = form.firstName.value;
-    // const lastNameValue = form.lastName.value;
-    // const emailValue = form.email.value;
-    // const phoneValue = form.phone.value;
-    // const subjectValue = form.subject.value;
-    // const descriptionValue = form.description.value;
+    console.log(fieldValues);
 
-    // If required fields are filled and valid then update their state 
-
-    // handleField('firstName', firstNameValue, nameRegex, setFieldValue);
-    // handleField('lastName', lastNameValue, nameRegex, setFieldValue)
-    // handleField('email', emailValue, emailRegex, setFieldValue)
-    // handleField('phone', phoneValue, phoneRegex, setFieldValue)
-    // handleField('subject', subjectValue, subjectRegex, setFieldValue)
-    // handleField('description', descriptionValue, descriptionRegex, setFieldValue)
   }
+  // TO DO: Configure SendGrid API, Shape data to fit object that SendGrid will accept and send email with
 
-  // TO DO: Create function that accepts Obj of validated form fields and sends email
-
-  // Error message component code
+  // Error message component that reads field's errorMessage state
   const ErrorMessage = (field: FieldState) => {
     if (field.errorMessage !== '') {
       return (
@@ -129,12 +107,6 @@ const ContactForm = () => {
       <span>{counter}/{characterLimit}</span>
     )
   }
-  // const errorMessageFunction = (field: FieldState , nameErrorMessage: string) => {
-  //   if (!field.isValid) {
-  //     ErrorMessage(nameErrorMessage)
-  //   }
-  // }
-
 
   // Contact form component code
   return (
@@ -146,12 +118,9 @@ const ContactForm = () => {
           name="firstName"
           type="text"
           onChange={(e) => {handleOnChange(e, 'firstName', nameRegex)}}
-          onBlur={(e) => {
-              handleOnBlur(e, 'firstName', firstName)
-          }}
+          onBlur={(e) => {handleOnBlur(e, 'firstName', firstName)}}
         />
         {ErrorMessage(firstName)}
-        {/* {firstName.isValid ? null : ErrorMessage(nameErrorMessage)} */}
       </div>
       <div>
         <label htmlFor="lastName">Last Name:</label>
@@ -159,8 +128,10 @@ const ContactForm = () => {
           id="lastName"
           name="lastName"
           type="text"
+          onChange={(e) => {handleOnChange(e, 'lastName', nameRegex)}}
+          onBlur={(e) => {handleOnBlur(e, 'lastName', lastName)}}
         />
-        {/* {lastName.isValid ? null : ErrorMessage(nameErrorMessage)} */}
+        {ErrorMessage(lastName)}
       </div>
       <div>
         <label htmlFor="email">Email:</label>
@@ -168,8 +139,10 @@ const ContactForm = () => {
           id="email"
           name="email"
           type="email"
-          />
-        {/* {email.isValid ? null : ErrorMessage(emailErrorMessage)} */}
+          onChange={(e) => {handleOnChange(e, 'email', emailRegex)}}
+          onBlur={(e) => {handleOnBlur(e, 'email', email)}}
+        />
+        {ErrorMessage(email)}
       </div>
       <div>
         <label htmlFor="phone">Phone:</label>
@@ -177,8 +150,10 @@ const ContactForm = () => {
           id="phone"
           name="phone"
           type="tel"
+          onChange={(e) => {handleOnChange(e, 'phone', phoneRegex)}}
+          onBlur={(e) => {handleOnBlur(e, 'phone', phone)}}
         />
-        {/* {phone.isValid ? null : ErrorMessage(phoneErrorMessage)} */}
+        {ErrorMessage(phone)}
       </div>
       <div>
         <label htmlFor="subject">Subject:</label>
@@ -187,12 +162,13 @@ const ContactForm = () => {
           name="subject"
           type="text"
           onChange={(e) => {
-            handleCounter(
-              'subject', e)
+            handleOnChange(e, 'subject', subjectRegex)
+            handleCounter(e, 'subject')
           }}
-        /> {/* Counter is optional field and defaults to 0 as fallback */}
+          onBlur={(e) => {handleOnBlur(e, 'subject', subject)}}
+        /> {/* Counter is optional field and defaults to 0 */}
         {CharacterCounter(subject.counter ??  0, subjectLimit)}
-        {/* {subject.isValid ? null: ErrorMessage(subjectErrorMessage)} */}
+        {ErrorMessage(subject)}
       </div>
       <div>
         <label htmlFor="description">Description:</label>
@@ -200,11 +176,13 @@ const ContactForm = () => {
           id="description"
           name="description"
           onChange={(e) => {
-            handleCounter('description', e)
+            handleOnChange(e, 'description', descriptionRegex)
+            handleCounter(e, 'description')
           }}
+          onBlur={(e) => {handleOnBlur(e, 'description', description)}}
         />
         {CharacterCounter(description.counter ??  0, descriptionLimit)}
-        {/* {description.isValid ? null : ErrorMessage(descriptionErrorMessage)} */}
+        {ErrorMessage(description)}
       </div>
       <div>
         <button
