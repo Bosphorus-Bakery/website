@@ -5,7 +5,7 @@ import { nameRegex, emailRegex, phoneRegex, subjectRegex, descriptionRegex,
   errorMessages,
   subjectLimit, descriptionLimit } from '@/lib/constants';
 import requiredFields from '@/lib/constants/requiredFields';
-import type { FieldState, ContactFormState, FormFieldName } from '@/types';
+import type { FieldState, ContactFormFields, FormFieldName } from '@/types';
 import { contactFormStyles } from '@/styles';
 
 const ContactForm = () => {
@@ -78,9 +78,9 @@ const ContactForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
-    const contactFormState = { firstName, lastName, email, phone, subject, description };
+    const ContactFormFields = { firstName, lastName, email, phone, subject, description };
 
-    const fieldValues = Object.entries(contactFormState) // Transforms state object into array of [key, value] pairs
+    const fieldValues = Object.entries(ContactFormFields) // Transforms state object into array of [key, value] pairs
     .map(([fieldName, fieldValue]) => ({ // Iterates through [key, value] pairs and extracts the key form value
       field: fieldName,
       value: fieldValue
@@ -156,19 +156,10 @@ const ContactForm = () => {
         {ErrorMessage(phone)}
       </div>
       <div>
-        <label htmlFor="subject">Subject:</label>
-        <input
-          id="subject"
-          name="subject"
-          type="text"
-          onChange={(e) => {
-            handleOnChange(e, 'subject', subjectRegex)
-            handleCounter(e, 'subject')
-          }}
-          onBlur={(e) => {handleOnBlur(e, 'subject', subject)}}
-        /> {/* Counter is optional field and defaults to 0 */}
-        {CharacterCounter(subject.counter ??  0, subjectLimit)}
-        {ErrorMessage(subject)}
+      <input type="radio" id="general" name="request_type"/>
+      <label htmlFor="subject">General</label>
+      <input type="radio" id="order" name="request_type"/>
+      <label htmlFor="order">Order (Pick Up)</label>
       </div>
       <div>
         <label htmlFor="description">Description:</label>
