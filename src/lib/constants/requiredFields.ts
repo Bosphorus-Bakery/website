@@ -3,7 +3,7 @@ const requiredFields = {
   lastName: true,
   email: true,
   phone: false,
-  subject: false,
+  subject: true,
   description: true 
 }
 export default requiredFields;

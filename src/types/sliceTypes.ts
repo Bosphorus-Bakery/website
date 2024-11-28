@@ -5,18 +5,14 @@ export interface AppState {
   theme: boolean;
 }
 // Type limits to only interface keys: firstName, lastName, etc
-export type FormFieldName = keyof ContactFormFields; 
+export type FormFieldNames = keyof FormFields; 
 
-export interface SubjectFieldState {
-  value: string
-}
-
-export interface ContactFormFields {
+export interface FormFields {
   firstName: FieldState;
   lastName: FieldState;
   email: FieldState;
   phone: FieldState;
-  subject: SubjectFieldState;
+  subject: FieldState;
   description: FieldState;
 }
 
