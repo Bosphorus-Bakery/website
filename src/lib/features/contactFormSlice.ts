@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { FormFields } from '@/types';
 
+const today = new Date().toISOString().split('T')[0];
+
 const initialFormState: FormFields = {
   firstName: { hasValue: false, value: '', isValid: false, errorMessage: ''},
   lastName: { hasValue: false, value: '', isValid: false, errorMessage: ''},
@@ -9,6 +11,7 @@ const initialFormState: FormFields = {
   phone: { hasValue: false, value: '', isValid: false, errorMessage: ''},
   subject: { hasValue: true, value: '', isValid: true, errorMessage: ''},
   description: { hasValue: false, value: '', isValid: false, errorMessage: '', counter: 0 },
+  selectedDate: { hasValue: true, value: today, isValid: true, errorMessage: '' }
 };
 
 const contactFormSlice = createSlice({

@@ -5,6 +5,7 @@ export const errorMessages = {
   phone: "Please enter a valid phone number.",
   subject: "Please use 60 characters or less.",
   description: "Please use 250 characters or less.",
+  selectedDate: "Please pick a valid date.",
   required: "Please fill all required fields."
 };
 

@@ -2,13 +2,12 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid, setFieldCounter, setErrorMessage } from '@/lib';
 import { nameRegex, emailRegex, phoneRegex, descriptionRegex, errorMessages, descriptionLimit } from '@/lib/constants';
-import requiredFields from '@/lib/constants/requiredFields';
 import type { FieldState, FormFields, FormFieldNames } from '@/types';
 import { contactFormStyles } from '@/styles';
 
 const ContactForm = () => {
   // Access the state of each field using the useAppSelector hook
-  const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm);
+  const { firstName, lastName, email, phone, subject, description, selectedDate } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch(); // Dispatches actions with useAppDispatch hook
 
   // Helper function that validates field's input against its regex
@@ -17,9 +16,19 @@ const ContactForm = () => {
   }
 
    // Helper function that updates field's character counter on change
-   const handleCounter = (e: React.ChangeEvent<HTMLTextAreaElement>, fieldName: FormFieldNames) => {
+  const handleCounter = (e: React.ChangeEvent<HTMLTextAreaElement>, fieldName: FormFieldNames) => {
     const length = e.currentTarget.value.length;
     dispatch(setFieldCounter({ field: fieldName, value: length }));
+  }
+
+  const handleDateSelect = (e: React.ChangeEvent<HTMLInputElement>, fieldName: FormFieldNames) => {
+    // Update field's value
+    const selectedDate = e.currentTarget.value
+    const today = new Date().toISOString().split('T')[0];
+    if (selectedDate < today) {
+      dispatch(setIsValid({ field: fieldName, value: false }))
+    }
+    dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }))
   }
 
   // On change function that detects presence of value and validates value
@@ -44,8 +53,8 @@ const ContactForm = () => {
   // On blur function that displays error
   const handleOnBlur = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, fieldName: FormFieldNames, field: FieldState) => {
     
-    // Check hasValue state and whether field is required
-    if (!field.hasValue && requiredFields[fieldName]) { // If required field is empty
+    // Check if field has a value
+    if (!field.hasValue) { // If no value
       dispatch(setErrorMessage({ field: fieldName, value: errorMessages['required'] })); // Set required error message
       e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling to field
 
@@ -72,11 +81,7 @@ const ContactForm = () => {
       value: fieldValue
      }))
     console.log(fieldValues);
-
   }
-
- 
-
   // TO DO: Send data to server to create email
 
   // Error message component that reads field's errorMessage state
@@ -99,7 +104,6 @@ const ContactForm = () => {
   const handleSubject = (e: React.MouseEvent<HTMLInputElement>, fieldName: FormFieldNames)  => {
     dispatch(setFieldValue({field: fieldName, value: e.currentTarget.value}))
   }
-
 
   // Contact form component code
   return (
@@ -140,8 +144,7 @@ const ContactForm = () => {
           type="email"
           onChange={(e) => {handleOnChange(e, 'email', emailRegex)}}
           onBlur={(e) => {handleOnBlur(e, 'email', email)}}
-        />
-        {ErrorMessage(email)}
+        />        {ErrorMessage(email)}
       </div>
       <div>
         <label htmlFor="phone">Phone:</label>
@@ -154,22 +157,34 @@ const ContactForm = () => {
         />
         {ErrorMessage(phone)}
       </div>
-    {/*TO DO: Conditionally render description for General Subject */}
+      {/* Conditionally render description for General Subject */}
       <div>
-        <label htmlFor="description">Description:</label>
-        <textarea
-          id="description"
-          name="description"
-          onChange={(e) => {
-            handleOnChange(e, 'description', descriptionRegex)
-            handleCounter(e, 'description')
-          }}
-          onBlur={(e) => {handleOnBlur(e, 'description', description)}}
-        />
-        {CharacterCounter(description.counter ??  0, descriptionLimit)}
-        {ErrorMessage(description)}
+        {subject.value == "general" && 
+          <div>
+            <label htmlFor="description">Description:</label>
+            <textarea id="description" name="description" placeholder='Tell us how we can help'
+              onChange={(e) => {
+                handleOnChange(e, 'description', descriptionRegex)
+                handleCounter(e, 'description')}}
+              onBlur={(e) => {handleOnBlur(e, 'description', description)}}/>
+            {CharacterCounter(description.counter ??  0, descriptionLimit)}
+            {ErrorMessage(description)}
+          </div>
+        }
+        {subject.value == "order" &&
+          <div>
+            <p><em>* Contact provided above will be used for order contact * </em></p>
+            <label htmlFor="location">Location:</label>
+            <select name="location" id="location">
+              <option value="rohnertPark">1301 Maurice Ave, Cotati, CA 94928</option>
+            </select>
+            <label htmlFor="selectedDate">Pick up on:</label>
+            <input type="date" name="selectedDate" id="selectedDate" value={selectedDate.value}
+              onChange={(e) => {handleDateSelect(e, 'selectedDate')}}>
+            </input>
+          </div>
+        }
       </div>
-    {/*TO DO: Conditionally render order items for Order Subject */}
       <div>
         <button
          type="submit"> Submit 

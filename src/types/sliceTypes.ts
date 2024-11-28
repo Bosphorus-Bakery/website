@@ -14,6 +14,7 @@ export interface FormFields {
   phone: FieldState;
   subject: FieldState;
   description: FieldState;
+  selectedDate: FieldState;
 }
 
 export interface FieldState {
