@@ -1,14 +1,21 @@
 "use client";
 import type { PayloadAction } from '@reduxjs/toolkit';
+import DatePicker from "react-datepicker";
 import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid, setFieldCounter, setErrorMessage } from '@/lib';
-import { nameRegex, emailRegex, phoneRegex, descriptionRegex, errorMessages, descriptionLimit } from '@/lib/constants';
 import type { FieldState, FormFields, FormFieldNames } from '@/types';
+import { nameRegex, emailRegex, phoneRegex, descriptionRegex, errorMessages, descriptionLimit } from '@/lib/constants';
 import { contactFormStyles } from '@/styles';
 
 const ContactForm = () => {
   // Access the state of each field using the useAppSelector hook
   const { firstName, lastName, email, phone, subject, description, selectedDate } = useAppSelector((state) => state.contactForm);
   const dispatch = useAppDispatch(); // Dispatches actions with useAppDispatch hook
+  const today = new Date().toISOString().split('T')[0]; // Formatted current date
+
+  // const formatDate = (dateString: string): string => {
+  //   const 
+  // }
+
 
   // Helper function that validates field's input against its regex
   const validateField = (regex: RegExp, value: string) => {
@@ -21,14 +28,27 @@ const ContactForm = () => {
     dispatch(setFieldCounter({ field: fieldName, value: length }));
   }
 
-  const handleDateSelect = (e: React.ChangeEvent<HTMLInputElement>, fieldName: FormFieldNames) => {
-    // Update field's value
-    const selectedDate = e.currentTarget.value
-    const today = new Date().toISOString().split('T')[0];
-    if (selectedDate < today) {
-      dispatch(setIsValid({ field: fieldName, value: false }))
+  // const handleDateSelect = (e: React.ChangeEvent<HTMLInputElement>, fieldName: FormFieldNames) => {
+  //   // Target date field value
+  //   const selectedDate = e.currentTarget.value;
+  //   if (selectedDate < today) {
+  //     dispatch(setIsValid({ field: fieldName, value: false }));
+  //   } else {
+  //     dispatch(setIsValid({ field: fieldName, value: true }));
+  //     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
+  //   }
+  // }
+
+  // Function accepts date object, and field name for action creator
+  const handleDateSelect = (date: Date | null, fieldName: FormFieldNames) => {
+    if (date){
+      // update date selector 
+
+      // format date to string to store in state as string
+      date.toISOString().split('T')[0];
+    } else {
+      console.log("date is null");
     }
-    dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }))
   }
 
   // On change function that detects presence of value and validates value
@@ -79,7 +99,7 @@ const ContactForm = () => {
     .map(([fieldName, fieldValue]) => ({ // Iterates through [key, value] pairs and extracts the field name and field value
       field: fieldName,
       value: fieldValue
-     }))
+     }));
     console.log(fieldValues);
   }
   // TO DO: Send data to server to create email
@@ -91,18 +111,18 @@ const ContactForm = () => {
         <span>
           {field.errorMessage}
         </span>
-      )
+      );
     }
   }
   // Character counter component code
   const CharacterCounter = (counter: number, characterLimit: number) => {
     return (
       <span>{counter}/{characterLimit}</span>
-    )
+    );
   }
 
   const handleSubject = (e: React.MouseEvent<HTMLInputElement>, fieldName: FormFieldNames)  => {
-    dispatch(setFieldValue({field: fieldName, value: e.currentTarget.value}))
+    dispatch(setFieldValue({field: fieldName, value: e.currentTarget.value}));
   }
 
   // Contact form component code
@@ -178,10 +198,17 @@ const ContactForm = () => {
             <select name="location" id="location">
               <option value="rohnertPark">1301 Maurice Ave, Cotati, CA 94928</option>
             </select>
-            <label htmlFor="selectedDate">Pick up on:</label>
-            <input type="date" name="selectedDate" id="selectedDate" value={selectedDate.value}
+            <DatePicker 
+              selected={new Date()}
+              onChange={}  
+            >
+      
+            </DatePicker>
+            {/* <label htmlFor="selectedDate">Pick up on:</label>
+            <input type="date" name="selectedDate" id="selectedDate" value={"June 4th, 2024"}
+            min={today}
               onChange={(e) => {handleDateSelect(e, 'selectedDate')}}>
-            </input>
+            </input> */}
           </div>
         }
       </div>
@@ -191,7 +218,7 @@ const ContactForm = () => {
         </button>
       </div>
     </form>
-  )
+  );
 }
 
 export default ContactForm;

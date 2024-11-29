@@ -5,22 +5,27 @@ export interface AppState {
   theme: boolean;
 }
 // Type limits to only interface keys: firstName, lastName, etc
-export type FormFieldNames = keyof FormFields; 
+export type FormFieldNames = keyof ContactInfoFields; 
 
-export interface FormFields {
-  firstName: FieldState;
-  lastName: FieldState;
-  email: FieldState;
-  phone: FieldState;
-  subject: FieldState;
-  description: FieldState;
-  selectedDate: FieldState;
+export interface ContactInfoFields {
+  firstName: ContactInfoField;
+  lastName: ContactInfoField;
+  email: ContactInfoField;
+  phone: ContactInfoField;
+  subject: ContactInfoField;
+  description: ContactInfoField;
 }
 
-export interface FieldState {
+export interface ContactInfoField {
   hasValue: boolean;
   value: string;
   isValid: boolean;
   errorMessage: string;
   counter?: number; // Optional character counter for fields with max length
+}
+
+
+
+export interface OrderFields {
+  selectedDate: Date;
 }
