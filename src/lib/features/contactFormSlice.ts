@@ -1,17 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { ContactInfoFields } from '@/types';
+import type { ContactFields, FormFields, OrderFields } from '@/types';
 
 const today = new Date().toISOString().split('T')[0];
 
 const initialFormState: FormFields = {
-  firstName: { hasValue: false, value: '', isValid: false, errorMessage: ''},
-  lastName: { hasValue: false, value: '', isValid: false, errorMessage: ''},
-  email: { hasValue: false, value: '', isValid: false, errorMessage: ''},
-  phone: { hasValue: false, value: '', isValid: false, errorMessage: ''},
-  subject: { hasValue: true, value: '', isValid: true, errorMessage: ''},
-  description: { hasValue: false, value: '', isValid: false, errorMessage: '', counter: 0 },
-  selectedDate: { hasValue: true, value: '', isValid: true, errorMessage: '' }
+  contactInfo: { 
+    firstName: { hasValue: false, value: '', isValid: false, errorMessage: ''},
+    lastName: { hasValue: false, value: '', isValid: false, errorMessage: ''},
+    email: { hasValue: false, value: '', isValid: false, errorMessage: ''},
+    phone: { hasValue: false, value: '', isValid: false, errorMessage: ''},
+    subject: { hasValue: true, value: '', isValid: true, errorMessage: ''},
+    description: { hasValue: false, value: '', isValid: false, errorMessage: '', counter: 0 },
+  },
+  order: {
+    selectedDate: new Date(),
+    cart: []
+  }
 };
 
 const contactFormSlice = createSlice({
@@ -19,34 +24,41 @@ const contactFormSlice = createSlice({
   initialState: initialFormState,
   reducers: {
     setHasValue: ( // Updates field state's hasValue property
-      state,
-      action: PayloadAction<{ field: keyof FormFields; value: boolean }>
-    ) => { 
-      state[action.payload.field].hasValue = action.payload.value;
+      state, // Current state
+      action: PayloadAction<{ field: keyof ContactFields; value: boolean }>) => { // Field to update and new value
+        
+        // Set state's contact info field property to the value in payload
+        state.contactInfo[action.payload.field].hasValue = action.payload.value;
     },
     setFieldValue: ( // Updates field state's value 
       state,
-      action: PayloadAction<{ field: keyof FormFields; value: string }> // Accepts FormFields key : input value
+      action: PayloadAction<{ field: keyof ContactFields; value: string }> // Accepts ContactFieldNames key : input value
     ) => { 
-      state[action.payload.field].value = action.payload.value; // Updates the field's state
+      state.contactInfo[action.payload.field].value = action.payload.value; // Updates the field's state
     },
     setIsValid: (
       state,
-      action: PayloadAction<{ field: keyof FormFields; value: boolean }>
+      action: PayloadAction<{ field: keyof ContactFields; value: boolean }>
     ) => {
-      state[action.payload.field].isValid = action.payload.value;
+      state.contactInfo[action.payload.field].isValid = action.payload.value;
     },
     setFieldCounter: (
       state,
-      action: PayloadAction<{ field: keyof FormFields; value: number }>
+      action: PayloadAction<{ field: keyof ContactFields; value: number }>
     ) => {
-      state[action.payload.field].counter = action.payload.value;
+      state.contactInfo[action.payload.field].counter = action.payload.value;
     },
     setErrorMessage: (
       state,
-      action: PayloadAction<{ field: keyof FormFields; value: string }>
+      action: PayloadAction<{ field: keyof ContactFields; value: string }>
     ) => {
-      state[action.payload.field].errorMessage = action.payload.value;
+      state.contactInfo[action.payload.field].errorMessage = action.payload.value;
+    },
+    setDate: (
+      state,
+      action: PayloadAction<{ field: OrderFields["selectedDate"]; value: Date }>
+    ) => {
+      state.order.selectedDate = action.payload.value;
     },
   },
 });
