@@ -29,9 +29,9 @@ export interface ContactField {
 
 export interface OrderFields {
   selectedDate: Date;
-  cart: Array<Item>;
+  cart: Array<CartItem>;
 }
-export type Item = {
+export type CartItem = {
   id: number;
   name: string;
   price: number;

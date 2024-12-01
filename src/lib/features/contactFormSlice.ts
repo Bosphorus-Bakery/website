@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { ContactFields, FormFields, OrderFields } from '@/types';
+import type { ContactFields, FormFields, CartItem } from '@/types';
 
 const today = new Date().toISOString().split('T')[0];
 
@@ -27,7 +27,7 @@ const contactFormSlice = createSlice({
       state, // Current state
       action: PayloadAction<{ field: keyof ContactFields; value: boolean }>) => { // Field to update and new value
         
-        // Set state's contact info field property to the value in payload
+        // Update contact info field's hasValue to value in payload
         state.contactInfo[action.payload.field].hasValue = action.payload.value;
     },
     setFieldValue: ( // Updates field state's value 
@@ -56,9 +56,14 @@ const contactFormSlice = createSlice({
     },
     setDate: (
       state,
-      action: PayloadAction<{ field: OrderFields["selectedDate"]; value: Date }>
+      action: PayloadAction<{ value: Date }>
     ) => {
       state.order.selectedDate = action.payload.value;
+    },
+    addItemToCart: (
+      state,
+      action: PayloadAction<{ cart: Array<CartItem>; item: CartItem }>
+    ) => {
     },
   },
 });
@@ -68,7 +73,8 @@ export const {
   setFieldValue, 
   setIsValid,
   setFieldCounter, 
-  setErrorMessage, 
+  setErrorMessage,
+  setDate
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;
