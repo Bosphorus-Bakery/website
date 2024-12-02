@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid, setFieldCounter, setErrorMessage, setDate } from '@/lib';
 import type { ContactField, ContactFields, OrderFields } from '@/types';
 import { nameRegex, emailRegex, phoneRegex, descriptionRegex, errorMessages, descriptionLimit } from '@/lib/constants';
-import { contactFormStyles } from '@/styles';
+import styles from "../../styles/Form.module.css";
 
 const ContactForm = () => {
   // Get state of contact info and order fields
@@ -61,16 +61,17 @@ const ContactForm = () => {
     // Check if field has a value
     if (!field.hasValue) { // If no value
       dispatch(setErrorMessage({ field: fieldName, value: errorMessages['required'] })); // Set required error message
-      e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling to field
+      // e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling to field
+      e.currentTarget.classList.add("error-border");
 
     } else { // If field has value
       if (!field.isValid) { // And if value is invalid
-        e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling
+        e.currentTarget.className = styles.errorBorder; // Apply error styling
         dispatch(setErrorMessage({ field: fieldName, value: errorMessages[fieldName] })); // Set validation error message
 
       } else { // If field is valid
         dispatch(setErrorMessage({ field: fieldName, value: '' })); // Clear error message
-        e.currentTarget.classList.remove(contactFormStyles.errorBorder); // Remove error styling
+        e.currentTarget.classList.remove(styles.errorBorder); // Remove error styling
       }
     }
   }
@@ -121,6 +122,17 @@ const ContactForm = () => {
     );
   }
 
+  const SubmitButton = (subject: ContactField) => {
+    if (subject.value === "order") {
+      return (
+        <button>Submit order</button>
+      );
+    }
+    return (
+      <button>Submit</button>
+    );
+  }
+
   const handleSubject = (e: React.MouseEvent<HTMLInputElement>, fieldName: keyof ContactFields)  => {
     dispatch(setFieldValue({field: fieldName, value: e.currentTarget.value}));
   }
@@ -136,7 +148,7 @@ const ContactForm = () => {
       </div>
       <div>
         <label htmlFor="firstName">First Name:</label>
-        <input
+        <input className={styles["form-field"]}
           id="firstName"
           name="firstName"
           type="text"
@@ -219,21 +231,26 @@ const ContactForm = () => {
                 <option value="Twin Cut (48 pieces)">Twin Cut (48 pieces)</option>
                 <option value="Square Cut (40 pieces)">Square Cut (40 pieces)</option>
               </select>
-              <div id="quantity">
-                <button>-</button>
-                <span>0</span>
+              <div id="actionLinks">
+                <div id="quantity">
+                  <button id="decrement">-</button>
+                  <span>1</span>
+                  </div>
+                  <button id="increment">+</button>
                 </div>
-                <button>+</button>
               </div>
+            <div id="price">
+              <label htmlFor="price">Price</label>
+              <input type="number">{/* Baklava prices from /constants */}</input>
+            </div>
+            <div id="newCartItem">
+              <button>Add more +</button>
+            </div>
+            <h3 id="subtotal">Subtotal ({/* X items */}): ${/* Subtotal price */}</h3>
           </div>
-          
         }
       </div>
-      <div>
-        <button
-         type="submit"> Submit 
-        </button>
-      </div>
+      {SubmitButton(subject)}
     </form>
   );
 }

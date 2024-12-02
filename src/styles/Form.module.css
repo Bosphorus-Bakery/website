@@ -1,4 +1,9 @@
-.errorBorder {
+.form-field {
+  width: 100%;
+  border: 2px solid red;
+}
+
+.error-border {
   border: 2px solid red;
   border-radius: 4px;
   transition: border-color 0.3s ease;
