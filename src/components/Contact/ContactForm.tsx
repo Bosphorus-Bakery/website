@@ -5,14 +5,13 @@ import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid,
 import type { ContactField, ContactFields, OrderFields } from '@/types';
 import { nameRegex, emailRegex, phoneRegex, descriptionRegex, errorMessages, descriptionLimit } from '@/lib/constants';
 import styles from "../../styles/Form.module.css";
+import { Sawarabi_Mincho } from 'next/font/google';
 
 const ContactForm = () => {
   // Get state of contact info and order fields
   const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm.contactInfo);
   const { selectedDate, cart } = useAppSelector((state) => state.contactForm.order);
   const dispatch = useAppDispatch();
-
-  const today = new Date().toISOString().split('T')[0]; // Formatted current date
 
   // Helper function that validates field's input against its regex
   const validateField = (regex: RegExp, value: string) => {
@@ -24,17 +23,6 @@ const ContactForm = () => {
     const length = e.currentTarget.value.length;
     dispatch(setFieldCounter({ field: fieldName, value: length }));
   }
-
-  // const handleDateSelect = (e: React.ChangeEvent<HTMLInputElement>, fieldName: FormFieldNames) => {
-  //   // Target date field value
-  //   const selectedDate = e.currentTarget.value;
-  //   if (selectedDate < today) {
-  //     dispatch(setIsValid({ field: fieldName, value: false }));
-  //   } else {
-  //     dispatch(setIsValid({ field: fieldName, value: true }));
-  //     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
-  //   }
-  // }
 
   // On change function that detects presence of value and validates value
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, fieldName: keyof ContactFields, regex: RegExp
@@ -109,9 +97,7 @@ const ContactForm = () => {
   const ErrorMessage = (field: ContactField) => {
     if (field.errorMessage !== '') {
       return (
-        <span>
-          {field.errorMessage}
-        </span>
+        <span className={styles["form-error"]}> {field.errorMessage} </span>
       );
     }
   }
@@ -125,11 +111,11 @@ const ContactForm = () => {
   const SubmitButton = (subject: ContactField) => {
     if (subject.value === "order") {
       return (
-        <button>Submit order</button>
+        <button className={styles["form-button"]}>Submit order</button>
       );
     }
     return (
-      <button>Submit</button>
+      <button className={styles["form-button"]}>Submit</button>
     );
   }
 
@@ -139,15 +125,15 @@ const ContactForm = () => {
 
   // Contact form component code
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form className={styles["form-container"]} onSubmit={handleSubmit} noValidate>
       <div>
-        <input type="radio" id="general" name="request_type" value="general" onClick={(e) => handleSubject(e, 'subject')}/>
-        <label htmlFor="subject">General</label>
-        <input type="radio" id="order" name="request_type" value="order" onClick={(e) => handleSubject(e, 'subject')}/>
-        <label htmlFor="order">Order (Pick Up)</label>
+        <input className={styles["form-radio"]} type="radio" id="general" name="request_type" value="general" onClick={(e) => handleSubject(e, 'subject')}/>
+        <label className={styles["form-radio-label"]} htmlFor="subject">General</label>
+        <input className={styles["form-radio"]} type="radio" id="order" name="request_type" value="order" onClick={(e) => handleSubject(e, 'subject')}/>
+        <label className={styles["form-radio-label"]} htmlFor="order">Order (Pick Up)</label>
       </div>
       <div>
-        <label htmlFor="firstName">First Name:</label>
+        <label className={styles["form-label"]} htmlFor="firstName">First Name:</label>
         <input className={styles["form-field"]}
           id="firstName"
           name="firstName"
@@ -158,8 +144,9 @@ const ContactForm = () => {
         {ErrorMessage(firstName)}
       </div>
       <div>
-        <label htmlFor="lastName">Last Name:</label>
+        <label className={styles["form-label"]} htmlFor="lastName">Last Name:</label>
         <input
+          className={styles["form-field"]}
           id="lastName"
           name="lastName"
           type="text"
@@ -169,8 +156,9 @@ const ContactForm = () => {
         {ErrorMessage(lastName)}
       </div>
       <div>
-        <label htmlFor="email">Email:</label>
+        <label className={styles["form-label"]} htmlFor="email">Email:</label>
         <input
+          className={styles["form-field"]}
           id="email"
           name="email"
           type="email"
@@ -180,8 +168,9 @@ const ContactForm = () => {
         {ErrorMessage(email)}
       </div>
       <div>
-        <label htmlFor="phone">Phone:</label>
+        <label className={styles["form-label"]} htmlFor="phone">Phone:</label>
         <input
+          className={styles["form-field"]}
           id="phone"
           name="phone"
           type="tel"
@@ -194,8 +183,12 @@ const ContactForm = () => {
       <div>
         {subject.value == "general" && 
           <div>
-            <label htmlFor="description">Description:</label>
-            <textarea id="description" name="description" placeholder='Tell us how we can help'
+            <label className={styles["form-label"]} htmlFor="description">Description:</label>
+            <textarea 
+              className={styles["form-field"]}
+              id="description" 
+              name="description" 
+              placeholder='Tell us how we can help'
               onChange={(e) => {
                 handleOnChange(e, 'description', descriptionRegex)
                 handleCounter(e, 'description')}}
@@ -207,12 +200,12 @@ const ContactForm = () => {
         {subject.value == "order" &&
           <div>
             <p><em>* Contact provided above will be used for order contact * </em></p>
-            <label htmlFor="location">Location:</label>
+            <label className={styles["form-label"]} htmlFor="location">Location:</label>
             <select name="location" id="location">
               <option value="rohnertPark">1301 Maurice Ave, Cotati, CA 94928</option>
             </select>
             <div>
-              <label htmlFor="pickUpDate">Pick-up on:</label><DatePicker 
+              <label className={styles["form-label"]} htmlFor="pickUpDate">Pick-up on:</label><DatePicker 
                 id="pickUpDate"
                 selected={selectedDate}
                 onChange={handleDateSelect}
@@ -221,7 +214,7 @@ const ContactForm = () => {
               </DatePicker>
             </div>
             <div>
-              <label htmlFor="cutType">Type:</label>
+              <label className={styles["form-label"]} htmlFor="cutType">Type:</label>
               <select name="cutType" id="cutType">
                 <option value="Twins (2 pieces)">Twins (2 pieces)</option>
                 <option value="Treats (6 pieces)">Treats (6 pieces)</option>
@@ -240,7 +233,7 @@ const ContactForm = () => {
                 </div>
               </div>
             <div id="price">
-              <label htmlFor="price">Price</label>
+              <label className={styles["form-label"]} htmlFor="price">Price</label>
               <input type="number">{/* Baklava prices from /constants */}</input>
             </div>
             <div id="newCartItem">
