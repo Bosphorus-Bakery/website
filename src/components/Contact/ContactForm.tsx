@@ -5,12 +5,11 @@ import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid,
 import type { ContactField, ContactFields, OrderFields } from '@/types';
 import { nameRegex, emailRegex, phoneRegex, descriptionRegex, errorMessages, descriptionLimit } from '@/lib/constants';
 import styles from "../../styles/Form.module.css";
-import { Sawarabi_Mincho } from 'next/font/google';
 
 const ContactForm = () => {
-  // Get state of contact info and order fields
-  const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm.contactInfo);
-  const { selectedDate, cart } = useAppSelector((state) => state.contactForm.order);
+  // To access Contact Form state
+  const { firstName, lastName, email, phone, subject, description } = useAppSelector((state) => state.contactForm.contactInfo); // Contact info state properties
+  const { selectedDate, cart } = useAppSelector((state) => state.contactForm.order); // Order state properties
   const dispatch = useAppDispatch();
 
   // Helper function that validates field's input against its regex
@@ -25,39 +24,51 @@ const ContactForm = () => {
   }
 
   // On change function that detects presence of value and validates value
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, fieldName: keyof ContactFields, regex: RegExp
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, // Accepts both text areas and input fields
+    fieldName: keyof ContactFields, // Only field names
+    regex: RegExp
   ) => {
+     // Get value in field
     const value = e.currentTarget.value;
 
-    if (value.trim() === '') { // If field does not have value
-      dispatch(setHasValue({ field: fieldName, value: false })); // Set hasValue state false
-    } else { // If field has a value
-      dispatch(setHasValue({ field: fieldName, value: true })); // Set hasValue state true
+    // If field is empty
+    if (value.trim() === '') { 
+      dispatch(setHasValue({ field: fieldName, value: false }));
 
-      if (validateField(regex, value)) { // If value is valid
-        dispatch(setIsValid({ field: fieldName, value: true })); // Set field's isValid state true
+     // If field has a value
+    } else {
+      dispatch(setHasValue({ field: fieldName, value: true }));
+
+      // If field value passes its regex
+      if (validateField(regex, value)) { 
+        dispatch(setIsValid({ field: fieldName, value: true }));
         dispatch(setFieldValue({ field: fieldName, value: value }))
-      } else { // If value is invalid
-        dispatch(setIsValid({ field: fieldName, value: false  })); // Set field's isValid state false
+
+      // If field value fails regex  
+      } else {
+        dispatch(setIsValid({ field: fieldName, value: false  }));
       } 
     }    
   };
 
-  // On blur function that displays error
-  const handleOnBlur = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, fieldName: keyof ContactFields, field: ContactField) => {
+  // On blur function that reads state then displays appropriate error
+  const handleOnBlur = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, 
+    fieldName: keyof ContactFields, 
+    field: ContactField) => {
     
-    // Check if field has a value
-    if (!field.hasValue) { // If no value
-      dispatch(setErrorMessage({ field: fieldName, value: errorMessages['required'] })); // Set required error message
-      // e.currentTarget.className = contactFormStyles.errorBorder; // Apply error styling to field
-      e.currentTarget.classList.add("error-border");
+    // If field does not have value
+    if (!field.hasValue) {
+      dispatch(setErrorMessage({ field: fieldName, value: errorMessages['required'] })); // Add required error message
+      e.currentTarget.className = styles.errorBorder; // Add error styling
 
-    } else { // If field has value
-      if (!field.isValid) { // And if value is invalid
-        e.currentTarget.className = styles.errorBorder; // Apply error styling
-        dispatch(setErrorMessage({ field: fieldName, value: errorMessages[fieldName] })); // Set validation error message
+    // If field has invalid value 
+    } else { 
+      if (!field.isValid) { 
+        dispatch(setErrorMessage({ field: fieldName, value: errorMessages[fieldName] })); // Add field specific error
+        e.currentTarget.className = styles.errorBorder; 
 
-      } else { // If field is valid
+      // If field has valid value
+      } else {
         dispatch(setErrorMessage({ field: fieldName, value: '' })); // Clear error message
         e.currentTarget.classList.remove(styles.errorBorder); // Remove error styling
       }
@@ -65,12 +76,9 @@ const ContactForm = () => {
   }
 
   // Function accepts date object, and field name for action creator
-  const handleDateSelect = (date: Date | null) => {
+  const handleDateSelect = (date: Date | null) => { // Q: Why can date be null?
     if (date){
-      // update date selector 
-      dispatch(setDate({ value: date}));
-      // format date to string to store in state as string
-      
+      dispatch(setDate({ value: date})); // Update date state
       const formattedDate = date.toISOString().split('T')[0];
       console.log(`Selected date: ${selectedDate}`);
     } else {
@@ -78,23 +86,26 @@ const ContactForm = () => {
     }
   }
 
-  // Function that gets all form state values and sends email to bakery
+  // Function submits validated form data
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault(); //
     const ContactFormFields = { firstName, lastName, email, phone, subject, description };
 
+    // 
     const fieldValues = Object.entries(ContactFormFields) // Transforms state object into array of key value pairs
-    .map(([fieldName, fieldValue]) => ({ // Iterates through [key, value] pairs and extracts the field name and field value
+    .map(([fieldName, fieldValue]) => ({ // Iterates through key value pairs and extracts the field name and field value
       field: fieldName,
       value: fieldValue
      }));
-    console.log('handleSubmit invoked');
-    console.log(fieldValues);
+    console.log('handleSubmit called');
+    console.log(`fieldValues: ${fieldValues}`);
   }
   // TO DO: Send data to server to create email
 
-  // Error message component that reads field's errorMessage state
+  // Error message component code
   const ErrorMessage = (field: ContactField) => {
+
+    // If field's error message state contains error
     if (field.errorMessage !== '') {
       return (
         <span className={styles["form-error"]}> {field.errorMessage} </span>
@@ -107,18 +118,18 @@ const ContactForm = () => {
       <span>{counter}/{characterLimit}</span>
     );
   }
-
+  // Submit button component code
   const SubmitButton = (subject: ContactField) => {
+    
+    // Renders "Submit" or "Order" based on subject state
     if (subject.value === "order") {
-      return (
-        <button className={styles["form-button"]}>Submit order</button>
-      );
+      return (<button className={styles["form-button"]}>Place order</button>);
+    } else {
+      return (<button className={styles["form-button"]}>Submit</button>);
     }
-    return (
-      <button className={styles["form-button"]}>Submit</button>
-    );
   }
 
+  // Function updates the subject state based on subject clicked
   const handleSubject = (e: React.MouseEvent<HTMLInputElement>, fieldName: keyof ContactFields)  => {
     dispatch(setFieldValue({field: fieldName, value: e.currentTarget.value}));
   }
@@ -179,7 +190,7 @@ const ContactForm = () => {
         />
         {ErrorMessage(phone)}
       </div>
-      {/* Conditionally render description for General Subject */}
+      {/* If user selects "General" subject */}
       <div>
         {subject.value == "general" && 
           <div>
@@ -197,6 +208,7 @@ const ContactForm = () => {
             {ErrorMessage(description)}
           </div>
         }
+        {/* If user selects "Order" subject */}
         {subject.value == "order" &&
           <div>
             <p><em>* Contact provided above will be used for order contact * </em></p>
@@ -205,12 +217,12 @@ const ContactForm = () => {
               <option value="rohnertPark">1301 Maurice Ave, Cotati, CA 94928</option>
             </select>
             <div>
-              <label className={styles["form-label"]} htmlFor="pickUpDate">Pick-up on:</label><DatePicker 
+              <label className={styles["form-label"]} htmlFor="pickUpDate">Pick-up on:</label>
+              <DatePicker 
                 id="pickUpDate"
                 selected={selectedDate}
                 onChange={handleDateSelect}
-                dateFormat="EEEE, MMMM d, YYYY" 
-              >
+                dateFormat="EEEE, MMMM d, YYYY">
               </DatePicker>
             </div>
             <div>
