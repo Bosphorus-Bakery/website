@@ -4,7 +4,6 @@ import DatePicker from "react-datepicker";
 import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid, setFieldCounter, setErrorMessage, setDate } from '@/lib';
 import type { ContactField, ContactFields, OrderFields } from '@/types';
 import { nameRegex, emailRegex, phoneRegex, descriptionRegex, errorMessages, descriptionLimit } from '@/lib/constants';
-import styles from "../../styles/Form.module.css";
 
 const ContactForm = () => {
   // To access Contact Form state
@@ -59,18 +58,18 @@ const ContactForm = () => {
     // If field does not have value
     if (!field.hasValue) {
       dispatch(setErrorMessage({ field: fieldName, value: errorMessages['required'] })); // Add required error message
-      e.currentTarget.className = styles.errorBorder; // Add error styling
+      e.currentTarget.classList.add("error-border"); // Add error styling
 
     // If field has invalid value 
     } else { 
       if (!field.isValid) { 
         dispatch(setErrorMessage({ field: fieldName, value: errorMessages[fieldName] })); // Add field specific error
-        e.currentTarget.className = styles.errorBorder; 
+        e.currentTarget.classList.add("error-border"); // Add error styling
 
-      // If field has valid value
+      // If field has a valid value
       } else {
         dispatch(setErrorMessage({ field: fieldName, value: '' })); // Clear error message
-        e.currentTarget.classList.remove(styles.errorBorder); // Remove error styling
+        e.currentTarget.classList.remove("error-border"); // Add error styling
       }
     }
   }
@@ -108,7 +107,7 @@ const ContactForm = () => {
     // If field's error message state contains error
     if (field.errorMessage !== '') {
       return (
-        <span className={styles["form-error"]}> {field.errorMessage} </span>
+        <span className="form-error">{field.errorMessage} </span>
       );
     }
   }
@@ -123,9 +122,9 @@ const ContactForm = () => {
     
     // Renders "Submit" or "Order" based on subject state
     if (subject.value === "order") {
-      return (<button className={styles["form-button"]}>Place order</button>);
+      return (<button className="form-button">Place order</button>);
     } else {
-      return (<button className={styles["form-button"]}>Submit</button>);
+      return (<button className="form-button">Submit</button>);
     }
   }
 
@@ -136,16 +135,20 @@ const ContactForm = () => {
 
   // Contact form component code
   return (
-    <form className={styles["form-container"]} onSubmit={handleSubmit} noValidate>
-      <div>
-        <input className={styles["form-radio"]} type="radio" id="general" name="request_type" value="general" onClick={(e) => handleSubject(e, 'subject')}/>
-        <label className={styles["form-radio-label"]} htmlFor="subject">General</label>
-        <input className={styles["form-radio"]} type="radio" id="order" name="request_type" value="order" onClick={(e) => handleSubject(e, 'subject')}/>
-        <label className={styles["form-radio-label"]} htmlFor="order">Order (Pick Up)</label>
-      </div>
-      <div>
-        <label className={styles["form-label"]} htmlFor="firstName">First Name:</label>
-        <input className={styles["form-field"]}
+    <form className="form-container" onSubmit={handleSubmit} noValidate>
+    {/* noValidate disables native form validation */}
+      <fieldset>
+        <legend>Request</legend>
+        <div>
+          <input className="form-radio" type="radio" id="general" name="request_type" value="general" onClick={(e) => handleSubject(e, 'subject')}/>
+          <label className="form-radio-label" htmlFor="subject">General</label>
+          <input className="form-radio" type="radio" id="order" name="request_type" value="order" onClick={(e) => handleSubject(e, 'subject')}/>
+          <label className="form-radio-label" htmlFor="order">Order (Pick Up)</label>
+        </div>
+      </fieldset>
+      <div className="form-field-container">
+        <label className="form-label" htmlFor="firstName">First Name:</label>
+        <input className="form-field"
           id="firstName"
           name="firstName"
           type="text"
@@ -155,9 +158,9 @@ const ContactForm = () => {
         {ErrorMessage(firstName)}
       </div>
       <div>
-        <label className={styles["form-label"]} htmlFor="lastName">Last Name:</label>
+        <label className="form-label" htmlFor="lastName">Last Name:</label>
         <input
-          className={styles["form-field"]}
+          className="form-field"
           id="lastName"
           name="lastName"
           type="text"
@@ -167,9 +170,9 @@ const ContactForm = () => {
         {ErrorMessage(lastName)}
       </div>
       <div>
-        <label className={styles["form-label"]} htmlFor="email">Email:</label>
+        <label className="form-label" htmlFor="email">Email:</label>
         <input
-          className={styles["form-field"]}
+          className="form-field"
           id="email"
           name="email"
           type="email"
@@ -179,9 +182,9 @@ const ContactForm = () => {
         {ErrorMessage(email)}
       </div>
       <div>
-        <label className={styles["form-label"]} htmlFor="phone">Phone:</label>
+        <label className="form-label" htmlFor="phone">Phone:</label>
         <input
-          className={styles["form-field"]}
+          className="form-field"
           id="phone"
           name="phone"
           type="tel"
@@ -194,9 +197,9 @@ const ContactForm = () => {
       <div>
         {subject.value == "general" && 
           <div>
-            <label className={styles["form-label"]} htmlFor="description">Description:</label>
+            <label className="form-label" htmlFor="description">Description:</label>
             <textarea 
-              className={styles["form-field"]}
+              className="form-field"
               id="description" 
               name="description" 
               placeholder='Tell us how we can help'
@@ -212,12 +215,12 @@ const ContactForm = () => {
         {subject.value == "order" &&
           <div>
             <p><em>* Contact provided above will be used for order contact * </em></p>
-            <label className={styles["form-label"]} htmlFor="location">Location:</label>
+            <label className="form-label" htmlFor="location">Location:</label>
             <select name="location" id="location">
               <option value="rohnertPark">1301 Maurice Ave, Cotati, CA 94928</option>
             </select>
             <div>
-              <label className={styles["form-label"]} htmlFor="pickUpDate">Pick-up on:</label>
+              <label className="form-label" htmlFor="pickUpDate">Pick-up on:</label>
               <DatePicker 
                 id="pickUpDate"
                 selected={selectedDate}
@@ -226,7 +229,7 @@ const ContactForm = () => {
               </DatePicker>
             </div>
             <div>
-              <label className={styles["form-label"]} htmlFor="cutType">Type:</label>
+              <label className="form-label" htmlFor="cutType">Type:</label>
               <select name="cutType" id="cutType">
                 <option value="Twins (2 pieces)">Twins (2 pieces)</option>
                 <option value="Treats (6 pieces)">Treats (6 pieces)</option>
@@ -245,7 +248,7 @@ const ContactForm = () => {
                 </div>
               </div>
             <div id="price">
-              <label className={styles["form-label"]} htmlFor="price">Price</label>
+              <label className="form-label" htmlFor="price">Price</label>
               <input type="number">{/* Baklava prices from /constants */}</input>
             </div>
             <div id="newCartItem">

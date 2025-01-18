@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 const ContactPage = () => {
   return (
     <div>
-      <h1>Contact Us</h1>
-      <p>Please fill out the form below to reach out to us</p>
+      <h1 className='form-headings'>Contact Us</h1>
+      <p className='form-subheadings'>Please fill out the form below to reach out to us</p>
       <ContactForm />
     </div>
   )
