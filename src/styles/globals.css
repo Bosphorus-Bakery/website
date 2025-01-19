@@ -256,6 +256,14 @@ html {
   margin-top: 20px;
 }
 
+.contact-page-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
 .form-headings {
   text-align: center;
 }
@@ -270,8 +278,7 @@ fieldset {
 
 .form-container {
   max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
+  padding: 20px 100px;
   border: 1px solid #eee;
   border-radius: 10px;
   background-color: #f9f9f9;
@@ -279,7 +286,7 @@ fieldset {
 }
 
 .form-field-container {
-  margin-bottom: 15px;
+  margin-bottom: 30px;
 }
 
 .form-field {
@@ -343,4 +350,13 @@ fieldset {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
+}
+
+.contact-store-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 60%;
+  padding: 20px;
+  text-align: center;
 }
