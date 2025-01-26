@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import { useAppSelector, useAppDispatch, setHasValue, setFieldValue, setIsValid, setFieldCounter, setErrorMessage, setDate } from '@/lib';
 import type { ContactField, ContactFields, OrderFields } from '@/types';
 import { nameRegex, emailRegex, phoneRegex, descriptionRegex, errorMessages, descriptionLimit } from '@/lib/constants';
+import { formStyles } from '@/styles';
 
 const ContactForm = () => {
   // To access Contact Form state
@@ -135,9 +136,9 @@ const ContactForm = () => {
 
   // Contact form component code
   return (
-    <form className="form-container" onSubmit={handleSubmit} noValidate>
+    <form className={formStyles['form-container']} onSubmit={handleSubmit} noValidate>
     {/* noValidate disables native form validation */}
-      <fieldset>
+      <fieldset className="form-fieldset">
         <legend>Request</legend>
         <div>
           <input className="form-radio" type="radio" id="general" name="request_type" value="general" onClick={(e) => handleSubject(e, 'subject')}/>

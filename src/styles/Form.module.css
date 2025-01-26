@@ -1,0 +1,81 @@
+/* LAYOUT */
+.form-container {
+  max-width: 500px;
+  padding: 20px 100px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-field-container {
+  margin-bottom: 30px;
+}
+
+/* HEADINGS */
+.form-headings {
+  text-align: center;
+}
+
+.form-subheadings {
+  text-align: center;
+}
+
+/* FIELDS AND LABELS */
+.form-field {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-field::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.form-field:focus {
+  border-color: #007bff; /* Primary blue color for focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.form-radio {
+  margin-right: 10px;
+}
+
+.form-radio-label {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.form-fieldset {
+  margin-bottom: 16px;
+}
+
+/* ERRORS */
+.form-error {
+  color: #d9534f; /* Red for errors */
+  font-size: 14px;
+  margin-top: -10px;
+  margin-bottom: 15px;
+}
+
+.form-error-border {
+  border: 2px solid red;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
