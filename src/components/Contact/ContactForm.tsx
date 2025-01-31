@@ -136,7 +136,7 @@ const ContactForm = () => {
 
   // Contact form component code
   return (
-    <form className={formStyles['form-container']} onSubmit={handleSubmit} noValidate>
+    <form className={formStyles['contact-us-form-container']} onSubmit={handleSubmit} noValidate>
     {/* noValidate disables native form validation */}
       <fieldset className="form-fieldset">
         <legend>Request</legend>

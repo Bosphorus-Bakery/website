@@ -1,24 +1,10 @@
 /* LAYOUT */
-.form-container {
-  max-width: 500px;
-  padding: 20px 100px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.contact-us-form-container {
+  padding: 24px 20px 26px;
 }
 
 .form-field-container {
   margin-bottom: 30px;
-}
-
-/* HEADINGS */
-.form-headings {
-  text-align: center;
-}
-
-.form-subheadings {
-  text-align: center;
 }
 
 /* FIELDS AND LABELS */

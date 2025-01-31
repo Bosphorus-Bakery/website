@@ -3,10 +3,10 @@ import { contactStyles, formStyles } from '@/styles';
 
 const ContactPage = () => {
   return (
-    <div>
-      <h1 className={formStyles["form-headings"]}>Contact Us</h1>
-      <p className="form-subheadings">Please fill out the form below to reach out to us</p>
-      <div className="contact-page-content">
+    <div className={contactStyles["contact-container"]}>
+      <h1 className={contactStyles["heading-1"]}>Contact Us</h1>
+      <p className={contactStyles["subheading"]}>Please fill out the form below to reach out to us</p>
+      <div>
         <ContactForm />
         <div className="contact-store-details">
           <div id="store-address">

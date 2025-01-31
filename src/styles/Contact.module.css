@@ -1,17 +1,47 @@
-/* CONTAINERS */
-.contact-content-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding: 20px;
-  background-color: #f9f9f9;
+/* Default (mobile-first) styles */
+@media (max-width: 767px) {
+  .heading-1 {
+    text-align: left;
+  }
+
+  .subheading {
+    text-align: left;
+  }
+  
+  .contact-container {
+    width: 100%;
+    max-width: 960px;
+    padding: 32px 20px 8px;
+  }
+  
+  .contact-content-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .contact-store-details-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 60%;
+    padding: 20px;
+    text-align: center;
+  }
+}
+/* Entire contact page container for BG image */
+/* .contact-page {
+} */
+
+
+/* Adjust styles for larger screens */
+@media (max-width: 1024px) {
+
 }
 
-.contact-store-details-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 60%;
-  padding: 20px;
-  text-align: center;
+/* Adjust styles for extra large screens */
+@media (max-width: 1440px) {
+
 }
