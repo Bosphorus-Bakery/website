@@ -59,18 +59,18 @@ const ContactForm = () => {
     // If field does not have value
     if (!field.hasValue) {
       dispatch(setErrorMessage({ field: fieldName, value: errorMessages['required'] })); // Add required error message
-      e.currentTarget.classList.add("error-border"); // Add error styling
+      e.currentTarget.classList.add(formStyles['error-border']); // Add error styling
 
     // If field has invalid value 
     } else { 
       if (!field.isValid) { 
         dispatch(setErrorMessage({ field: fieldName, value: errorMessages[fieldName] })); // Add field specific error
-        e.currentTarget.classList.add("error-border"); // Add error styling
+        e.currentTarget.classList.add(formStyles['error-border']); // Add error styling
 
       // If field has a valid value
       } else {
         dispatch(setErrorMessage({ field: fieldName, value: '' })); // Clear error message
-        e.currentTarget.classList.remove("error-border"); // Add error styling
+        e.currentTarget.classList.remove(formStyles['error-border']); // Add error styling
       }
     }
   }
@@ -108,7 +108,7 @@ const ContactForm = () => {
     // If field's error message state contains error
     if (field.errorMessage !== '') {
       return (
-        <span className="form-error">{field.errorMessage} </span>
+        <span className={formStyles['error']}>{field.errorMessage} </span>
       );
     }
   }
@@ -123,9 +123,9 @@ const ContactForm = () => {
     
     // Renders "Submit" or "Order" based on subject state
     if (subject.value === "order") {
-      return (<button className="form-button">Place order</button>);
+      return (<button className='button'>Place order</button>);
     } else {
-      return (<button className="form-button">Submit</button>);
+      return (<button className='button'>Submit</button>);
     }
   }
 
@@ -136,20 +136,19 @@ const ContactForm = () => {
 
   // Contact form component code
   return (
-    <form className={formStyles['contact-us-form-container']} onSubmit={handleSubmit} noValidate>
+    <form className={formStyles['form-container']} onSubmit={handleSubmit} noValidate>
     {/* noValidate disables native form validation */}
-      <fieldset className="form-fieldset">
-        <legend>Request</legend>
-        <div>
-          <input className="form-radio" type="radio" id="general" name="request_type" value="general" onClick={(e) => handleSubject(e, 'subject')}/>
-          <label className="form-radio-label" htmlFor="subject">General</label>
-          <input className="form-radio" type="radio" id="order" name="request_type" value="order" onClick={(e) => handleSubject(e, 'subject')}/>
-          <label className="form-radio-label" htmlFor="order">Order (Pick Up)</label>
+        <div className={formStyles['radio-group']}>
+          <input className={formStyles['radio-button']} type="radio" id="general" name="request_type" value="general" onClick={(e) => handleSubject(e, 'subject')}/>
+          <label className={formStyles['radio-label']} htmlFor="subject">General</label>
+          <input className={formStyles['radio-button']} type="radio" id="order" name="request_type" value="order" onClick={(e) => handleSubject(e, 'subject')}/>
+          <label className={formStyles['radio-label']} htmlFor="order">Order (Pick Up)</label>
         </div>
-      </fieldset>
-      <div className="form-field-container">
-        <label className="form-label" htmlFor="firstName">First Name:</label>
-        <input className="form-field"
+      <div>
+        <label 
+          className={formStyles['label']} htmlFor="firstName">First Name:</label>
+        <input 
+          className={formStyles['field']}
           id="firstName"
           name="firstName"
           type="text"
@@ -159,9 +158,9 @@ const ContactForm = () => {
         {ErrorMessage(firstName)}
       </div>
       <div>
-        <label className="form-label" htmlFor="lastName">Last Name:</label>
-        <input
-          className="form-field"
+        <label className={formStyles['label']} htmlFor="lastName">Last Name:</label>
+        <input 
+          className={formStyles['field']} 
           id="lastName"
           name="lastName"
           type="text"
@@ -171,9 +170,9 @@ const ContactForm = () => {
         {ErrorMessage(lastName)}
       </div>
       <div>
-        <label className="form-label" htmlFor="email">Email:</label>
+        <label className={formStyles['label']} htmlFor="email">Email:</label>
         <input
-          className="form-field"
+          className={formStyles['field']}
           id="email"
           name="email"
           type="email"
@@ -183,9 +182,9 @@ const ContactForm = () => {
         {ErrorMessage(email)}
       </div>
       <div>
-        <label className="form-label" htmlFor="phone">Phone:</label>
+        <label className={formStyles['label']} htmlFor="phone">Phone:</label>
         <input
-          className="form-field"
+          className={formStyles['field']}
           id="phone"
           name="phone"
           type="tel"
@@ -198,9 +197,9 @@ const ContactForm = () => {
       <div>
         {subject.value == "general" && 
           <div>
-            <label className="form-label" htmlFor="description">Description:</label>
+            <label className={formStyles['label']} htmlFor="description">Description:</label>
             <textarea 
-              className="form-field"
+              className={formStyles['field']}
               id="description" 
               name="description" 
               placeholder='Tell us how we can help'
@@ -208,20 +207,21 @@ const ContactForm = () => {
                 handleOnChange(e, 'description', descriptionRegex)
                 handleCounter(e, 'description')}}
               onBlur={(e) => {handleOnBlur(e, 'description', description)}}/>
-            {CharacterCounter(description.counter ??  0, descriptionLimit)}
-            {ErrorMessage(description)}
+              {CharacterCounter(description.counter ??  0, descriptionLimit)}
+              {ErrorMessage(description)}
           </div>
         }
         {/* If user selects "Order" subject */}
         {subject.value == "order" &&
           <div>
-            <p><em>* Contact provided above will be used for order contact * </em></p>
-            <label className="form-label" htmlFor="location">Location:</label>
-            <select name="location" id="location">
-              <option value="rohnertPark">1301 Maurice Ave, Cotati, CA 94928</option>
-            </select>
             <div>
-              <label className="form-label" htmlFor="pickUpDate">Pick-up on:</label>
+              <label className={formStyles['label']} htmlFor="location">Location:</label>
+              <select className={formStyles['field']} name="location" id="location">
+                <option className={formStyles['option']} value="rohnertPark">1301 Maurice Ave, Cotati, CA 94928</option>
+              </select>
+            </div>
+            <div>
+              <label className={formStyles['label']} htmlFor="pickUpDate">Pick-up on:</label>
               <DatePicker 
                 id="pickUpDate"
                 selected={selectedDate}
@@ -230,8 +230,8 @@ const ContactForm = () => {
               </DatePicker>
             </div>
             <div>
-              <label className="form-label" htmlFor="cutType">Type:</label>
-              <select name="cutType" id="cutType">
+              <label className={formStyles['label']} htmlFor="cutType">Type:</label>
+              <select className={formStyles['field']} name="cutType" id="cutType">
                 <option value="Twins (2 pieces)">Twins (2 pieces)</option>
                 <option value="Treats (6 pieces)">Treats (6 pieces)</option>
                 <option value="Family (9 pieces)">Family (9 pieces)</option>
@@ -249,7 +249,7 @@ const ContactForm = () => {
                 </div>
               </div>
             <div id="price">
-              <label className="form-label" htmlFor="price">Price</label>
+              <label className={formStyles['label']} htmlFor="price">Price</label>
               <input type="number">{/* Baklava prices from /constants */}</input>
             </div>
             <div id="newCartItem">

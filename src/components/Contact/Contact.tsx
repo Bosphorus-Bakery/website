@@ -1,14 +1,14 @@
 import { ContactForm } from '@/components';
-import { contactStyles, formStyles } from '@/styles';
+import { contactStyles } from '@/styles';
 
 const ContactPage = () => {
   return (
-    <div className={contactStyles["contact-container"]}>
+    <div className={contactStyles["container"]}>
       <h1 className={contactStyles["heading-1"]}>Contact Us</h1>
       <p className={contactStyles["subheading"]}>Please fill out the form below to reach out to us</p>
       <div>
         <ContactForm />
-        <div className="contact-store-details">
+        <div className={contactStyles['store-details-container']}>
           <div id="store-address">
             <p>1301 Maurice Avenue</p>
             <p>Rohnert Park, CA 94928</p>

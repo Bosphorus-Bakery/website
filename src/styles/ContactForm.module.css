@@ -1,14 +1,11 @@
-/* LAYOUT */
-.contact-us-form-container {
-  padding: 24px 20px 26px;
+/* Layout */
+.form-container {
+  display: flex;
+  flex-direction: column;
 }
 
-.form-field-container {
-  margin-bottom: 30px;
-}
-
-/* FIELDS AND LABELS */
-.form-field {
+/* Fields */
+.field {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -19,18 +16,17 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-field::placeholder {
+.field::placeholder {
   color: #aaa;
-  font-style: italic;
 }
 
-.form-field:focus {
+.field:focus {
   border-color: #007bff; /* Primary blue color for focus */
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   outline: none;
 }
 
-.form-label {
+.label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
@@ -38,29 +34,31 @@
   color: #333;
 }
 
-.form-radio {
-  margin-right: 10px;
+.option {
+  text-align: left;
 }
 
-.form-radio-label {
+/* Radio button styling */
+.radio-group {
+  text-align: left;
+  padding: 16px 0;
+}
+
+.radio-label {
   font-size: 14px;
   color: #333;
   cursor: pointer;
 }
 
-.form-fieldset {
-  margin-bottom: 16px;
-}
-
-/* ERRORS */
-.form-error {
+/* Errors */
+.error {
   color: #d9534f; /* Red for errors */
   font-size: 14px;
   margin-top: -10px;
   margin-bottom: 15px;
 }
 
-.form-error-border {
+.error-border {
   border: 2px solid red;
   border-radius: 4px;
   transition: border-color 0.3s ease;
