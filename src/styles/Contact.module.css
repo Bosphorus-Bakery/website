@@ -1,5 +1,5 @@
 /* Default (mobile-first) styles */
-@media (max-width: 767px) {
+@media (max-width: 480px) {
   .heading-1 {
     text-align: left;
   }
@@ -8,12 +8,12 @@
     text-align: left;
   }
   
-  .container {
+  .page-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;    /* Full viewport height */
+    min-height: 100vh;
     max-width: 480px;
-    width: 100%;
+    width: 90%;
     padding: 16px;
   }
   
@@ -37,6 +37,11 @@
 /* Entire contact page container for BG image */
 /* .contact-page {
 } */
+
+/* Adjust styles for larger screens */
+@media (max-width: 768px) {
+
+}
 
 
 /* Adjust styles for larger screens */

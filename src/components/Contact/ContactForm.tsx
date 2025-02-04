@@ -144,7 +144,7 @@ const ContactForm = () => {
           <input className={formStyles['radio-button']} type="radio" id="order" name="request_type" value="order" onClick={(e) => handleSubject(e, 'subject')}/>
           <label className={formStyles['radio-label']} htmlFor="order">Order (Pick Up)</label>
         </div>
-      <div>
+      <div className={formStyles['field-container']}>
         <label 
           className={formStyles['label']} htmlFor="firstName">First Name:</label>
         <input 
@@ -157,7 +157,7 @@ const ContactForm = () => {
         />
         {ErrorMessage(firstName)}
       </div>
-      <div>
+      <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="lastName">Last Name:</label>
         <input 
           className={formStyles['field']} 
@@ -169,7 +169,7 @@ const ContactForm = () => {
         />
         {ErrorMessage(lastName)}
       </div>
-      <div>
+      <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="email">Email:</label>
         <input
           className={formStyles['field']}
@@ -181,7 +181,7 @@ const ContactForm = () => {
         />
         {ErrorMessage(email)}
       </div>
-      <div>
+      <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="phone">Phone:</label>
         <input
           className={formStyles['field']}
@@ -194,9 +194,9 @@ const ContactForm = () => {
         {ErrorMessage(phone)}
       </div>
       {/* If user selects "General" subject */}
-      <div>
+      <div className={formStyles['field-container']}>
         {subject.value == "general" && 
-          <div>
+          <div className={formStyles['field-container']}>
             <label className={formStyles['label']} htmlFor="description">Description:</label>
             <textarea 
               className={formStyles['field']}
@@ -214,7 +214,7 @@ const ContactForm = () => {
         {/* If user selects "Order" subject */}
         {subject.value == "order" &&
           <div>
-            <div>
+            <div className={formStyles['field-container']}>
               <label className={formStyles['label']} htmlFor="location">Location:</label>
               <select className={formStyles['field']} name="location" id="location">
                 <option className={formStyles['option']} value="rohnertPark">1301 Maurice Ave, Cotati, CA 94928</option>
@@ -229,7 +229,7 @@ const ContactForm = () => {
                 dateFormat="EEEE, MMMM d, YYYY">
               </DatePicker>
             </div>
-            <div>
+            <div className={formStyles['field-container']}>
               <label className={formStyles['label']} htmlFor="cutType">Type:</label>
               <select className={formStyles['field']} name="cutType" id="cutType">
                 <option value="Twins (2 pieces)">Twins (2 pieces)</option>

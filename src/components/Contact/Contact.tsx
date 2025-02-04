@@ -3,7 +3,7 @@ import { contactStyles } from '@/styles';
 
 const ContactPage = () => {
   return (
-    <div className={contactStyles["container"]}>
+    <div className={contactStyles["page-container"]}>
       <h1 className={contactStyles["heading-1"]}>Contact Us</h1>
       <p className={contactStyles["subheading"]}>Please fill out the form below to reach out to us</p>
       <div>
