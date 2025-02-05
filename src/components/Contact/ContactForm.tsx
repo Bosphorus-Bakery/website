@@ -214,7 +214,7 @@ const ContactForm = () => {
         {/* If user selects "Order" subject */}
         {subject.value == "order" &&
           <div>
-            <div className={formStyles['field-container']}>
+            <div className={formStyles['order-field']}>
               <label className={formStyles['label']} htmlFor="location">Location:</label>
               <select className={formStyles['field']} name="location" id="location">
                 <option className={formStyles['option']} value="rohnertPark">1301 Maurice Ave, Cotati, CA 94928</option>
@@ -223,13 +223,14 @@ const ContactForm = () => {
             <div>
               <label className={formStyles['label']} htmlFor="pickUpDate">Pick-up on:</label>
               <DatePicker 
+                className={formStyles['field']}
                 id="pickUpDate"
                 selected={selectedDate}
                 onChange={handleDateSelect}
                 dateFormat="EEEE, MMMM d, YYYY">
               </DatePicker>
             </div>
-            <div className={formStyles['field-container']}>
+            <div className={formStyles['order-field']}>
               <label className={formStyles['label']} htmlFor="cutType">Type:</label>
               <select className={formStyles['field']} name="cutType" id="cutType">
                 <option value="Twins (2 pieces)">Twins (2 pieces)</option>
@@ -244,16 +245,13 @@ const ContactForm = () => {
                 <div id="quantity">
                   <button id="decrement">-</button>
                   <span>1</span>
-                  </div>
+                </div>
                   <button id="increment">+</button>
                 </div>
               </div>
             <div id="price">
               <label className={formStyles['label']} htmlFor="price">Price</label>
               <input type="number">{/* Baklava prices from /constants */}</input>
-            </div>
-            <div id="newCartItem">
-              <button>Add more +</button>
             </div>
             <h3 id="subtotal">Subtotal ({/* X items */}): ${/* Subtotal price */}</h3>
           </div>

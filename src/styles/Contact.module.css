@@ -30,10 +30,16 @@
     flex-direction: column;
     justify-content: space-between;
     height: 60%;
-    padding: 20px;
     text-align: center;
+    margin-top: 16px;
+  }
+
+  .store-detail {
+    padding: 2px;
   }
 }
+
+
 /* Entire contact page container for BG image */
 /* .contact-page {
 } */

@@ -9,15 +9,13 @@ const ContactPage = () => {
       <div>
         <ContactForm />
         <div className={contactStyles['store-details-container']}>
-          <div id="store-address">
-            <p>1301 Maurice Avenue</p>
-            <p>Rohnert Park, CA 94928</p>
+          <div className={contactStyles['store-detail']} id="store-address">
+            <p>1301 Maurice Avenue<br/>Rohnert Park, CA 94928</p>
           </div>
-          <div id="store-hours">
-            <p>OPEN</p>
+          <div className={contactStyles['store-detail']} id="store-hours">
             <p>Monday to Thursday</p>
           </div>
-          <div id="store-phone-email">
+          <div className={contactStyles['store-detail']} id="store-phone-email">
             <p>(415)408-3037</p>
             <p>owner@bosphorusbakery.com</p>
           </div> 
