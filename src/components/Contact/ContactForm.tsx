@@ -310,16 +310,22 @@ const ContactForm = () => {
       )}
       {/* If user selects "Order" subject */}
       {subject.value == 'order' && (
-        <div className={formStyles['field-container']}>
-          <label className={formStyles['label']} htmlFor="location">
-            Location:
-          </label>
-          <select className={formStyles['field']} name="location" id="location">
-            <option className={formStyles['option']} value="rohnertPark">
-              1301 Maurice Ave, Cotati, CA 94928
-            </option>
-          </select>
-          <div>
+        <div className={formStyles['order-fields']}>
+          <div className={formStyles['order-field-container']}>
+            <label className={formStyles['label']} htmlFor="location">
+              Location:
+            </label>
+            <select
+              className={formStyles['field']}
+              name="location"
+              id="location"
+            >
+              <option className={formStyles['option']} value="rohnertPark">
+                1301 Maurice Ave, Cotati, CA 94928
+              </option>
+            </select>
+          </div>
+          <div className={formStyles['order-field-container']}>
             <label className={formStyles['label']} htmlFor="pickUpDate">
               Pick-up on:
             </label>
@@ -331,29 +337,40 @@ const ContactForm = () => {
               dateFormat="EEEE, MMMM d, YYYY"
             ></DatePicker>
           </div>
-          <div className={formStyles['']}>
+          <div className={formStyles['order-field-container']}>
             <label className={formStyles['label']} htmlFor="cutType">
               Type:
             </label>
-            <select className={formStyles['field']} name="cutType" id="cutType">
-              <option value="Twins (2 pieces)">Twins (2 pieces)</option>
-              <option value="Treats (6 pieces)">Treats (6 pieces)</option>
-              <option value="Family (9 pieces)">Family (9 pieces)</option>
-              <option value="Feast (16 pieces)">Feast (16 pieces)</option>
-              <option value="Regular Cut (90 pieces)">
-                Regular Cut (90 pieces)
-              </option>
-              <option value="Twin Cut (48 pieces)">Twin Cut (48 pieces)</option>
-              <option value="Square Cut (40 pieces)">
-                Square Cut (40 pieces)
-              </option>
-            </select>
-            <div id="actionLinks">
-              <div id="quantity">
-                <button id="decrement">-</button>
-                <span>1</span>
+            <div className={formStyles['two-col-container']}>
+              <select
+                className={formStyles['two-col-field']}
+                name="cutType"
+                id="cut-type"
+              >
+                <option value="Twins (2 pieces)">Twins (2 pieces)</option>
+                <option value="Treats (6 pieces)">Treats (6 pieces)</option>
+                <option value="Family (9 pieces)">Family (9 pieces)</option>
+                <option value="Feast (16 pieces)">Feast (16 pieces)</option>
+                <option value="Regular Cut (90 pieces)">
+                  Regular Cut (90 pieces)
+                </option>
+                <option value="Twin Cut (48 pieces)">
+                  Twin Cut (48 pieces)
+                </option>
+                <option value="Square Cut (40 pieces)">
+                  Square Cut (40 pieces)
+                </option>
+              </select>
+              <div
+                className={`${formStyles['quantity-container']} ${formStyles['two-col-field']}`}
+                id="actionLinks"
+              >
+                <div id="quantity">
+                  <button id="decrement">-</button>
+                  <span>1</span>
+                </div>
+                <button id="increment">+</button>
               </div>
-              <button id="increment">+</button>
             </div>
           </div>
           <div id="price">

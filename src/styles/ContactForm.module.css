@@ -8,6 +8,21 @@
   width: 95%;
 }
 
+.order-field-container {
+  width: 100%;
+}
+
+.two-col-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.quantity-container {
+  display: flex;
+  flex-direction: row;
+}
+
 /* Fields */
 .field {
   width: 100%;
@@ -20,6 +35,10 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.order-fields {
+  width: 95%;
+}
+
 .field::placeholder {
   color: #aaa;
 }
@@ -28,10 +47,6 @@
   border-color: #007bff; /* Primary blue color for focus */
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   outline: none;
-}
-
-#cutType {
-  width: 60%;
 }
 
 .label {
@@ -44,6 +59,17 @@
 
 .option {
   text-align: left;
+}
+
+.two-col-field {
+  width: 65%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Radio button styling */
