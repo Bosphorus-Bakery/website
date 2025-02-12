@@ -362,14 +362,18 @@ const ContactForm = () => {
                 </option>
               </select>
               <div
-                className={`${formStyles['quantity-container']} ${formStyles['two-col-field']}`}
+                className={formStyles['quantity-container']}
                 id="actionLinks"
               >
-                <div id="quantity">
-                  <button id="decrement">-</button>
-                  <span>1</span>
+                <div className={formStyles['quantity-controls']} id="quantity">
+                  <button className={formStyles['quantity-button']}>
+                    <span className={formStyles['quantity-modifier']}>-</span>
+                  </button>
+                  <span className={formStyles['quantity-item']}>1</span>
+                  <button className={formStyles['quantity-button']}>
+                    <span className={formStyles['quantity-modifier']}>+</span>
+                  </button>
                 </div>
-                <button id="increment">+</button>
               </div>
             </div>
           </div>
