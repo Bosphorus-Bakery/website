@@ -21,6 +21,7 @@ import {
   descriptionLimit,
 } from '@/lib/constants';
 import { formStyles } from '@/styles';
+import squareCutImg from 'square-cut.png';
 
 const ContactForm = () => {
   // To access Contact Form state
@@ -310,7 +311,7 @@ const ContactForm = () => {
       )}
       {/* If user selects "Order" subject */}
       {subject.value == 'order' && (
-        <div className={formStyles['order-fields']}>
+        <div className={formStyles['all-order-fields-container']}>
           <div className={formStyles['order-field-container']}>
             <label className={formStyles['label']} htmlFor="location">
               Location:
@@ -337,55 +338,39 @@ const ContactForm = () => {
               dateFormat="EEEE, MMMM d, YYYY"
             ></DatePicker>
           </div>
-          <div className={formStyles['order-field-container']}>
-            <label className={formStyles['label']} htmlFor="cutType">
-              Type:
-            </label>
-            <div className={formStyles['two-col-container']}>
-              <select
-                className={formStyles['two-col-field']}
-                name="cutType"
-                id="cut-type"
-              >
-                <option value="Twins (2 pieces)">Twins (2 pieces)</option>
-                <option value="Treats (6 pieces)">Treats (6 pieces)</option>
-                <option value="Family (9 pieces)">Family (9 pieces)</option>
-                <option value="Feast (16 pieces)">Feast (16 pieces)</option>
-                <option value="Regular Cut (90 pieces)">
-                  Regular Cut (90 pieces)
-                </option>
-                <option value="Twin Cut (48 pieces)">
-                  Twin Cut (48 pieces)
-                </option>
-                <option value="Square Cut (40 pieces)">
-                  Square Cut (40 pieces)
-                </option>
-              </select>
+          <div className={formStyles['item-list']}>
+            <div className={formStyles['item']}>
+              <img />
+              <div className={formStyles['item-details']}>
+                <div className={formStyles['item-checkbox']}>
+                  <input type="checkbox" value="square" />
+                  <label className={formStyles['label']} htmlFor="cutType">
+                    Square Cut (40 pieces)
+                  </label>
+                </div>
+                <span id="price">$10.99</span>
+              </div>
               <div
                 className={formStyles['quantity-container']}
                 id="actionLinks"
               >
-                <div className={formStyles['quantity-controls']} id="quantity">
-                  <button className={formStyles['quantity-button']}>
-                    <span className={formStyles['quantity-modifier']}>-</span>
-                  </button>
-                  <span className={formStyles['quantity-item']}>1</span>
-                  <button className={formStyles['quantity-button']}>
-                    <span className={formStyles['quantity-modifier']}>+</span>
-                  </button>
-                </div>
+                <button className={formStyles['quantity-button']}>
+                  <span className={formStyles['quantity-modifier-span']}>
+                    -
+                  </span>
+                </button>
+                <span className={formStyles['item-quantity']}>1</span>
+                <button className={formStyles['quantity-button']}>
+                  <span className={formStyles['quantity-modifier-span']}>
+                    +
+                  </span>
+                </button>
               </div>
             </div>
           </div>
-          <div id="price">
-            <label className={formStyles['label']} htmlFor="price">
-              Price
-            </label>
-            <input type="number">{/* Baklava prices from /constants */}</input>
-          </div>
-          <h3 id="subtotal">
+          <span id="subtotal">
             Subtotal ({/* X items */}): ${/* Subtotal price */}
-          </h3>
+          </span>
         </div>
       )}
       {SubmitButton(subject)}
