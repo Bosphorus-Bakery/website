@@ -19,9 +19,9 @@ import {
   descriptionRegex,
   errorMessages,
   descriptionLimit,
+  cutDetails,
 } from '@/lib/constants';
 import { formStyles } from '@/styles';
-import squareCutImg from 'square-cut.png';
 
 const ContactForm = () => {
   // To access Contact Form state
@@ -182,6 +182,43 @@ const ContactForm = () => {
     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
   };
 
+  // cutDetails data is an arg
+  const ItemTemplate = (cutDetails: object) => {
+    // Get list of all cut types
+
+    //
+    type componentProps = {
+      CutTypeKeys: keyof typeof cutDetails;
+    };
+
+    // For each cut type
+
+    // Render this component code for each item
+    return (
+      <div className={formStyles['item']}>
+        {/* image property /> */}
+        <div className={formStyles['item-details']}>
+          <div className={formStyles['item-checkbox']}>
+            <input type="checkbox" value="square" />
+            <label className={formStyles['label']} htmlFor="cutType">
+              {/* name property */}
+            </label>
+          </div>
+          <span id="price"> {/* price property */}</span>
+        </div>
+        <div className={formStyles['quantity-container']} id="actionLinks">
+          <button className={formStyles['quantity-button']}>
+            <span className={formStyles['quantity-modifier-span']}>-</span>
+          </button>
+          <span className={formStyles['item-quantity']}>1</span>
+          <button className={formStyles['quantity-button']}>
+            <span className={formStyles['quantity-modifier-span']}>+</span>
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   // Contact form component code
   return (
     <form
@@ -339,34 +376,7 @@ const ContactForm = () => {
             ></DatePicker>
           </div>
           <div className={formStyles['item-list']}>
-            <div className={formStyles['item']}>
-              <img />
-              <div className={formStyles['item-details']}>
-                <div className={formStyles['item-checkbox']}>
-                  <input type="checkbox" value="square" />
-                  <label className={formStyles['label']} htmlFor="cutType">
-                    Square Cut (40 pieces)
-                  </label>
-                </div>
-                <span id="price">$10.99</span>
-              </div>
-              <div
-                className={formStyles['quantity-container']}
-                id="actionLinks"
-              >
-                <button className={formStyles['quantity-button']}>
-                  <span className={formStyles['quantity-modifier-span']}>
-                    -
-                  </span>
-                </button>
-                <span className={formStyles['item-quantity']}>1</span>
-                <button className={formStyles['quantity-button']}>
-                  <span className={formStyles['quantity-modifier-span']}>
-                    +
-                  </span>
-                </button>
-              </div>
-            </div>
+            <ItemTemplate></ItemTemplate>
           </div>
           <span id="subtotal">
             Subtotal ({/* X items */}): ${/* Subtotal price */}

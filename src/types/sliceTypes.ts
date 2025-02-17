@@ -37,3 +37,9 @@ export type CartItem = {
   price: number;
   quantity: number;
 }
+
+export type CutType = {
+  name: string,
+  price: number;
+  imageSrc: string;
+}
