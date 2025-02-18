@@ -11,7 +11,12 @@ import {
   setErrorMessage,
   setDate,
 } from '@/lib';
-import type { ContactField, ContactFields, OrderFields } from '@/types';
+import type {
+  ContactField,
+  ContactFields,
+  OrderFields,
+  CutType,
+} from '@/types';
 import {
   nameRegex,
   emailRegex,
@@ -182,42 +187,41 @@ const ContactForm = () => {
     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
   };
 
-  // cutDetails data is an arg
-  const ItemTemplate = (cutDetails: object) => {
-    // Get list of all cut types
-
-    //
-    type componentProps = {
-      CutTypeKeys: keyof typeof cutDetails;
-    };
-
-    // For each cut type
-
-    // Render this component code for each item
+  // Iterate through cutDetails (name, price, image) rendering an item for each cut
+  const ItemList = () => {
     return (
-      <div className={formStyles['item']}>
-        {/* image property /> */}
-        <div className={formStyles['item-details']}>
-          <div className={formStyles['item-checkbox']}>
-            <input type="checkbox" value="square" />
-            <label className={formStyles['label']} htmlFor="cutType">
-              {/* name property */}
-            </label>
-          </div>
-          <span id="price"> {/* price property */}</span>
-        </div>
-        <div className={formStyles['quantity-container']} id="actionLinks">
-          <button className={formStyles['quantity-button']}>
-            <span className={formStyles['quantity-modifier-span']}>-</span>
-          </button>
-          <span className={formStyles['item-quantity']}>1</span>
-          <button className={formStyles['quantity-button']}>
-            <span className={formStyles['quantity-modifier-span']}>+</span>
-          </button>
-        </div>
-      </div>
+      <ul>
+        {cutDetails.map((cut: CutType, index: number) => (
+          <li key={index}>{cut.name}</li>
+        ))}
+      </ul>
     );
   };
+
+  //   // Render this component code for each item
+  // return (
+  //   <div className={formStyles['item']}>
+  //     {/* image property /> */}
+  //     <div className={formStyles['item-details']}>
+  //       <div className={formStyles['item-checkbox']}>
+  //         <input type="checkbox" value="square" />
+  //         <label className={formStyles['label']} htmlFor="cutType">
+  //           {/* name property */}
+  //         </label>
+  //       </div>
+  //       <span id="price"> {/* price property */}</span>
+  //     </div>
+  //     <div className={formStyles['quantity-container']} id="actionLinks">
+  //       <button className={formStyles['quantity-button']}>
+  //         <span className={formStyles['quantity-modifier-span']}>-</span>
+  //       </button>
+  //       <span className={formStyles['item-quantity']}>1</span>
+  //       <button className={formStyles['quantity-button']}>
+  //         <span className={formStyles['quantity-modifier-span']}>+</span>
+  //       </button>
+  //     </div>
+  //   </div>
+  // );
 
   // Contact form component code
   return (
@@ -375,9 +379,8 @@ const ContactForm = () => {
               dateFormat="EEEE, MMMM d, YYYY"
             ></DatePicker>
           </div>
-          <div className={formStyles['item-list']}>
-            <ItemTemplate></ItemTemplate>
-          </div>
+          <div className={formStyles['item-list']}></div>
+          {ItemList()}
           <span id="subtotal">
             Subtotal ({/* X items */}): ${/* Subtotal price */}
           </span>

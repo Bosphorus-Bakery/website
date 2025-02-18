@@ -1,4 +1,4 @@
-import { LargeNumberLike } from "crypto";
+import { LargeNumberLike } from 'crypto';
 
 export interface AppState {
   isDark: boolean;
@@ -36,10 +36,10 @@ export type CartItem = {
   name: string;
   price: number;
   quantity: number;
-}
+};
 
-export type CutType = {
-  name: string,
+export interface CutType {
+  name: string;
   price: number;
   imageSrc: string;
 }
