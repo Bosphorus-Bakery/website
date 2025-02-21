@@ -142,7 +142,6 @@ const ContactForm = () => {
       description,
     };
 
-    //
     const fieldValues = Object.entries(ContactFormFields) // Transforms state object into array of key value pairs
       .map(([fieldName, fieldValue]) => ({
         // Iterates through key value pairs and extracts the field name and field value
@@ -187,41 +186,71 @@ const ContactForm = () => {
     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
   };
 
-  // Iterate through cutDetails (name, price, image) rendering an item for each cut
+  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.currentTarget.checked;
+    const parentNode = e.currentTarget.parentNode?.parentNode?.parentNode;
+    console.log(parentNode);
+    // Logic if unchecked
+    if (!isChecked) {
+    }
+  };
+
+  const QuantityControls = () => {
+    return (
+      <div className={formStyles['quantity-container']} id="actionLinks">
+        <button className={formStyles['quantity-button']}>
+          <span className={formStyles['quantity-modifier-span']}>-</span>
+        </button>
+        <span className={formStyles['item-quantity']}>1</span>
+        <button className={formStyles['quantity-button']}>
+          <span className={formStyles['quantity-modifier-span']}>+</span>
+        </button>
+      </div>
+    );
+  };
+
+  // Baklava cut type checkboxes component code
   const ItemList = () => {
     return (
-      <ul>
+      // List of all baklava cut checkboxes
+      <ul className={formStyles['item-list']}>
+        {/* Iterate through each baklava cut and render their details */}
         {cutDetails.map((cut: CutType, index: number) => (
-          <li key={index}>{cut.name}</li>
+          <li key={index} className={formStyles['item']}>
+            <div className={formStyles['item-details']}>
+              {/* Checkbox for baklava cut */}
+              <div className={formStyles['item-checkbox']}>
+                <input
+                  id={cut.id}
+                  type="checkbox"
+                  value={cut.id}
+                  onChange={(e) => {
+                    handleCheckbox(e);
+                  }}
+                />
+                {/* Name of baklava cut */}
+                <label className={formStyles['label']} htmlFor="cutType">
+                  {cut.name}
+                </label>
+              </div>
+              {/* Price of baklava cut */}
+              <span id="price"> {cut.price}</span>
+            </div>
+            {/* Controls to adjust quantity */}
+            <div className={formStyles['quantity-container']} id={`${cut.id}QuantityControls`}>
+              <button className={formStyles['quantity-button']}>
+                <span className={formStyles['quantity-modifier-span']}>-</span>
+              </button>
+              <span className={formStyles['item-quantity']}>1</span>
+              <button className={formStyles['quantity-button']}>
+                <span className={formStyles['quantity-modifier-span']}>+</span>
+              </button>
+            </div>
+          </li>
         ))}
       </ul>
     );
   };
-
-  //   // Render this component code for each item
-  // return (
-  //   <div className={formStyles['item']}>
-  //     {/* image property /> */}
-  //     <div className={formStyles['item-details']}>
-  //       <div className={formStyles['item-checkbox']}>
-  //         <input type="checkbox" value="square" />
-  //         <label className={formStyles['label']} htmlFor="cutType">
-  //           {/* name property */}
-  //         </label>
-  //       </div>
-  //       <span id="price"> {/* price property */}</span>
-  //     </div>
-  //     <div className={formStyles['quantity-container']} id="actionLinks">
-  //       <button className={formStyles['quantity-button']}>
-  //         <span className={formStyles['quantity-modifier-span']}>-</span>
-  //       </button>
-  //       <span className={formStyles['item-quantity']}>1</span>
-  //       <button className={formStyles['quantity-button']}>
-  //         <span className={formStyles['quantity-modifier-span']}>+</span>
-  //       </button>
-  //     </div>
-  //   </div>
-  // );
 
   // Contact form component code
   return (
@@ -379,7 +408,6 @@ const ContactForm = () => {
               dateFormat="EEEE, MMMM d, YYYY"
             ></DatePicker>
           </div>
-          <div className={formStyles['item-list']}></div>
           {ItemList()}
           <span id="subtotal">
             Subtotal ({/* X items */}): ${/* Subtotal price */}

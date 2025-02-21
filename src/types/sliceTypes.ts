@@ -39,6 +39,7 @@ export type CartItem = {
 };
 
 export interface CutType {
+  id: string;
   name: string;
   price: number;
   imageSrc: string;
