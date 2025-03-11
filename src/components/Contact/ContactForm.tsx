@@ -29,20 +29,22 @@ import {
 import { formStyles } from '@/styles';
 
 const ContactForm = () => {
-  // To access Contact Form state
+  // Contact info form state values
   const { firstName, lastName, email, phone, subject, description } =
-    useAppSelector((state) => state.contactForm.contactInfo); // Contact info state properties
+    useAppSelector((state) => state.contactForm.contactInfo);
+
+  // TO DO: Order form state values
   const { selectedDate, cart } = useAppSelector(
     (state) => state.contactForm.order,
-  ); // Order state properties
+  );
   const dispatch = useAppDispatch();
 
-  // Helper function that validates field's input against its regex
+  // Function validates field's input against its regex
   const validateField = (regex: RegExp, value: string) => {
     return regex.test(value) ? true : false;
   };
 
-  // Helper function that updates field's character counter on change
+  // Function updates field's character counter on change
   const handleCounter = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     fieldName: keyof ContactFields,
@@ -51,38 +53,37 @@ const ContactForm = () => {
     dispatch(setFieldCounter({ field: fieldName, value: length }));
   };
 
-  // On change function that detects presence of value and validates value
+  // Function that detects value and validates it on change
   const handleOnChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>, // Accepts both text areas and input fields
-    fieldName: keyof ContactFields, // Only field names
+      | React.ChangeEvent<HTMLTextAreaElement>,
+    fieldName: keyof ContactFields,
     regex: RegExp,
   ) => {
-    // Get value in field
     const value = e.currentTarget.value;
 
-    // If field is empty
+    // If field is empty then update state
     if (value.trim() === '') {
       dispatch(setHasValue({ field: fieldName, value: false }));
 
-      // If field has a value
+      // If field has a value then update state
     } else {
       dispatch(setHasValue({ field: fieldName, value: true }));
 
-      // If field value passes its regex
+      // If field value passes its regex then update state
       if (validateField(regex, value)) {
         dispatch(setIsValid({ field: fieldName, value: true }));
         dispatch(setFieldValue({ field: fieldName, value: value }));
 
-        // If field value fails regex
+        // If field value fails regex then update state
       } else {
         dispatch(setIsValid({ field: fieldName, value: false }));
       }
     }
   };
 
-  // On blur function that reads state then displays appropriate error
+  // Function that reads state then displays appropriate error on blur
   const handleOnBlur = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -90,35 +91,33 @@ const ContactForm = () => {
     fieldName: keyof ContactFields,
     field: ContactField,
   ) => {
-    // If field does not have value
+    // If field does not have value then display required error and apply error styles
     if (!field.hasValue) {
       dispatch(
-        // Display required field error message
         setErrorMessage({ field: fieldName, value: errorMessages['required'] }),
-      ); // Add required error message
-      e.currentTarget.classList.add(formStyles['error-border']); // Add error styling
+      );
+      e.currentTarget.classList.add(formStyles['error-border']);
 
-      // If field has invalid value
+      // If field has invalid value then display incorrect format error and apply error styles
     } else {
       if (!field.isValid) {
         dispatch(
-          // Display invalid value error message
           setErrorMessage({
             field: fieldName,
             value: errorMessages[fieldName],
           }),
-        ); // Add error styling
+        );
         e.currentTarget.classList.add(formStyles['error-border']);
 
-        // If field has a valid value
+        // If field has a valid value then clear error message and remove error styling
       } else {
-        dispatch(setErrorMessage({ field: fieldName, value: '' })); // Clear error message
-        e.currentTarget.classList.remove(formStyles['error-border']); // Add error styling
+        dispatch(setErrorMessage({ field: fieldName, value: '' }));
+        e.currentTarget.classList.remove(formStyles['error-border']);
       }
     }
   };
 
-  // Function accepts date object, and field name for action creator
+  // TO DO: Function accepts date object, and field name for action creator
   const handleDateSelect = (date: Date | null) => {
     // Q: Why can date be null?
     if (date) {
@@ -155,11 +154,11 @@ const ContactForm = () => {
 
   // Error message component code
   const ErrorMessage = (field: ContactField) => {
-    // If field's error message state contains error
     if (field.errorMessage !== '') {
       return <span className={formStyles['error']}>{field.errorMessage} </span>;
     }
   };
+
   // Character counter component code
   const CharacterCounter = (counter: number, characterLimit: number) => {
     return (
@@ -186,15 +185,6 @@ const ContactForm = () => {
     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
   };
 
-  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = e.currentTarget.checked;
-    const parentNode = e.currentTarget.parentNode?.parentNode?.parentNode;
-    console.log(parentNode);
-    // Logic if unchecked
-    if (!isChecked) {
-    }
-  };
-
   const QuantityControls = () => {
     return (
       <div className={formStyles['quantity-container']} id="actionLinks">
@@ -209,12 +199,28 @@ const ContactForm = () => {
     );
   };
 
+  // Function runs when baklava cut type checkbox is checked or unchecked
+  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.currentTarget.checked;
+    const quantityModifier = e.currentTarget.parentElement?.parentElement
+      ?.parentElement?.lastElementChild as HTMLElement;
+    console.log(quantityModifier);
+
+    // If checked, hide quantity
+    if (isChecked && quantityModifier) {
+      quantityModifier.style.display = 'none';
+
+      // If checked, apply checked styling
+    } else {
+    }
+  };
+
   // Baklava cut type checkboxes component code
   const ItemList = () => {
     return (
       // List of all baklava cut checkboxes
       <ul className={formStyles['item-list']}>
-        {/* Iterate through each baklava cut and render their details */}
+        {/* Render each baklava cut type's details */}
         {cutDetails.map((cut: CutType, index: number) => (
           <li key={index} className={formStyles['item']}>
             <div className={formStyles['item-details']}>
@@ -228,7 +234,7 @@ const ContactForm = () => {
                     handleCheckbox(e);
                   }}
                 />
-                {/* Name of baklava cut */}
+                {/* Baklava cut name */}
                 <label className={formStyles['label']} htmlFor="cutType">
                   {cut.name}
                 </label>
@@ -237,7 +243,10 @@ const ContactForm = () => {
               <span id="price"> {cut.price}</span>
             </div>
             {/* Controls to adjust quantity */}
-            <div className={formStyles['quantity-container']} id={`${cut.id}QuantityControls`}>
+            <div
+              className={formStyles['quantity-container']}
+              id={`${cut.id}QuantityControls`}
+            >
               <button className={formStyles['quantity-button']}>
                 <span className={formStyles['quantity-modifier-span']}>-</span>
               </button>
