@@ -38,9 +38,14 @@ export type CartItem = {
   quantity: number;
 };
 
-export interface CutType {
+export type Item = {
   id: string;
   name: string;
   price: number;
+  quantity: number;
   imageSrc: string;
+};
+
+export interface ItemState {
+  items: Item[];
 }

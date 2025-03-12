@@ -11,12 +11,7 @@ import {
   setErrorMessage,
   setDate,
 } from '@/lib';
-import type {
-  ContactField,
-  ContactFields,
-  OrderFields,
-  CutType,
-} from '@/types';
+import type { ContactField, ContactFields, OrderFields, Item } from '@/types';
 import {
   nameRegex,
   emailRegex,
@@ -218,7 +213,7 @@ const ContactForm = () => {
       // List of all baklava cut checkboxes
       <ul className={formStyles['item-list']}>
         {/* Render each baklava cut type's details */}
-        {cutDetails.map((cut: CutType, index: number) => (
+        {cutDetails.map((cut: Item, index: number) => (
           <li key={index} className={formStyles['item']}>
             <div className={formStyles['item-details']}>
               {/* Checkbox for baklava cut */}
@@ -230,7 +225,7 @@ const ContactForm = () => {
                   onChange={handleCheckbox}
                 />
                 {/* Baklava cut name */}
-                <label className={formStyles['label']} htmlFor="cutType">
+                <label className={formStyles['label']} htmlFor="item">
                   {cut.name}
                 </label>
               </div>
