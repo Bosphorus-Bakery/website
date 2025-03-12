@@ -30,6 +30,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 14px;
 }
 
 .item-details {
@@ -92,16 +93,23 @@
   cursor: pointer;
 }
 
-/* Quantity */
-.quantity-container {
+/* When item is checked */
+.quantity-container-unchecked {
   display: flex;
   flex-direction: row;
   width: 40%;
   justify-content: space-between;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
-
-.hidden {
-  display: none;
+/* When item is unchecked */
+.quantity-container-checked {
+  display: flex;
+  flex-direction: row;
+  width: 40%;
+  justify-content: space-between;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 .quantity-button {

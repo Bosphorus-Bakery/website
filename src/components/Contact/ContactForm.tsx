@@ -199,24 +199,21 @@ const ContactForm = () => {
     );
   };
 
-  // Function runs when baklava cut type checkbox is checked or unchecked
-  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = e.currentTarget.checked;
-    const quantityModifier = e.currentTarget.parentElement?.parentElement
-      ?.parentElement?.lastElementChild as HTMLElement;
-    console.log(quantityModifier);
-
-    // If checked, hide quantity
-    if (isChecked && quantityModifier) {
-      quantityModifier.style.display = 'none';
-
-      // If checked, apply checked styling
-    } else {
-    }
-  };
-
   // Baklava cut type checkboxes component code
   const ItemList = () => {
+    // Function runs when baklava cut type checkbox is checked or unchecked
+    const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Get checkbox clicked by transversing DOM
+      const quantityModifier = e.currentTarget.parentElement?.parentElement
+        ?.parentElement?.lastElementChild as HTMLElement;
+      console.log(quantityModifier);
+
+      // If checked show item quantity
+      quantityModifier.classList.toggle(
+        formStyles['quantity-container-checked'],
+      );
+    };
+
     return (
       // List of all baklava cut checkboxes
       <ul className={formStyles['item-list']}>
@@ -230,9 +227,7 @@ const ContactForm = () => {
                   id={cut.id}
                   type="checkbox"
                   value={cut.id}
-                  onChange={(e) => {
-                    handleCheckbox(e);
-                  }}
+                  onChange={handleCheckbox}
                 />
                 {/* Baklava cut name */}
                 <label className={formStyles['label']} htmlFor="cutType">
@@ -240,11 +235,11 @@ const ContactForm = () => {
                 </label>
               </div>
               {/* Price of baklava cut */}
-              <span id="price"> {cut.price}</span>
+              <span id="price">${cut.price}</span>
             </div>
             {/* Controls to adjust quantity */}
             <div
-              className={formStyles['quantity-container']}
+              className={formStyles['quantity-container-unchecked']}
               id={`${cut.id}QuantityControls`}
             >
               <button className={formStyles['quantity-button']}>
