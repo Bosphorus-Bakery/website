@@ -1,4 +1,4 @@
-export const cutDetails = [
+export const itemDetails = [
   {
     id: 'square',
     name: 'Square Cut (40 Pieces)',

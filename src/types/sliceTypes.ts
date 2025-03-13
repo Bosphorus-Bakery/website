@@ -1,5 +1,3 @@
-import { LargeNumberLike } from 'crypto';
-
 export interface AppState {
   isDark: boolean;
   theme: boolean;
@@ -7,9 +5,10 @@ export interface AppState {
 
 // Interface combining contact info fields and items state
 export interface FormFields {
-  contactInfo: ContactFields; 
-  items: ItemsState;
+  contactInfo: ContactFields;
+  order: OrderFields;
 }
+
 export interface ContactFields {
   firstName: ContactField;
   lastName: ContactField;
@@ -23,16 +22,13 @@ export interface ContactField {
   value: string;
   isValid: boolean;
   errorMessage: string;
-
-  // Optional character counter for fields with max length
-  counter?: number;
+  counter?: number; // Optional field
 }
 // Type limits to only interface keys: firstName, lastName, etc
 // export type ContactFieldNames = keyof ContactFields;
 
-// State of all Items
-export interface ItemsState {
-  items: Item[];
+export interface OrderFields {
+  cart: Item[];
 }
 
 // Properties of every Item

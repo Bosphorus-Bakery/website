@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ContactFields, FormFields, Item } from '@/types';
-import { cutDetails } from '@/lib/constants';
+import { itemDetails } from '@/lib/constants';
 
+// Intial state of contact info fields and item quantity
 const initialFormState: FormFields = {
   contactInfo: {
     firstName: { hasValue: false, value: '', isValid: false, errorMessage: '' },
@@ -23,8 +24,8 @@ const initialFormState: FormFields = {
       counter: 0,
     },
   },
-  items: { // FormFields interface
-    items: cutDetails, // ItemsState interface
+  order: {
+    cart: itemDetails,
   },
 };
 
@@ -32,9 +33,9 @@ const contactFormSlice = createSlice({
   name: 'contactForm',
   initialState: initialFormState,
   reducers: {
-    // Updates field state's hasValue property
     setHasValue: (
-      state, // Current state
+      // Current state
+      state,
 
       // Field to update and new value
       action: PayloadAction<{ field: keyof ContactFields; value: boolean }>,
@@ -68,13 +69,19 @@ const contactFormSlice = createSlice({
       state.contactInfo[action.payload.field].errorMessage =
         action.payload.value;
     },
+    incrementItem: (
+      state,
+      // Pass in item's id in payload
+      action: PayloadAction<string>,
+    ) => {
+      // Finds item with matching id and
+      const item = state.order.cart.find((item) => item.id === action.payload);
+      if (item) {
+        item.quantity++;
+      }
+    },
   },
 });
-
-const itemSlice = createSlice({
-  name: 'items'
-})
-
 
 export const {
   setHasValue,

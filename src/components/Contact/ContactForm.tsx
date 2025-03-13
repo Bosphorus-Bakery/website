@@ -18,7 +18,7 @@ import {
   descriptionRegex,
   errorMessages,
   descriptionLimit,
-  cutDetails,
+  itemDetails,
 } from '@/lib/constants';
 import { formStyles } from '@/styles';
 
@@ -149,9 +149,17 @@ const ContactForm = () => {
   const SubmitButton = (subject: ContactField) => {
     // Renders "Submit" or "Order" based on subject state
     if (subject.value === 'order') {
-      return <button className="button">Place order</button>;
+      return (
+        <button className="button" type="submit">
+          Place order
+        </button>
+      );
     } else {
-      return <button className="button">Submit</button>;
+      return (
+        <button className="button" type="submit">
+          Submit
+        </button>
+      );
     }
   };
 
@@ -161,20 +169,6 @@ const ContactForm = () => {
     fieldName: keyof ContactFields,
   ) => {
     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
-  };
-
-  const QuantityControls = () => {
-    return (
-      <div className={formStyles['quantity-container']} id="actionLinks">
-        <button className={formStyles['quantity-button']}>
-          <span className={formStyles['quantity-modifier-span']}>-</span>
-        </button>
-        <span className={formStyles['item-quantity']}>1</span>
-        <button className={formStyles['quantity-button']}>
-          <span className={formStyles['quantity-modifier-span']}>+</span>
-        </button>
-      </div>
-    );
   };
 
   // Baklava cut type checkboxes component code
@@ -192,39 +186,53 @@ const ContactForm = () => {
       );
     };
 
+    // Update item quantity state
+    const handleIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
+      
+      // Get item id from increment clicked
+      const itemId = e.currentTarget.parentElement
+        ?.getAttribute('id')
+        ?.replace('QuantityControls', '');
+      console.log(itemId);
+    };
+
     return (
-      // List of all baklava cut checkboxes
+      // List of all baklava item checkboxes
       <ul className={formStyles['item-list']}>
-        {/* Render each baklava cut type's details */}
-        {cutDetails.map((cut: Item, index: number) => (
+        {/* Render each baklava item's details */}
+        {itemDetails.map((item: Item, index: number) => (
           <li key={index} className={formStyles['item']}>
             <div className={formStyles['item-details']}>
-              {/* Checkbox for baklava cut */}
+              {/* Checkbox for baklava item */}
               <div className={formStyles['item-checkbox']}>
                 <input
-                  id={cut.id}
+                  id={item.id}
                   type="checkbox"
-                  value={cut.id}
+                  value={item.id}
                   onChange={handleCheckbox}
                 />
-                {/* Baklava cut name */}
+                {/* Baklava item name */}
                 <label className={formStyles['label']} htmlFor="item">
-                  {cut.name}
+                  {item.name}
                 </label>
               </div>
-              {/* Price of baklava cut */}
-              <span id="price">${cut.price}</span>
+              {/* Price of baklava item */}
+              <span id="price">${item.price}</span>
             </div>
             {/* Controls to adjust quantity */}
             <div
               className={formStyles['quantity-container-unchecked']}
-              id={`${cut.id}QuantityControls`}
+              id={`${item.id}QuantityControls`}
             >
               <button className={formStyles['quantity-button']}>
                 <span className={formStyles['quantity-modifier-span']}>-</span>
               </button>
               <span className={formStyles['item-quantity']}>1</span>
-              <button className={formStyles['quantity-button']}>
+              <button
+                className={formStyles['quantity-button']}
+                type="button"
+                onClick={handleIncrement}
+              >
                 <span className={formStyles['quantity-modifier-span']}>+</span>
               </button>
             </div>
