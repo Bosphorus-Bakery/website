@@ -9,9 +9,8 @@ import {
   setIsValid,
   setFieldCounter,
   setErrorMessage,
-  setDate,
 } from '@/lib';
-import type { ContactField, ContactFields, OrderFields, Item } from '@/types';
+import type { ContactField, ContactFields, Item } from '@/types';
 import {
   nameRegex,
   emailRegex,
@@ -28,10 +27,6 @@ const ContactForm = () => {
   const { firstName, lastName, email, phone, subject, description } =
     useAppSelector((state) => state.contactForm.contactInfo);
 
-  // TO DO: Order form state values
-  const { selectedDate, cart } = useAppSelector(
-    (state) => state.contactForm.order,
-  );
   const dispatch = useAppDispatch();
 
   // Function validates field's input against its regex
@@ -112,21 +107,9 @@ const ContactForm = () => {
     }
   };
 
-  // TO DO: Function accepts date object, and field name for action creator
-  const handleDateSelect = (date: Date | null) => {
-    // Q: Why can date be null?
-    if (date) {
-      dispatch(setDate({ value: date })); // Update date state
-      const formattedDate = date.toISOString().split('T')[0];
-      console.log(`Selected date: ${selectedDate}`);
-    } else {
-      console.log('date is null');
-    }
-  };
-
   // Function submits validated form data
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); //
+    e.preventDefault();
     const ContactFormFields = {
       firstName,
       lastName,
@@ -399,13 +382,6 @@ const ContactForm = () => {
             <label className={formStyles['label']} htmlFor="pickUpDate">
               Pick-up on:
             </label>
-            <DatePicker
-              className={formStyles['field']}
-              id="pickUpDate"
-              selected={selectedDate}
-              onChange={handleDateSelect}
-              dateFormat="EEEE, MMMM d, YYYY"
-            ></DatePicker>
           </div>
           {ItemList()}
           <span id="subtotal">

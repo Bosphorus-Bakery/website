@@ -5,9 +5,10 @@ export interface AppState {
   theme: boolean;
 }
 
+// Interface combining contact info fields and items state
 export interface FormFields {
-  contactInfo: ContactFields;
-  order: OrderFields;
+  contactInfo: ContactFields; 
+  items: ItemsState;
 }
 export interface ContactFields {
   firstName: ContactField;
@@ -22,22 +23,19 @@ export interface ContactField {
   value: string;
   isValid: boolean;
   errorMessage: string;
-  counter?: number; // Optional character counter for fields with max length
+
+  // Optional character counter for fields with max length
+  counter?: number;
 }
 // Type limits to only interface keys: firstName, lastName, etc
 // export type ContactFieldNames = keyof ContactFields;
 
-export interface OrderFields {
-  selectedDate: Date;
-  cart: Array<CartItem>;
+// State of all Items
+export interface ItemsState {
+  items: Item[];
 }
-export type CartItem = {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-};
 
+// Properties of every Item
 export type Item = {
   id: string;
   name: string;
@@ -45,7 +43,3 @@ export type Item = {
   quantity: number;
   imageSrc: string;
 };
-
-export interface ItemState {
-  items: Item[];
-}
