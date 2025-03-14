@@ -69,15 +69,18 @@ const contactFormSlice = createSlice({
       state.contactInfo[action.payload.field].errorMessage =
         action.payload.value;
     },
-    incrementItem: (
+    // Reducer updates item's state quantity
+    incrementQuantity: (
       state,
       // Pass in item's id in payload
       action: PayloadAction<string>,
     ) => {
-      // Finds item with matching id and
+      // Finds item by id
       const item = state.order.cart.find((item) => item.id === action.payload);
       if (item) {
         item.quantity++;
+      } else {
+        console.log("ID of item not found")
       }
     },
   },
@@ -89,6 +92,7 @@ export const {
   setIsValid,
   setFieldCounter,
   setErrorMessage,
+  incrementQuantity,
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;

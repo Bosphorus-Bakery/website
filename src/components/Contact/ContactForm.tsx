@@ -9,6 +9,7 @@ import {
   setIsValid,
   setFieldCounter,
   setErrorMessage,
+  incrementQuantity,
 } from '@/lib';
 import type { ContactField, ContactFields, Item } from '@/types';
 import {
@@ -23,9 +24,12 @@ import {
 import { formStyles } from '@/styles';
 
 const ContactForm = () => {
-  // Contact info form state values
+  // Grab contact info form state values
   const { firstName, lastName, email, phone, subject, description } =
     useAppSelector((state) => state.contactForm.contactInfo);
+
+  // Grab contact info form state values
+  const { cart } = useAppSelector((state) => state.contactForm.order);
 
   const dispatch = useAppDispatch();
 
@@ -186,21 +190,29 @@ const ContactForm = () => {
       );
     };
 
-    // Update item quantity state
+    // Function updates item quantity state
     const handleIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
-      
-      // Get item id from increment clicked
-      const itemId = e.currentTarget.parentElement
-        ?.getAttribute('id')
-        ?.replace('QuantityControls', '');
-      console.log(itemId);
+      // Get full id of item incremented
+      if (e.currentTarget.parentElement) {
+        const controlsId = e.currentTarget.parentElement.getAttribute('id');
+
+        // Extract item id from full id
+        if (controlsId && controlsId.includes('QuantityControls')) {
+          const itemId = controlsId.replace('QuantityControls', '');
+          console.log(itemId);
+
+          // Update item's quantity
+          dispatch(incrementQuantity(itemId));
+          console.log(cart);
+        }
+      }
     };
 
     return (
       // List of all baklava item checkboxes
       <ul className={formStyles['item-list']}>
         {/* Render each baklava item's details */}
-        {itemDetails.map((item: Item, index: number) => (
+        {cart.map((item: Item, index: number) => (
           <li key={index} className={formStyles['item']}>
             <div className={formStyles['item-details']}>
               {/* Checkbox for baklava item */}
@@ -224,10 +236,15 @@ const ContactForm = () => {
               className={formStyles['quantity-container-unchecked']}
               id={`${item.id}QuantityControls`}
             >
+              {' '}
+              {/* Decrement button */}
               <button className={formStyles['quantity-button']}>
                 <span className={formStyles['quantity-modifier-span']}>-</span>
               </button>
-              <span className={formStyles['item-quantity']}>1</span>
+              <span className={formStyles['item-quantity']}>
+                {item.quantity}
+              </span>
+              {/* Increment button */}
               <button
                 className={formStyles['quantity-button']}
                 type="button"
