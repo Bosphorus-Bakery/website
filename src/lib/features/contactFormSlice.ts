@@ -72,15 +72,48 @@ const contactFormSlice = createSlice({
     // Reducer updates item's state quantity
     incrementQuantity: (
       state,
-      // Pass in item's id in payload
+      // Pass in item's id string in payload
       action: PayloadAction<string>,
     ) => {
-      // Finds item by id
+      // Finds item in list of items that matches the id in payload 
       const item = state.order.cart.find((item) => item.id === action.payload);
       if (item) {
         item.quantity++;
       } else {
-        console.log("ID of item not found")
+        console.log('ID of item not found');
+      }
+    },
+    decrementQuantity: (state, action: PayloadAction<string>) => {
+      const item = state.order.cart.find((item) => item.id === action.payload);
+      if (item) {
+        item.quantity--;
+      } else {
+        console.log('ID of item not found');
+      }
+    },        
+    // Pass in item's id in payload
+    setQuantity: (state, action: PayloadAction<{ item: string, quantityUpdate: string }>) => {
+      const { itemId, quantityType } = action.payload;
+
+      const item = state.order.cart.find((item) => item.id === action.payload);
+
+      // If item is found then update state 
+      if (item) {
+        switch (action.type) {
+          case 'INCREMENT':
+            // return { ...state, quantity: item.quantity + 1 };
+            break;
+          case 'DECREMENT':
+          // return { ...state, quantity: Math.max(0, state.quantity - 1) };
+          case 'SET_TO_ONE':
+          // return { ...state, quantity: 1 };
+          case 'SET_TO_ZERO':
+          // return { ...state, quantity: 0 };
+          default:
+            return state;
+        }
+      } else {
+        console.log('ID of item not found');
       }
     },
   },
@@ -93,6 +126,7 @@ export const {
   setFieldCounter,
   setErrorMessage,
   incrementQuantity,
+  decrementQuantity,
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;

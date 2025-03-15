@@ -10,6 +10,7 @@ import {
   setFieldCounter,
   setErrorMessage,
   incrementQuantity,
+  decrementQuantity,
 } from '@/lib';
 import type { ContactField, ContactFields, Item } from '@/types';
 import {
@@ -175,23 +176,40 @@ const ContactForm = () => {
     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
   };
 
-  // Baklava cut type checkboxes component code
+  // Item checkboxes component code
   const ItemList = () => {
-    // Function runs when baklava cut type checkbox is checked or unchecked
+    // Function runs checkbox is (un)checked
     const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-      // Get checkbox clicked by transversing DOM
+      // Get checkbox status
+      const isChecked = e.currentTarget.checked;
+      console.log(isChecked);
+
+      // Get the checkbox clicked
       const quantityModifier = e.currentTarget.parentElement?.parentElement
         ?.parentElement?.lastElementChild as HTMLElement;
       console.log(quantityModifier);
 
-      // If checked show item quantity
-      quantityModifier.classList.toggle(
-        formStyles['quantity-container-checked'],
-      );
+      // If checked then show item quantity and if unchecked hide item quantity
+      // quantityModifier.classList.toggle(
+      //   formStyles['quantity-container-checked'],
+      // );
+
+      // If checked
+      if (isChecked) {
+              // Set quantity to 1
+
+
+      }
+      // Remove previous syle and set quantityModifier to formStyles['quantity-container-checked']
+
+      // If not unchecked
     };
 
-    // Function updates item quantity state
-    const handleIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Function increments item quantity state
+    const handleQuantity = (
+      e: React.MouseEvent<HTMLButtonElement>,
+      operator: string,
+    ) => {
       // Get full id of item incremented
       if (e.currentTarget.parentElement) {
         const controlsId = e.currentTarget.parentElement.getAttribute('id');
@@ -199,11 +217,16 @@ const ContactForm = () => {
         // Extract item id from full id
         if (controlsId && controlsId.includes('QuantityControls')) {
           const itemId = controlsId.replace('QuantityControls', '');
-          console.log(itemId);
 
-          // Update item's quantity
-          dispatch(incrementQuantity(itemId));
-          console.log(cart);
+          // If decrement button clicked
+          if (operator === '-') {
+            // Check if quantity
+
+            // Update item's quantity
+            dispatch(decrementQuantity(itemId));
+          } else {
+            dispatch(incrementQuantity(itemId));
+          }
         }
       }
     };
@@ -238,7 +261,13 @@ const ContactForm = () => {
             >
               {' '}
               {/* Decrement button */}
-              <button className={formStyles['quantity-button']}>
+              <button
+                className={formStyles['quantity-button']}
+                type="button"
+                onClick={(e) => {
+                  handleQuantity(e, '-');
+                }}
+              >
                 <span className={formStyles['quantity-modifier-span']}>-</span>
               </button>
               <span className={formStyles['item-quantity']}>
@@ -248,7 +277,9 @@ const ContactForm = () => {
               <button
                 className={formStyles['quantity-button']}
                 type="button"
-                onClick={handleIncrement}
+                onClick={(e) => {
+                  handleQuantity(e, '+');
+                }}
               >
                 <span className={formStyles['quantity-modifier-span']}>+</span>
               </button>
