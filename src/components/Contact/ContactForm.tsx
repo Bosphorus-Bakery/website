@@ -1,6 +1,5 @@
 'use client';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import DatePicker from 'react-datepicker';
 import {
   useAppSelector,
   useAppDispatch,
@@ -216,27 +215,17 @@ const ContactForm = () => {
       e: React.MouseEvent<HTMLButtonElement>,
       operator: string,
     ) => {
-      console.log(e.currentTarget);
+      // Get full id of item incremented
+      const itemId = e.currentTarget.value;
 
-      // // Get full id of item incremented
-      // if (e.currentTarget.parentElement) {
-      //   const controlsId = e.currentTarget.parentElement.getAttribute('id');
+      // If decrement button clicked, decrement item's quantity state
+      if (operator === '-') {
+        dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
 
-      //   // Extract item id from full id
-      //   if (controlsId && controlsId.includes('QuantityControls')) {
-      //     const itemId = controlsId.replace('QuantityControls', '');
-
-      //     // If decrement button clicked
-      //     if (operator === '-') {
-      //       // Check if quantity
-
-      //       // Update item's quantity state
-      //       dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-      //     } else {
-      //       dispatch(incrementQuantity(itemId));
-      //     }
-      //   }
-      // }
+        // If increment button clicked, decrement item's quantity state
+      } else {
+        dispatch(setQuantity({ itemId: itemId, type: 'INCREMENT' }));
+      }
     };
 
     return (
@@ -255,7 +244,10 @@ const ContactForm = () => {
                   onChange={handleCheckbox}
                 />
                 {/* Item name */}
-                <label className={formStyles['label']} htmlFor="item">
+                <label
+                  className={formStyles['label']}
+                  htmlFor={`${item.id}-checkbox`}
+                >
                   {item.name}
                 </label>
               </div>
@@ -267,12 +259,12 @@ const ContactForm = () => {
               className={formStyles['quantity-container-unchecked']}
               id={`${item.id}-quantity-controls`}
             >
-              {' '}
               {/* Decrement button */}
               <button
-                className={formStyles['quantity-button']}
-                id={`${item.id}-decrement-button`}
+                className={`${formStyles['quantity-button']} ${item.id}`}
+                // id={`${item.id}-decrement-button`}
                 type="button"
+                value={item.id}
                 onClick={(e) => {
                   handleQuantity(e, '-');
                 }}
@@ -284,9 +276,10 @@ const ContactForm = () => {
               </span>
               {/* Increment button */}
               <button
-                className={formStyles['quantity-button']}
-                id={`${item.id}-increment-button`}
+                className={`${formStyles['quantity-button']} ${item.id}`}
+                // id={`${item.id}-increment-button`}
                 type="button"
+                value={item.id}
                 onClick={(e) => {
                   handleQuantity(e, '+');
                 }}
