@@ -11,6 +11,7 @@ import {
   setErrorMessage,
   incrementQuantity,
   decrementQuantity,
+  setQuantity,
 } from '@/lib';
 import type { ContactField, ContactFields, Item } from '@/types';
 import {
@@ -178,31 +179,36 @@ const ContactForm = () => {
 
   // Item checkboxes component code
   const ItemList = () => {
-    // Function runs checkbox is (un)checked
+    // Function runs when checkbox is clicked
     const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Get the item id of checkbox clicked
+      const checkboxId = e.currentTarget.value;
+
+      // Get item's corresponding quantity controls
+      const quantityControls = e.currentTarget.closest(
+        `#${checkboxId}-item`,
+      )?.lastElementChild;
+
+      // Exit if elem's id or corresponding quantity controls can't be found
+      if (!quantityControls) return;
+
       // Get checkbox status
       const isChecked = e.currentTarget.checked;
-      console.log(isChecked);
 
-      // Get the checkbox clicked
-      const quantityModifier = e.currentTarget.parentElement?.parentElement
-        ?.parentElement?.lastElementChild as HTMLElement;
-      console.log(quantityModifier);
-
-      // If checked then show item quantity and if unchecked hide item quantity
-      // quantityModifier.classList.toggle(
-      //   formStyles['quantity-container-checked'],
-      // );
-
-      // If checked
+      // If checked, set item's quantity to 1 and show quantity controls
       if (isChecked) {
-              // Set quantity to 1
+        dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ONE' }));
+        quantityControls.classList.toggle(
+          formStyles['quantity-container-checked'],
+        );
 
-
+        // If unchecked, set item's quantity to 0 and hide quantity controls
+      } else {
+        dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ZERO' }));
+        quantityControls.classList.toggle(
+          formStyles['quantity-container-checked'],
+        );
       }
-      // Remove previous syle and set quantityModifier to formStyles['quantity-container-checked']
-
-      // If not unchecked
     };
 
     // Function increments item quantity state
@@ -210,59 +216,62 @@ const ContactForm = () => {
       e: React.MouseEvent<HTMLButtonElement>,
       operator: string,
     ) => {
-      // Get full id of item incremented
-      if (e.currentTarget.parentElement) {
-        const controlsId = e.currentTarget.parentElement.getAttribute('id');
+      console.log(e.currentTarget);
 
-        // Extract item id from full id
-        if (controlsId && controlsId.includes('QuantityControls')) {
-          const itemId = controlsId.replace('QuantityControls', '');
+      // // Get full id of item incremented
+      // if (e.currentTarget.parentElement) {
+      //   const controlsId = e.currentTarget.parentElement.getAttribute('id');
 
-          // If decrement button clicked
-          if (operator === '-') {
-            // Check if quantity
+      //   // Extract item id from full id
+      //   if (controlsId && controlsId.includes('QuantityControls')) {
+      //     const itemId = controlsId.replace('QuantityControls', '');
 
-            // Update item's quantity
-            dispatch(decrementQuantity(itemId));
-          } else {
-            dispatch(incrementQuantity(itemId));
-          }
-        }
-      }
+      //     // If decrement button clicked
+      //     if (operator === '-') {
+      //       // Check if quantity
+
+      //       // Update item's quantity state
+      //       dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
+      //     } else {
+      //       dispatch(incrementQuantity(itemId));
+      //     }
+      //   }
+      // }
     };
 
     return (
-      // List of all baklava item checkboxes
+      // List of all item checkboxes
       <ul className={formStyles['item-list']}>
-        {/* Render each baklava item's details */}
+        {/* Render each item's details */}
         {cart.map((item: Item, index: number) => (
-          <li key={index} className={formStyles['item']}>
+          <li key={index} className={formStyles['item']} id={`${item.id}-item`}>
             <div className={formStyles['item-details']}>
-              {/* Checkbox for baklava item */}
+              {/* Checkbox for item */}
               <div className={formStyles['item-checkbox']}>
                 <input
-                  id={item.id}
+                  id={`${item.id}-checkbox`}
                   type="checkbox"
                   value={item.id}
                   onChange={handleCheckbox}
                 />
-                {/* Baklava item name */}
+                {/* Item name */}
                 <label className={formStyles['label']} htmlFor="item">
                   {item.name}
                 </label>
               </div>
-              {/* Price of baklava item */}
-              <span id="price">${item.price}</span>
+              {/* Price of item */}
+              <span id={`${item.id}-price`}>${item.price}</span>
             </div>
             {/* Controls to adjust quantity */}
             <div
               className={formStyles['quantity-container-unchecked']}
-              id={`${item.id}QuantityControls`}
+              id={`${item.id}-quantity-controls`}
             >
               {' '}
               {/* Decrement button */}
               <button
                 className={formStyles['quantity-button']}
+                id={`${item.id}-decrement-button`}
                 type="button"
                 onClick={(e) => {
                   handleQuantity(e, '-');
@@ -276,6 +285,7 @@ const ContactForm = () => {
               {/* Increment button */}
               <button
                 className={formStyles['quantity-button']}
+                id={`${item.id}-increment-button`}
                 type="button"
                 onClick={(e) => {
                   handleQuantity(e, '+');

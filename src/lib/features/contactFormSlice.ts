@@ -75,7 +75,7 @@ const contactFormSlice = createSlice({
       // Pass in item's id string in payload
       action: PayloadAction<string>,
     ) => {
-      // Finds item in list of items that matches the id in payload 
+      // Finds item in list of items that matches the id in payload
       const item = state.order.cart.find((item) => item.id === action.payload);
       if (item) {
         item.quantity++;
@@ -90,25 +90,36 @@ const contactFormSlice = createSlice({
       } else {
         console.log('ID of item not found');
       }
-    },        
-    // Pass in item's id in payload
-    setQuantity: (state, action: PayloadAction<{ item: string, quantityUpdate: string }>) => {
-      const { itemId, quantityType } = action.payload;
+    },
+    // Pass in item's id and quantity update type to payload
+    setQuantity: (
+      state, // Q: Why can itemId be null?
+      action: PayloadAction<{ itemId: string; type: string }>,
+    ) => {
+      // Find item by payload itemId
+      const item = state.order.cart.find(
+        (item) => item.id === action.payload.itemId,
+      );
 
-      const item = state.order.cart.find((item) => item.id === action.payload);
-
-      // If item is found then update state 
+      // If item is found then update state
       if (item) {
-        switch (action.type) {
+        switch (action.payload.type) {
           case 'INCREMENT':
-            // return { ...state, quantity: item.quantity + 1 };
+            console.log('INCREMENT Case called');
+            item.quantity++;
             break;
           case 'DECREMENT':
-          // return { ...state, quantity: Math.max(0, state.quantity - 1) };
+            console.log('DECREMENT Case called');
+            item.quantity = Math.max(0, item.quantity - 1);
+            break;
           case 'SET_TO_ONE':
-          // return { ...state, quantity: 1 };
+            console.log('SET_TO_ONE Case called');
+            item.quantity = 1;
+            break;
           case 'SET_TO_ZERO':
-          // return { ...state, quantity: 0 };
+            console.log('SET_TO_ZERO Case called');
+            item.quantity = 0;
+            break;
           default:
             return state;
         }
@@ -127,6 +138,7 @@ export const {
   setErrorMessage,
   incrementQuantity,
   decrementQuantity,
+  setQuantity,
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;
