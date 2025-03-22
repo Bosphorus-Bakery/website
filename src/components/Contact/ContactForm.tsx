@@ -180,6 +180,8 @@ const ContactForm = () => {
   const ItemList = () => {
     // Function runs when checkbox is clicked
     const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log('handleCheckbox called');
+
       // Get the item id of checkbox clicked
       const checkboxId = e.currentTarget.value;
 
@@ -197,16 +199,12 @@ const ContactForm = () => {
       // If checked, set item's quantity to 1 and show quantity controls
       if (isChecked) {
         dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ONE' }));
-        quantityControls.classList.toggle(
-          formStyles['quantity-container-checked'],
-        );
+        quantityControls.className = formStyles['quantity-container-checked'];
 
         // If unchecked, set item's quantity to 0 and hide quantity controls
       } else {
         dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ZERO' }));
-        quantityControls.classList.toggle(
-          formStyles['quantity-container-checked'],
-        );
+        quantityControls.className = formStyles['quantity-container-unchecked'];
       }
     };
 
@@ -215,12 +213,46 @@ const ContactForm = () => {
       e: React.MouseEvent<HTMLButtonElement>,
       operator: string,
     ) => {
-      // Get full id of item incremented
+      // Get id of item incremented
       const itemId = e.currentTarget.value;
 
-      // If decrement button clicked, decrement item's quantity state
-      if (operator === '-') {
+      // Get item's quantity state
+      const item = cart.find((item) => item.id === itemId);
+      const itemQuantity = item?.quantity;
+
+      // Item's quantity controls
+      // const quantityControls = e.currentTarget.parentElement;
+
+      // Get item's checkbox
+      // const itemElem = e.currentTarget.closest(`#${itemId}-item`);
+      const itemCheckbox = document.querySelector(
+        `#${itemId}-checkbox`,
+      ) as HTMLInputElement;
+
+      // If decrement button clicked, decrement that item's quantity state
+      if (operator === '-' && itemQuantity === 1) {
         dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
+
+        itemCheckbox.checked = false;
+
+        itemCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+
+        // ORIGINAL LOGIC (NOT WORKING)
+        // // If decrement button clicked, decrement that item's quantity state
+        // if (operator === '-') {
+        //   dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
+
+        //   // If item's quantity is 0, then uncheck box
+        //   if (itemQuantity === 1 && itemCheckbox) {
+        //     console.log(itemCheckbox);
+        //     itemCheckbox.checked = false;
+
+        //     itemCheckbox.dispatchEvent(
+        //       new InputEvent('change', { bubbles: true }),
+        //     );
+        //   } else {
+        //     console.error('Checkbox not found!');
+        //   }
 
         // If increment button clicked, decrement item's quantity state
       } else {
