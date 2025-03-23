@@ -221,7 +221,7 @@ const ContactForm = () => {
       const itemQuantity = item?.quantity;
 
       // Item's quantity controls
-      // const quantityControls = e.currentTarget.parentElement;
+      const quantityControls = e.currentTarget.parentElement;
 
       // Get item's checkbox
       // const itemElem = e.currentTarget.closest(`#${itemId}-item`);
@@ -229,31 +229,23 @@ const ContactForm = () => {
         `#${itemId}-checkbox`,
       ) as HTMLInputElement;
 
-      // If decrement button clicked, decrement that item's quantity state
-      if (operator === '-' && itemQuantity === 1) {
+      // If item quantity is 1 and is decremented
+      if (
+        operator === '-' &&
+        itemQuantity === 1 &&
+        itemCheckbox.checked &&
+        quantityControls
+      ) {
         dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
 
+        // Uncheck box
         itemCheckbox.checked = false;
 
-        itemCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
-
-        // ORIGINAL LOGIC (NOT WORKING)
-        // // If decrement button clicked, decrement that item's quantity state
-        // if (operator === '-') {
-        //   dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-
-        //   // If item's quantity is 0, then uncheck box
-        //   if (itemQuantity === 1 && itemCheckbox) {
-        //     console.log(itemCheckbox);
-        //     itemCheckbox.checked = false;
-
-        //     itemCheckbox.dispatchEvent(
-        //       new InputEvent('change', { bubbles: true }),
-        //     );
-        //   } else {
-        //     console.error('Checkbox not found!');
-        //   }
-
+        // Hide quantity controls
+        quantityControls.className = formStyles['quantity-container-unchecked'];
+        
+      } else if (operator === '-') {
+        dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
         // If increment button clicked, decrement item's quantity state
       } else {
         dispatch(setQuantity({ itemId: itemId, type: 'INCREMENT' }));
