@@ -176,13 +176,13 @@ const ContactForm = () => {
     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
   };
 
-  // Item checkboxes component code
+  // Item checkbox component code
   const ItemList = () => {
     // Function runs when checkbox is clicked
     const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
       console.log('handleCheckbox called');
 
-      // Get the item id of checkbox clicked
+      // Get item id of checkbox clicked
       const checkboxId = e.currentTarget.value;
 
       // Get item's corresponding quantity controls
@@ -190,7 +190,7 @@ const ContactForm = () => {
         `#${checkboxId}-item`,
       )?.lastElementChild;
 
-      // Exit if elem's id or corresponding quantity controls can't be found
+      // Exit if corresponding quantity controls not found
       if (!quantityControls) return;
 
       // Get checkbox status
@@ -213,29 +213,28 @@ const ContactForm = () => {
       e: React.MouseEvent<HTMLButtonElement>,
       operator: string,
     ) => {
-      // Get id of item incremented
+      // Get id of item incremented or decremented
       const itemId = e.currentTarget.value;
 
-      // Get item's quantity state
+      // Get item's current quantity
       const item = cart.find((item) => item.id === itemId);
       const itemQuantity = item?.quantity;
 
-      // Item's quantity controls
+      // Item's corresponding quantity controls
       const quantityControls = e.currentTarget.parentElement;
 
       // Get item's checkbox
-      // const itemElem = e.currentTarget.closest(`#${itemId}-item`);
       const itemCheckbox = document.querySelector(
         `#${itemId}-checkbox`,
       ) as HTMLInputElement;
 
-      // If item quantity is 1 and is decremented
       if (
-        operator === '-' &&
-        itemQuantity === 1 &&
-        itemCheckbox.checked &&
-        quantityControls
+        operator === '-' && // If item is decremented...
+        itemQuantity === 1 && // Current quantity is 1...
+        itemCheckbox.checked && // Checkbox is checked...
+        quantityControls // And corresponding quantity controls are found
       ) {
+        // Decrement quantity
         dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
 
         // Uncheck box
@@ -243,8 +242,10 @@ const ContactForm = () => {
 
         // Hide quantity controls
         quantityControls.className = formStyles['quantity-container-unchecked'];
-        
+
+        // If decrement button clicked and item quantity is not 1
       } else if (operator === '-') {
+        // Decrement quantity
         dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
         // If increment button clicked, decrement item's quantity state
       } else {
@@ -313,6 +314,9 @@ const ContactForm = () => {
             </div>
           </li>
         ))}
+        <span id="subtotal">
+          Subtotal ({/* X items */}): ${/* Subtotal price */}
+        </span>
       </ul>
     );
   };

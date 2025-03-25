@@ -6,6 +6,8 @@
 }
 
 .all-order-fields-container {
+  display: flex;
+  flex-direction: column;
   width: 95%;
 }
 
@@ -130,6 +132,10 @@
 
 .item-quantity {
   width: 26px;
+  text-align: center;
+}
+
+#subtotal {
   text-align: center;
 }
 
