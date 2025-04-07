@@ -29,6 +29,7 @@ export interface ContactField {
 
 export interface OrderFields {
   cart: Item[];
+  subtotal: number;
 }
 
 // Properties of every Item

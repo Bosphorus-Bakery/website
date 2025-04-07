@@ -26,6 +26,7 @@ const initialFormState: FormFields = {
   },
   order: {
     cart: itemDetails,
+    subtotal: 0,
   },
 };
 
@@ -69,31 +70,9 @@ const contactFormSlice = createSlice({
       state.contactInfo[action.payload.field].errorMessage =
         action.payload.value;
     },
-    // Reducer updates item's state quantity
-    incrementQuantity: (
-      state,
-      // Pass in item's id string in payload
-      action: PayloadAction<string>,
-    ) => {
-      // Finds item in list of items that matches the id in payload
-      const item = state.order.cart.find((item) => item.id === action.payload);
-      if (item) {
-        item.quantity++;
-      } else {
-        console.log('ID of item not found');
-      }
-    },
-    decrementQuantity: (state, action: PayloadAction<string>) => {
-      const item = state.order.cart.find((item) => item.id === action.payload);
-      if (item) {
-        item.quantity--;
-      } else {
-        console.log('ID of item not found');
-      }
-    },
     // Pass in item's id and quantity update type to payload
     setQuantity: (
-      state, // Q: Why can itemId be null?
+      state,
       action: PayloadAction<{ itemId: string; type: string }>,
     ) => {
       // Find item by payload itemId
@@ -127,6 +106,17 @@ const contactFormSlice = createSlice({
         console.log('ID of item not found');
       }
     },
+    // Updates subtotal based on cart items
+    setSubtotal: (state) => {
+      const { cart } = state.order;
+      state.order.subtotal = 0;
+
+      // iterates through each cart item
+      cart.forEach((item) => {
+        // add each item to subtotal
+        state.order.subtotal += item.price * item.quantity;
+      });
+    },
   },
 });
 
@@ -136,9 +126,8 @@ export const {
   setIsValid,
   setFieldCounter,
   setErrorMessage,
-  incrementQuantity,
-  decrementQuantity,
   setQuantity,
+  setSubtotal,
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;

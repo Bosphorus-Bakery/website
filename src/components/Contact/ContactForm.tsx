@@ -8,9 +8,8 @@ import {
   setIsValid,
   setFieldCounter,
   setErrorMessage,
-  incrementQuantity,
-  decrementQuantity,
   setQuantity,
+  setSubtotal,
 } from '@/lib';
 import type { ContactField, ContactFields, Item } from '@/types';
 import {
@@ -30,7 +29,7 @@ const ContactForm = () => {
     useAppSelector((state) => state.contactForm.contactInfo);
 
   // Grab contact info form state values
-  const { cart } = useAppSelector((state) => state.contactForm.order);
+  const { cart, subtotal } = useAppSelector((state) => state.contactForm.order);
 
   const dispatch = useAppDispatch();
 
@@ -196,14 +195,16 @@ const ContactForm = () => {
       // Get checkbox status
       const isChecked = e.currentTarget.checked;
 
-      // If checked, set item's quantity to 1 and show quantity controls
+      // If checked, then set item's quantity to 1, update subtotal, and show quantity controls
       if (isChecked) {
         dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ONE' }));
+        dispatch(setSubtotal());
         quantityControls.className = formStyles['quantity-container-checked'];
 
-        // If unchecked, set item's quantity to 0 and hide quantity controls
+        // If unchecked, then set item's quantity to 0, update subtotal, and hide quantity controls
       } else {
         dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ZERO' }));
+        dispatch(setSubtotal());
         quantityControls.className = formStyles['quantity-container-unchecked'];
       }
     };
@@ -220,36 +221,34 @@ const ContactForm = () => {
       const item = cart.find((item) => item.id === itemId);
       const itemQuantity = item?.quantity;
 
-      // Item's corresponding quantity controls
+      // Get item's corresponding quantity controls elem
       const quantityControls = e.currentTarget.parentElement;
 
-      // Get item's checkbox
+      // Get item's corresponding checkbox elem
       const itemCheckbox = document.querySelector(
         `#${itemId}-checkbox`,
       ) as HTMLInputElement;
 
       if (
-        operator === '-' && // If item is decremented...
-        itemQuantity === 1 && // Current quantity is 1...
-        itemCheckbox.checked && // Checkbox is checked...
-        quantityControls // And corresponding quantity controls are found
+        // If user decrements while quantity is 1, then decrement quantity, hide checkbox, and update subtotal
+        operator === '-' &&
+        itemQuantity === 1 &&
+        itemCheckbox.checked &&
+        quantityControls
       ) {
-        // Decrement quantity
         dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-
-        // Uncheck box
+        dispatch(setSubtotal());
         itemCheckbox.checked = false;
-
-        // Hide quantity controls
         quantityControls.className = formStyles['quantity-container-unchecked'];
 
         // If decrement button clicked and item quantity is not 1
       } else if (operator === '-') {
-        // Decrement quantity
+        // Decrement quantity state
         dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-        // If increment button clicked, decrement item's quantity state
+        dispatch(setSubtotal());
       } else {
         dispatch(setQuantity({ itemId: itemId, type: 'INCREMENT' }));
+        dispatch(setSubtotal());
       }
     };
 
@@ -314,9 +313,6 @@ const ContactForm = () => {
             </div>
           </li>
         ))}
-        <span id="subtotal">
-          Subtotal ({/* X items */}): ${/* Subtotal price */}
-        </span>
       </ul>
     );
   };
@@ -471,9 +467,7 @@ const ContactForm = () => {
             </label>
           </div>
           {ItemList()}
-          <span id="subtotal">
-            Subtotal ({/* X items */}): ${/* Subtotal price */}
-          </span>
+          <span id={formStyles.subtotal}>Subtotal: ${subtotal}</span>
         </div>
       )}
       {SubmitButton(subject)}
