@@ -9,7 +9,7 @@ import {
   setFieldCounter,
   setErrorMessage,
   setQuantity,
-  setSubtotal,
+  updateSubtotal,
 } from '@/lib';
 import type { ContactField, ContactFields, Item } from '@/types';
 import {
@@ -77,7 +77,7 @@ const ContactForm = () => {
     }
   };
 
-  // Function that reads state then displays appropriate error on blur
+  // Function reads error state then displays message on blur
   const handleOnBlur = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -175,7 +175,7 @@ const ContactForm = () => {
     dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
   };
 
-  // Item checkbox component code
+  // Item checkbox components
   const ItemList = () => {
     // Function runs when checkbox is clicked
     const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,16 +195,16 @@ const ContactForm = () => {
       // Get checkbox status
       const isChecked = e.currentTarget.checked;
 
-      // If checked, then set item's quantity to 1, update subtotal, and show quantity controls
+      // If item is checked, set its quantity to 1, update cart subtotal, and show its quantity controls
       if (isChecked) {
         dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ONE' }));
-        dispatch(setSubtotal());
+        dispatch(updateSubtotal());
         quantityControls.className = formStyles['quantity-container-checked'];
 
-        // If unchecked, then set item's quantity to 0, update subtotal, and hide quantity controls
+        // If item is unchecked, then set its quantity to 0, update subtotal, and hide quantity controls
       } else {
         dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ZERO' }));
-        dispatch(setSubtotal());
+        dispatch(updateSubtotal());
         quantityControls.className = formStyles['quantity-container-unchecked'];
       }
     };
@@ -221,10 +221,10 @@ const ContactForm = () => {
       const item = cart.find((item) => item.id === itemId);
       const itemQuantity = item?.quantity;
 
-      // Get item's corresponding quantity controls elem
+      // Get item's corresponding quantity controls elem to hide if quantity = 0
       const quantityControls = e.currentTarget.parentElement;
 
-      // Get item's corresponding checkbox elem
+      // Get item's corresponding checkbox elem to uncheck if quantity = 0
       const itemCheckbox = document.querySelector(
         `#${itemId}-checkbox`,
       ) as HTMLInputElement;
@@ -237,18 +237,17 @@ const ContactForm = () => {
         quantityControls
       ) {
         dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-        dispatch(setSubtotal());
+        dispatch(updateSubtotal());
         itemCheckbox.checked = false;
         quantityControls.className = formStyles['quantity-container-unchecked'];
 
         // If decrement button clicked and item quantity is not 1
       } else if (operator === '-') {
-        // Decrement quantity state
         dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-        dispatch(setSubtotal());
+        dispatch(updateSubtotal());
       } else {
         dispatch(setQuantity({ itemId: itemId, type: 'INCREMENT' }));
-        dispatch(setSubtotal());
+        dispatch(updateSubtotal());
       }
     };
 

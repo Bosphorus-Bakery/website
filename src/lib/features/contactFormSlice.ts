@@ -12,7 +12,7 @@ const initialFormState: FormFields = {
     phone: { hasValue: false, value: '', isValid: false, errorMessage: '' },
     subject: {
       hasValue: true,
-      value: 'order', // To remove later
+      value: '',
       isValid: true,
       errorMessage: '',
     },
@@ -107,7 +107,7 @@ const contactFormSlice = createSlice({
       }
     },
     // Updates subtotal based on cart items
-    setSubtotal: (state) => {
+    updateSubtotal: (state) => {
       const { cart } = state.order;
       state.order.subtotal = 0;
 
@@ -127,7 +127,7 @@ export const {
   setFieldCounter,
   setErrorMessage,
   setQuantity,
-  setSubtotal,
+  updateSubtotal,
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;
