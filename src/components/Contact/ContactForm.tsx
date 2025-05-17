@@ -24,27 +24,26 @@ import {
 import { formStyles } from '@/styles';
 
 const ContactForm = () => {
-  // Grab contact info form state values
+  // Get contact info form state
   const { firstName, lastName, email, phone, subject, description } =
     useAppSelector((state) => state.contactForm.contactInfo);
 
-  // Grab contact info form state values
+  // Get order state values
   const { cart, subtotal } = useAppSelector((state) => state.contactForm.order);
 
   const dispatch = useAppDispatch();
 
+  // Function updates the subject state based on subject clicked
+  const handleSubject = (
+    fieldName: keyof ContactFields,
+    e: React.MouseEvent<HTMLInputElement>,
+  ) => {
+    dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
+  };
+
   // Function validates field's input against its regex
   const validateField = (regex: RegExp, value: string) => {
     return regex.test(value) ? true : false;
-  };
-
-  // Function updates field's character counter on change
-  const handleCounter = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-    fieldName: keyof ContactFields,
-  ) => {
-    const length = e.currentTarget.value.length;
-    dispatch(setFieldCounter({ field: fieldName, value: length }));
   };
 
   // Function that detects value and validates it on change
@@ -111,6 +110,30 @@ const ContactForm = () => {
     }
   };
 
+  // Error message component code
+  const ErrorMessage = (field: ContactField) => {
+    if (field.errorMessage !== '') {
+      return <span className={formStyles['error']}>{field.errorMessage} </span>;
+    }
+  };
+
+  // Function updates field's character counter on change
+  const handleCounter = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    fieldName: keyof ContactFields,
+  ) => {
+    const length = e.currentTarget.value.length;
+    dispatch(setFieldCounter({ field: fieldName, value: length }));
+  };
+
+  // Character counter component code
+  const CharacterCounter = (counter: number, characterLimit: number) => {
+    const remainingChars: number = characterLimit - counter;
+    return (
+      <span className={formStyles['character-counter']}>{remainingChars} </span>
+    );
+  };
+
   // Function submits validated form data
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -134,21 +157,6 @@ const ContactForm = () => {
   };
   // TO DO: Send data to server to create email
 
-  // Error message component code
-  const ErrorMessage = (field: ContactField) => {
-    if (field.errorMessage !== '') {
-      return <span className={formStyles['error']}>{field.errorMessage} </span>;
-    }
-  };
-
-  // Character counter component code
-  const CharacterCounter = (counter: number, characterLimit: number) => {
-    return (
-      <span>
-        {counter}/{characterLimit}
-      </span>
-    );
-  };
   // Submit button component code
   const SubmitButton = (subject: ContactField) => {
     // Renders "Submit" or "Order" based on subject state
@@ -165,14 +173,6 @@ const ContactForm = () => {
         </button>
       );
     }
-  };
-
-  // Function updates the subject state based on subject clicked
-  const handleSubject = (
-    e: React.MouseEvent<HTMLInputElement>,
-    fieldName: keyof ContactFields,
-  ) => {
-    dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
   };
 
   // Item checkbox components
@@ -331,7 +331,7 @@ const ContactForm = () => {
           id="general"
           name="request_type"
           value="general"
-          onClick={(e) => handleSubject(e, 'subject')}
+          onClick={(e) => handleSubject('subject', e)}
         />
         <label className={formStyles['radio-label']} htmlFor="subject">
           General
@@ -342,7 +342,7 @@ const ContactForm = () => {
           id="order"
           name="request_type"
           value="order"
-          onClick={(e) => handleSubject(e, 'subject')}
+          onClick={(e) => handleSubject('subject', e)}
         />
         <label className={formStyles['radio-label']} htmlFor="order">
           Order (Pick Up)
@@ -426,20 +426,22 @@ const ContactForm = () => {
           <label className={formStyles['label']} htmlFor="description">
             Description:
           </label>
-          <textarea
-            className={formStyles['field']}
-            id="description"
-            name="description"
-            placeholder="Tell us how we can help"
-            onChange={(e) => {
-              handleOnChange(e, 'description', descriptionRegex);
-              handleCounter(e, 'description');
-            }}
-            onBlur={(e) => {
-              handleOnBlur(e, 'description', description);
-            }}
-          />
-          {CharacterCounter(description.counter ?? 0, descriptionLimit)}
+          <div className={formStyles['description-wrapper']}>
+            <textarea
+              className={`${formStyles['field']} ${formStyles['description']}`}
+              id="description"
+              name="description"
+              placeholder="Tell us how we can help"
+              onChange={(e) => {
+                handleOnChange(e, 'description', descriptionRegex);
+                handleCounter(e, 'description');
+              }}
+              onBlur={(e) => {
+                handleOnBlur(e, 'description', description);
+              }}
+            />
+          </div>
+          {CharacterCounter(description.counter ?? 0, 250)}
           {ErrorMessage(description)}
         </div>
       )}
