@@ -1,4 +1,154 @@
-.errorBorder {
+/* Layout */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.all-order-fields-container {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+}
+
+.field-container {
+  width: 95%;
+}
+
+.order-field-container {
+  width: 100%;
+}
+
+.item-list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  margin-bottom: 8px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.item-details {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+.item-checkbox {
+  width: 70%;
+  display: flex;
+  flex-direction: row;
+}
+
+/* Fields */
+.field {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field::placeholder {
+  color: #aaa;
+}
+
+.field:focus {
+  border-color: #007bff; /* Primary blue color for focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.option {
+  text-align: left;
+}
+
+/* Radio button styling */
+.radio-group {
+  text-align: left;
+  padding: 16px 0;
+}
+
+.radio-label {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+/* When item is checked */
+.quantity-container-unchecked {
+  display: flex;
+  flex-direction: row;
+  width: 40%;
+  justify-content: space-between;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+/* When item is unchecked */
+.quantity-container-checked {
+  display: flex;
+  flex-direction: row;
+  width: 40%;
+  justify-content: space-between;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.quantity-button {
+  display: flex;
+  width: 20%;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  justify-content: center;
+}
+
+.quantity-modifier-span {
+  text-align: center;
+  width: 12px;
+}
+
+.item-quantity {
+  width: 26px;
+  text-align: center;
+}
+
+#subtotal {
+  text-align: center;
+  padding: 8px;
+}
+
+/* Errors */
+.error {
+  color: #d9534f; /* Red for errors */
+  font-size: 14px;
+  margin-top: -10px;
+  margin-bottom: 15px;
+}
+
+.error-border {
   border: 2px solid red;
   border-radius: 4px;
   transition: border-color 0.3s ease;

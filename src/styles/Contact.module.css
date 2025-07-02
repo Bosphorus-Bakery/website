@@ -1,0 +1,61 @@
+/* Default (mobile-first) styles */
+@media (max-width: 480px) {
+  .heading-1 {
+    text-align: left;
+  }
+
+  .subheading {
+    text-align: left;
+  }
+  
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 480px;
+    width: 90%;
+    padding: 16px;
+  }
+  
+  .content-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .store-details-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 60%;
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  .store-detail {
+    padding: 2px;
+  }
+}
+
+
+/* Entire contact page container for BG image */
+/* .contact-page {
+} */
+
+/* Adjust styles for larger screens */
+@media (max-width: 768px) {
+
+}
+
+
+/* Adjust styles for larger screens */
+@media (max-width: 1024px) {
+
+}
+
+/* Adjust styles for extra large screens */
+@media (max-width: 1440px) {
+
+}
