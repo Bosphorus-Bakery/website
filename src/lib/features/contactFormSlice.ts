@@ -12,7 +12,7 @@ const initialFormState: FormFields = {
     phone: { hasValue: false, value: '', isValid: false, errorMessage: '' },
     subject: {
       hasValue: true,
-      value: '',
+      value: 'general',
       isValid: true,
       errorMessage: '',
     },
