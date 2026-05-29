@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { makeStore, AppStore } from '@/lib';
 
 const StoreProvider = ({ children }: { children: ReactNode }) => {
-  const storeRef = useRef<AppStore>();
+  const storeRef = useRef<AppStore | null>(null);
   if (!storeRef.current) {
     storeRef.current = makeStore();
     // Initialize data here using an action
