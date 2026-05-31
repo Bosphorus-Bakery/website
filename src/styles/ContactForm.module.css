@@ -5,12 +5,12 @@
   align-items: center;
 }
 
-.description-wrapper {
+.message-wrapper {
   position: relative;
   display: block;
 }
 
-.description {
+.message {
   resize: none;
 }
 
@@ -76,7 +76,9 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .field::placeholder {
@@ -139,7 +141,9 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   justify-content: center;
 }
 

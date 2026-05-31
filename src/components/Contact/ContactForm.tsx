@@ -8,40 +8,26 @@ import {
   setIsValid,
   setFieldCounter,
   setErrorMessage,
-  setQuantity,
-  updateSubtotal,
 } from '@/lib';
-import type { ContactField, ContactFields, Item } from '@/types';
+import type { ContactField, ContactFields } from '@/types';
 import {
   nameRegex,
   emailRegex,
   phoneRegex,
-  descriptionRegex,
+  messageRegex,
   errorMessages,
-  descriptionLimit,
-  itemDetails,
+  messageLimit,
 } from '@/lib/constants';
 import { formStyles } from '@/styles';
 
 const ContactForm = () => {
   // Get contact info form state
-  const { firstName, lastName, email, phone, subject, description } =
-    useAppSelector((state) => state.contactForm.contactInfo);
-
-  // Get order state values
-  const { cart, subtotal } = useAppSelector((state) => state.contactForm.order);
-
+  const { firstName, lastName, email, phone, message } = useAppSelector(
+    (state) => state.contactForm.contactInfo,
+  );
   const dispatch = useAppDispatch();
 
-  // Function updates the subject state based on subject clicked
-  const handleSubject = (
-    fieldName: keyof ContactFields,
-    e: React.MouseEvent<HTMLInputElement>,
-  ) => {
-    dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
-  };
-
-  // Function validates field's input against its regex
+  // Validates field's input
   const validateField = (regex: RegExp, value: string) => {
     return regex.test(value) ? true : false;
   };
@@ -142,8 +128,7 @@ const ContactForm = () => {
       lastName,
       email,
       phone,
-      subject,
-      description,
+      message,
     };
 
     const fieldValues = Object.entries(ContactFormFields) // Transforms state object into array of key value pairs
@@ -155,166 +140,6 @@ const ContactForm = () => {
     console.log('handleSubmit called');
     console.log(`fieldValues: ${fieldValues}`);
   };
-  // TO DO: Send data to server to create email
-
-  // Submit button component code
-  const SubmitButton = (subject: ContactField) => {
-    // Renders "Submit" or "Order" based on subject state
-    if (subject.value === 'order') {
-      return (
-        <button className="button" type="submit">
-          Place order
-        </button>
-      );
-    } else {
-      return (
-        <button className="button" type="submit">
-          Submit
-        </button>
-      );
-    }
-  };
-
-  // Item checkbox components
-  const ItemList = () => {
-    // Function runs when checkbox is clicked
-    const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log('handleCheckbox called');
-
-      // Get item id of checkbox clicked
-      const checkboxId = e.currentTarget.value;
-
-      // Get item's corresponding quantity controls
-      const quantityControls = e.currentTarget.closest(
-        `#${checkboxId}-item`,
-      )?.lastElementChild;
-
-      // Exit if corresponding quantity controls not found
-      if (!quantityControls) return;
-
-      // Get checkbox status
-      const isChecked = e.currentTarget.checked;
-
-      // If item is checked, set its quantity to 1, update cart subtotal, and show its quantity controls
-      if (isChecked) {
-        dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ONE' }));
-        dispatch(updateSubtotal());
-        quantityControls.className = formStyles['quantity-container-checked'];
-
-        // If item is unchecked, then set its quantity to 0, update subtotal, and hide quantity controls
-      } else {
-        dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ZERO' }));
-        dispatch(updateSubtotal());
-        quantityControls.className = formStyles['quantity-container-unchecked'];
-      }
-    };
-
-    // Function increments item quantity state
-    const handleQuantity = (
-      e: React.MouseEvent<HTMLButtonElement>,
-      operator: string,
-    ) => {
-      // Get id of item incremented or decremented
-      const itemId = e.currentTarget.value;
-
-      // Get item's current quantity
-      const item = cart.find((item) => item.id === itemId);
-      const itemQuantity = item?.quantity;
-
-      // Get item's corresponding quantity controls elem to hide if quantity = 0
-      const quantityControls = e.currentTarget.parentElement;
-
-      // Get item's corresponding checkbox elem to uncheck if quantity = 0
-      const itemCheckbox = document.querySelector(
-        `#${itemId}-checkbox`,
-      ) as HTMLInputElement;
-
-      if (
-        // If user decrements while quantity is 1, then decrement quantity, hide checkbox, and update subtotal
-        operator === '-' &&
-        itemQuantity === 1 &&
-        itemCheckbox.checked &&
-        quantityControls
-      ) {
-        dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-        dispatch(updateSubtotal());
-        itemCheckbox.checked = false;
-        quantityControls.className = formStyles['quantity-container-unchecked'];
-
-        // If decrement button clicked and item quantity is not 1
-      } else if (operator === '-') {
-        dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-        dispatch(updateSubtotal());
-      } else {
-        dispatch(setQuantity({ itemId: itemId, type: 'INCREMENT' }));
-        dispatch(updateSubtotal());
-      }
-    };
-
-    return (
-      // List of all item checkboxes
-      <ul className={formStyles['item-list']}>
-        {/* Render each item's details */}
-        {cart.map((item: Item, index: number) => (
-          <li key={index} className={formStyles['item']} id={`${item.id}-item`}>
-            <div className={formStyles['item-details']}>
-              {/* Checkbox for item */}
-              <div className={formStyles['item-checkbox']}>
-                <input
-                  id={`${item.id}-checkbox`}
-                  type="checkbox"
-                  value={item.id}
-                  onChange={handleCheckbox}
-                />
-                {/* Item name */}
-                <label
-                  className={formStyles['label']}
-                  htmlFor={`${item.id}-checkbox`}
-                >
-                  {item.name}
-                </label>
-              </div>
-              {/* Price of item */}
-              <span id={`${item.id}-price`}>${item.price}</span>
-            </div>
-            {/* Controls to adjust quantity */}
-            <div
-              className={formStyles['quantity-container-unchecked']}
-              id={`${item.id}-quantity-controls`}
-            >
-              {/* Decrement button */}
-              <button
-                className={`${formStyles['quantity-button']} ${item.id}`}
-                // id={`${item.id}-decrement-button`}
-                type="button"
-                value={item.id}
-                onClick={(e) => {
-                  handleQuantity(e, '-');
-                }}
-              >
-                <span className={formStyles['quantity-modifier-span']}>-</span>
-              </button>
-              <span className={formStyles['item-quantity']}>
-                {item.quantity}
-              </span>
-              {/* Increment button */}
-              <button
-                className={`${formStyles['quantity-button']} ${item.id}`}
-                // id={`${item.id}-increment-button`}
-                type="button"
-                value={item.id}
-                onClick={(e) => {
-                  handleQuantity(e, '+');
-                }}
-              >
-                <span className={formStyles['quantity-modifier-span']}>+</span>
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    );
-  };
 
   // Contact form component code
   return (
@@ -323,34 +148,9 @@ const ContactForm = () => {
       onSubmit={handleSubmit}
       noValidate
     >
-      {/* noValidate disables native form validation */}
-      <div className={formStyles['radio-group']}>
-        <input
-          className={formStyles['radio-button']}
-          type="radio"
-          id="general"
-          name="request_type"
-          value="general"
-          onClick={(e) => handleSubject('subject', e)}
-        />
-        <label className={formStyles['radio-label']} htmlFor="subject">
-          General
-        </label>
-        <input
-          className={formStyles['radio-button']}
-          type="radio"
-          id="order"
-          name="request_type"
-          value="order"
-          onClick={(e) => handleSubject('subject', e)}
-        />
-        <label className={formStyles['radio-label']} htmlFor="order">
-          Order (Pick Up)
-        </label>
-      </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="firstName">
-          First Name:
+          First Name:*
         </label>
         <input
           className={formStyles['field']}
@@ -368,7 +168,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="lastName">
-          Last Name:
+          Last Name:*
         </label>
         <input
           className={formStyles['field']}
@@ -386,7 +186,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="email">
-          Email:
+          Email:*
         </label>
         <input
           className={formStyles['field']}
@@ -404,7 +204,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="phone">
-          Phone:
+          Phone:*
         </label>
         <input
           className={formStyles['field']}
@@ -420,58 +220,31 @@ const ContactForm = () => {
         />
         {ErrorMessage(phone)}
       </div>
-      {/* If user selects "General" subject */}
-      {subject.value == 'general' && (
-        <div className={formStyles['field-container']}>
-          <label className={formStyles['label']} htmlFor="description">
-            Description:
-          </label>
-          <div className={formStyles['description-wrapper']}>
-            <textarea
-              className={`${formStyles['field']} ${formStyles['description']}`}
-              id="description"
-              name="description"
-              placeholder="Tell us how we can help"
-              onChange={(e) => {
-                handleOnChange(e, 'description', descriptionRegex);
-                handleCounter(e, 'description');
-              }}
-              onBlur={(e) => {
-                handleOnBlur(e, 'description', description);
-              }}
-            />
-          </div>
-          {CharacterCounter(description.counter ?? 0, 250)}
-          {ErrorMessage(description)}
+      <div className={formStyles['field-container']}>
+        <label className={formStyles['label']} htmlFor="message">
+          Message:*
+        </label>
+        <div className={formStyles['message-wrapper']}>
+          <textarea
+            className={`${formStyles['field']} ${formStyles['message']}`}
+            id="message"
+            name="message"
+            placeholder="Tell us how we can help"
+            onChange={(e) => {
+              handleOnChange(e, 'message', messageRegex);
+              handleCounter(e, 'message');
+            }}
+            onBlur={(e) => {
+              handleOnBlur(e, 'message', message);
+            }}
+          />
         </div>
-      )}
-      {/* If user selects "Order" subject */}
-      {subject.value == 'order' && (
-        <div className={formStyles['all-order-fields-container']}>
-          <div className={formStyles['order-field-container']}>
-            <label className={formStyles['label']} htmlFor="location">
-              Location:
-            </label>
-            <select
-              className={formStyles['field']}
-              name="location"
-              id="location"
-            >
-              <option className={formStyles['option']} value="rohnertPark">
-                1301 Maurice Ave, Cotati, CA 94928
-              </option>
-            </select>
-          </div>
-          <div className={formStyles['order-field-container']}>
-            <label className={formStyles['label']} htmlFor="pickUpDate">
-              Pick-up on:
-            </label>
-          </div>
-          {ItemList()}
-          <span id={formStyles.subtotal}>Subtotal: ${subtotal}</span>
-        </div>
-      )}
-      {SubmitButton(subject)}
+        {CharacterCounter(message.counter ?? 0, 250)}
+        {ErrorMessage(message)}
+      </div>
+      <button className="button" type="submit">
+        Submit
+      </button>
     </form>
   );
 };

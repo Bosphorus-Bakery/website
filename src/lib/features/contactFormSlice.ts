@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { ContactFields, FormFields, Item } from '@/types';
-import { itemDetails } from '@/lib/constants';
+import type { ContactFields, FormFields } from '@/types';
 
 // Intial state of contact info fields and item quantity
 const initialFormState: FormFields = {
@@ -10,23 +9,13 @@ const initialFormState: FormFields = {
     lastName: { hasValue: false, value: '', isValid: false, errorMessage: '' },
     email: { hasValue: false, value: '', isValid: false, errorMessage: '' },
     phone: { hasValue: false, value: '', isValid: false, errorMessage: '' },
-    subject: {
-      hasValue: true,
-      value: 'general',
-      isValid: true,
-      errorMessage: '',
-    },
-    description: {
+    message: {
       hasValue: false,
       value: '',
       isValid: false,
       errorMessage: '',
       counter: 0,
     },
-  },
-  order: {
-    cart: itemDetails,
-    subtotal: 0,
   },
 };
 
@@ -37,7 +26,6 @@ const contactFormSlice = createSlice({
     setHasValue: (
       // Current state
       state,
-
       // Field to update and new value
       action: PayloadAction<{ field: keyof ContactFields; value: boolean }>,
     ) => {
@@ -70,53 +58,6 @@ const contactFormSlice = createSlice({
       state.contactInfo[action.payload.field].errorMessage =
         action.payload.value;
     },
-    // Pass in item's id and quantity update type to payload
-    setQuantity: (
-      state,
-      action: PayloadAction<{ itemId: string; type: string }>,
-    ) => {
-      // Find item by payload itemId
-      const item = state.order.cart.find(
-        (item) => item.id === action.payload.itemId,
-      );
-
-      // If item is found then update state
-      if (item) {
-        switch (action.payload.type) {
-          case 'INCREMENT':
-            console.log('INCREMENT Case called');
-            item.quantity++;
-            break;
-          case 'DECREMENT':
-            console.log('DECREMENT Case called');
-            item.quantity = Math.max(0, item.quantity - 1);
-            break;
-          case 'SET_TO_ONE':
-            console.log('SET_TO_ONE Case called');
-            item.quantity = 1;
-            break;
-          case 'SET_TO_ZERO':
-            console.log('SET_TO_ZERO Case called');
-            item.quantity = 0;
-            break;
-          default:
-            return state;
-        }
-      } else {
-        console.log('ID of item not found');
-      }
-    },
-    // Updates subtotal based on cart items
-    updateSubtotal: (state) => {
-      const { cart } = state.order;
-      state.order.subtotal = 0;
-
-      // iterates through each cart item
-      cart.forEach((item) => {
-        // add each item to subtotal
-        state.order.subtotal += item.price * item.quantity;
-      });
-    },
   },
 });
 
@@ -126,8 +67,6 @@ export const {
   setIsValid,
   setFieldCounter,
   setErrorMessage,
-  setQuantity,
-  updateSubtotal,
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;

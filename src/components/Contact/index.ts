@@ -1,4 +1,4 @@
-import Contact from "./Contact"
-import ContactForm from "./ContactForm"
+import Contact from './Contact';
+import ContactForm from './ContactForm';
 
-export { Contact, ContactForm }
+export { Contact, ContactForm };

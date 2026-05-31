@@ -1,61 +1,90 @@
 /* Default (mobile-first) styles */
-@media (max-width: 480px) {
-  .heading-1 {
-    text-align: left;
-  }
+.heading-1 {
+  text-align: left;
+}
 
-  .subheading {
-    text-align: left;
-  }
-  
-  .page-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    max-width: 480px;
-    width: 90%;
-    padding: 16px;
-  }
-  
+.subheading {
+  text-align: left;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1000px;
+  width: 90%;
+  padding: 16px;
+  margin: 0 auto;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 0 0;
+}
+
+.form-panel,
+.store-details-container {
+  width: 100%;
+}
+
+.store-details-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 16px;
+  text-align: center;
+  margin-top: 0;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.store-detail {
+  padding: 12px 0;
+}
+
+.image-wrapper {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.detail-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
   .content-container {
-    display: flex;
     flex-direction: row;
-    justify-content: center;
-    padding: 20px;
-    background-color: #f9f9f9;
+    align-items: flex-start;
+    gap: 32px;
   }
-  
+
+  .form-panel {
+    width: 60%;
+  }
+
   .store-details-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 60%;
-    text-align: center;
-    margin-top: 16px;
-  }
-
-  .store-detail {
-    padding: 2px;
+    width: 40%;
+    text-align: left;
   }
 }
 
-
-/* Entire contact page container for BG image */
-/* .contact-page {
-} */
-
-/* Adjust styles for larger screens */
-@media (max-width: 768px) {
-
+@media (min-width: 1024px) {
+  .page-container {
+    width: 95%;
+  }
 }
 
-
-/* Adjust styles for larger screens */
-@media (max-width: 1024px) {
-
-}
-
-/* Adjust styles for extra large screens */
-@media (max-width: 1440px) {
-
+@media (min-width: 1440px) {
+  .page-container {
+    width: 85%;
+  }
 }
