@@ -6,6 +6,7 @@ import Locations from './Locations';
 import Reviews from './Reviews';
 import About from './About';
 import Baklava from './Baklava';
+import { HomeStyles } from '@/styles';
 
 const Home = () => {
   const isDark = useAppSelector((state) => state.app.isDark);
@@ -14,7 +15,7 @@ const Home = () => {
     <div className="home-page-wrapper">
       <Hero></Hero>
       <Locations></Locations>
-      <div className="home-page-about-baklava-container">
+      <div className={HomeStyles.aboutBaklavaContainer}>
         <About></About>
         <Baklava></Baklava>
       </div>

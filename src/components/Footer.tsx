@@ -5,7 +5,7 @@ const Footer = () => {
     <nav className="footer">
       <div className="footer-container">
         <div className="footer-section">
-          <p>&copy; 2024 Bosphorus Bakery</p>
+          <p>&copy; 2026 Bosphorus Bakery</p>
         </div>
         <div className="footer-section">
           <Link href="/privacy">Privacy Policy</Link>
