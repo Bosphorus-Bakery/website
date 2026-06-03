@@ -1,6 +1,10 @@
 import { ContactForm } from '@/components';
 import { contactStyles } from '@/styles';
-
+import {
+  SiYelp,
+  SiFacebook,
+  SiInstagram,
+} from '@icons-pack/react-simple-icons';
 const ContactPage = () => {
   return (
     <div className={contactStyles['page-container']}>
@@ -42,6 +46,45 @@ const ContactPage = () => {
                 owner@bosphorusbakery.com
               </a>
             </div>
+          </div>
+
+          <div className={contactStyles['store-detail-row']}>
+            <span className={contactStyles['detail-label']}>Socials</span>
+            <ul className={contactStyles['socials-bar']}>
+              <li>
+                <a
+                  href="https://www.yelp.com/biz/bosphorus-baklava-novato"
+                  className={contactStyles['social-link']}
+                  aria-label="Yelp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <SiYelp size={24} color="#FF1A1A" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.facebook.com/BosphorusBaklava"
+                  className={contactStyles['social-link']}
+                  aria-label="Facebook"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <SiFacebook size={24} color="#0866FF" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.instagram.com/bosphorus_baklava"
+                  className={contactStyles['social-link']}
+                  aria-label="Instagram"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <SiInstagram size={24} color="#FF0069" />
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
