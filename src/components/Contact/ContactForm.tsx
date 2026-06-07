@@ -96,11 +96,18 @@ const ContactForm = () => {
     }
   };
 
-  // Error message component code
+  // Error message conditionally renders based on state
   const ErrorMessage = (field: ContactField) => {
-    if (field.errorMessage !== '') {
-      return <span className={formStyles['error']}>{field.errorMessage} </span>;
-    }
+    return (
+      <p
+        className={`
+          ${formStyles['error']} 
+          ${field.errorMessage ? formStyles['visible'] : formStyles['invisible']}
+        `}
+      >
+        {field.errorMessage || '\u00A0'}
+      </p>
+    );
   };
 
   // Function updates field's character counter on change

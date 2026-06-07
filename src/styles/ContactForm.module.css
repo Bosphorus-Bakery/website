@@ -25,13 +25,14 @@
 
 .field-container {
   width: 95%;
+  margin-bottom: 15px;
 }
 
 /* Fields */
 .field {
   width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
+
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -61,13 +62,24 @@
 
 /* Errors */
 .error {
-  color: #d9534f; /* Red for errors */
-  font-size: 14px;
-  margin-top: -10px;
+  margin: 4px 0 0;
+  color: red;
+  font-size: 0.875rem;
+  line-height: 1.2rem;
+  min-height: 1.2rem;
+  display: block;
 }
 
 .error-border {
   border: 2px solid red;
   border-radius: 4px;
   transition: border-color 0.3s ease;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.visible {
+  visibility: visible;
 }
