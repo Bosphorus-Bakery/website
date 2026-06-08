@@ -5,8 +5,8 @@ const Navbar = () => {
   return (
     <nav className="nav-bar">
       <div className="nav-container">
-        <div className="baklava-nav-container">
-          <Link href="/baklava">Baklava</Link>
+        <div className="products-nav-container">
+          <Link href="/products">Products</Link>
         </div>
         <div className="about-nav-container">
           <Link href="/about">Our Story</Link>

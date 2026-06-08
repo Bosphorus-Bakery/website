@@ -3,3 +3,4 @@ export * from '@/lib/constants/regexPatterns';
 export * from '@/lib/constants/formLimits';
 export * from '@/lib/constants/itemDetails';
 export * from '@/lib/constants/baklavaProducts';
+export * from '@/lib/constants/nutritionInfo';
