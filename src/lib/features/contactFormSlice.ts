@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { ContactFields, FormFields } from '@/types';
 
-// Intial state of contact info fields and item quantity
+// Intial state of form fields
 const initialFormState: FormFields = {
   contactInfo: {
     firstName: { hasValue: false, value: '', isValid: false, errorMessage: '' },
@@ -19,6 +19,7 @@ const initialFormState: FormFields = {
   },
 };
 
+// Methods to update form state
 const contactFormSlice = createSlice({
   name: 'contactForm',
   initialState: initialFormState,

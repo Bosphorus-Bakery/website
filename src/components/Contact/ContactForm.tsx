@@ -15,8 +15,7 @@ import {
   emailRegex,
   phoneRegex,
   messageRegex,
-  errorMessages,
-  messageLimit,
+  fieldConfig,
 } from '@/lib/constants';
 import { formStyles } from '@/styles';
 
@@ -70,10 +69,13 @@ const ContactForm = () => {
     fieldName: keyof ContactFields,
     field: ContactField,
   ) => {
-    // If field does not have value then display required error and apply error styles
+    // If field is empty then display a field-specific required error
     if (!field.hasValue) {
       dispatch(
-        setErrorMessage({ field: fieldName, value: errorMessages['required'] }),
+        setErrorMessage({
+          field: fieldName,
+          value: fieldConfig[fieldName].required,
+        }),
       );
       e.currentTarget.classList.add(formStyles['error-border']);
 
@@ -83,7 +85,9 @@ const ContactForm = () => {
         dispatch(
           setErrorMessage({
             field: fieldName,
-            value: errorMessages[fieldName],
+            value:
+              fieldConfig[fieldName]?.invalid ??
+              fieldConfig['fallback'].invalid,
           }),
         );
         e.currentTarget.classList.add(formStyles['error-border']);
@@ -157,7 +161,7 @@ const ContactForm = () => {
     >
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="firstName">
-          First Name:*
+          {fieldConfig.firstName.label}:*
         </label>
         <input
           className={formStyles['field']}
@@ -175,7 +179,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="lastName">
-          Last Name:*
+          {fieldConfig.lastName.label}:*
         </label>
         <input
           className={formStyles['field']}
@@ -193,7 +197,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="email">
-          Email:*
+          {fieldConfig.email.label}:*
         </label>
         <input
           className={formStyles['field']}
@@ -211,7 +215,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="phone">
-          Phone:*
+          {fieldConfig.phone.label}:*
         </label>
         <input
           className={formStyles['field']}
@@ -229,7 +233,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="message">
-          Message:*
+          {fieldConfig.message.label}:*
         </label>
         <div className={formStyles['message-wrapper']}>
           <textarea
