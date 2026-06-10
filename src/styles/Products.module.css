@@ -8,7 +8,47 @@
 }
 
 .inner {
-  padding: 88px 72px;
+  padding: 24px 72px 88px;
+}
+
+/* ── Page banner ── */
+.banner {
+  position: relative;
+  padding: 80px 72px 32px;
+  text-align: center;
+  background: radial-gradient(
+    ellipse 75% 80% at 50% -20%,
+    rgba(224, 168, 48, 0.16),
+    transparent 70%
+  );
+}
+
+.bannerEyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-amber-main);
+  margin-bottom: 14px;
+}
+
+.bannerTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+  color: var(--color-text-deep-brown);
+  margin-bottom: 16px;
+}
+
+.bannerTagline {
+  max-width: 560px;
+  margin: 0 auto;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text-warm-brown);
 }
 
 /* ── Section ── */
@@ -38,6 +78,15 @@
   flex: 1;
   height: 1px;
   background: var(--color-border-line);
+}
+
+.intro {
+  max-width: 640px;
+  margin: -16px auto 44px;
+  text-align: center;
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: var(--color-text-warm-brown);
 }
 
 /* ── Products grid ── */
@@ -127,15 +176,30 @@
   color: var(--color-text-warm-brown);
 }
 
-.productPrice {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 26px;
-  font-weight: 600;
-  color: var(--color-amber-main);
-  margin-top: 6px;
+/* ── Nutrition & Ingredients (subsection of a product category) ── */
+.subsection {
+  margin-top: 48px;
 }
 
-/* ── Nutrition & Ingredients ── */
+.subsectionTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--color-text-deep-brown);
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.subsectionTitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-line);
+}
+
 .infoPanel {
   display: grid;
   grid-template-columns: 0.75fr 1.25fr;
@@ -304,6 +368,66 @@
   color: var(--color-text-medium-brown);
 }
 
+/* ── Retail & wholesale callout ── */
+.wholesale {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-top: 72px;
+  padding: 28px 32px;
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-accent);
+  border-left: 3px solid var(--color-green-primary);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px -10px rgba(61, 34, 0, 0.25);
+}
+
+.wholesaleText {
+  flex: 1;
+  min-width: 260px;
+}
+
+.wholesaleHeading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-deep-brown);
+  margin-bottom: 8px;
+}
+
+.wholesaleCopy {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-text-warm-brown);
+}
+
+.wholesaleCta {
+  flex-shrink: 0;
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-bg-paper);
+  text-decoration: none;
+  background-color: var(--color-amber-main);
+  padding: 13px 26px;
+  border-radius: 50px;
+  transition:
+    background-color 0.22s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.wholesaleCta:hover {
+  background-color: var(--color-amber-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(61, 34, 0, 0.5);
+}
+
 /* ── Footer ── */
 .footerSection {
   text-align: center;
@@ -336,16 +460,13 @@
   flex-shrink: 0;
 }
 
-.subtitle {
-  font-size: 12px;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: var(--color-text-muted-amber);
-}
-
 @media (max-width: 1024px) {
   .inner {
-    padding: 64px 48px;
+    padding: 20px 48px 64px;
+  }
+
+  .banner {
+    padding: 64px 48px 28px;
   }
 
   .grid {
@@ -355,12 +476,37 @@
 
 @media (max-width: 600px) {
   .inner {
-    padding: 40px 24px;
+    padding: 16px 24px 40px;
+  }
+
+  .banner {
+    padding: 48px 24px 24px;
+  }
+
+  .bannerTitle {
+    font-size: 36px;
   }
 
   .sectionTitle {
     font-size: 28px;
     gap: 18px;
+  }
+
+  .wholesale {
+    padding: 24px;
+  }
+
+  .wholesaleCta {
+    width: 100%;
+    text-align: center;
+  }
+
+  .subsection {
+    margin-top: 36px;
+  }
+
+  .subsectionTitle {
+    font-size: 21px;
   }
 
   .grid {

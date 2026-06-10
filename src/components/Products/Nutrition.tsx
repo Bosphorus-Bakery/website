@@ -11,16 +11,16 @@ import {
 
 const Nutrition = () => {
   return (
-    <section className={ProductsStyles.section}>
-      <h2 className={ProductsStyles.sectionTitle}>Nutrition & Ingredients</h2>
+    <div className={ProductsStyles.subsection}>
+      <h3 className={ProductsStyles.subsectionTitle}>Nutrition & Ingredients</h3>
       <div className={ProductsStyles.infoPanel}>
         <div className={ProductsStyles.infoBlock}>
           <div className={ProductsStyles.infoSub}>
-            <h3 className={ProductsStyles.infoHeading}>Ingredients</h3>
+            <h4 className={ProductsStyles.infoHeading}>Ingredients</h4>
             <p className={ProductsStyles.infoText}>{baklavaIngredients}</p>
           </div>
           <div className={ProductsStyles.infoSub}>
-            <h3 className={ProductsStyles.infoHeading}>Allergens</h3>
+            <h4 className={ProductsStyles.infoHeading}>Allergens</h4>
             <p className={ProductsStyles.infoText}>{baklavaAllergens}</p>
           </div>
         </div>
@@ -93,7 +93,7 @@ const Nutrition = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

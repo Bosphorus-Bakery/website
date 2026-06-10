@@ -1,11 +1,18 @@
 import Image from 'next/image';
 import { ProductsStyles } from '@/styles';
 import { baklavaProducts } from '@/lib/constants';
+import Nutrition from './Nutrition';
 
 const Products = () => {
   return (
     <section className={ProductsStyles.section}>
       <h2 className={ProductsStyles.sectionTitle}>Baklava</h2>
+      <p className={ProductsStyles.intro}>
+        Forty-plus layers of paper-thin filo, walnuts and pistachios, golden
+        butter and our signature syrup &mdash; rolled, cut, and baked entirely
+        by hand. Nothing sits on a shelf: every box is baked to order so it
+        reaches you at its freshest.
+      </p>
       <div className={ProductsStyles.grid}>
         {baklavaProducts.map((product) => (
           <div key={product.id} className={ProductsStyles.productCard}>
@@ -32,6 +39,7 @@ const Products = () => {
           </div>
         ))}
       </div>
+      <Nutrition />
     </section>
   );
 };
