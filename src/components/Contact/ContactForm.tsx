@@ -142,14 +142,51 @@ const ContactForm = () => {
       message,
     };
 
-    const fieldValues = Object.entries(ContactFormFields) // Transforms state object into array of key value pairs
-      .map(([fieldName, fieldValue]) => ({
-        // Iterates through key value pairs and extracts the field name and field value
-        field: fieldName,
-        value: fieldValue,
-      }));
-    console.log('handleSubmit called');
-    console.log(`fieldValues: ${fieldValues}`);
+    // Iterate through each fields state and checks if any field is empty or has invalid value
+    let isFormValid = true;
+
+    Object.entries(ContactFormFields).forEach(([fieldName, fieldState]) => {
+      const key = fieldName as keyof ContactFields;
+
+      // Get the element for each field using its name attribute
+      const fieldElement = e.currentTarget.elements.namedItem(key) as
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | null;
+
+      if (!fieldState.hasValue) {
+        dispatch(
+          setErrorMessage({
+            field: key,
+            value:
+              fieldConfig[key]?.required ?? fieldConfig['fallback'].required,
+          }),
+        );
+        fieldElement?.classList.add(formStyles['error-border']);
+        isFormValid = false;
+      } else if (!fieldState.isValid) {
+        dispatch(
+          setErrorMessage({
+            field: key,
+            value: fieldConfig[key]?.invalid ?? fieldConfig['fallback'].invalid,
+          }),
+        );
+        fieldElement?.classList.add(formStyles['error-border']);
+        isFormValid = false;
+      }
+    });
+
+    if (!isFormValid) {
+      return;
+    }
+
+    // Flatten ContactFormFields into a plain { fieldName: value } object for the request body
+    const formData = Object.fromEntries(
+      Object.entries(ContactFormFields).map(([fieldName, fieldState]) => [
+        fieldName,
+        fieldState.value,
+      ]),
+    );
   };
 
   // Contact form component code
@@ -161,7 +198,7 @@ const ContactForm = () => {
     >
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="firstName">
-          {fieldConfig.firstName.label}:*
+          {fieldConfig.firstName.label}:
         </label>
         <input
           className={formStyles['field']}
@@ -179,7 +216,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="lastName">
-          {fieldConfig.lastName.label}:*
+          {fieldConfig.lastName.label}:
         </label>
         <input
           className={formStyles['field']}
@@ -197,7 +234,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="email">
-          {fieldConfig.email.label}:*
+          {fieldConfig.email.label}:
         </label>
         <input
           className={formStyles['field']}
@@ -215,7 +252,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="phone">
-          {fieldConfig.phone.label}:*
+          {fieldConfig.phone.label}:
         </label>
         <input
           className={formStyles['field']}
@@ -233,7 +270,7 @@ const ContactForm = () => {
       </div>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="message">
-          {fieldConfig.message.label}:*
+          {fieldConfig.message.label}:
         </label>
         <div className={formStyles['message-wrapper']}>
           <textarea
