@@ -59,6 +59,7 @@ const contactFormSlice = createSlice({
       state.contactInfo[action.payload.field].errorMessage =
         action.payload.value;
     },
+    resetContactForm: () => initialFormState,
   },
 });
 
@@ -68,6 +69,7 @@ export const {
   setIsValid,
   setFieldCounter,
   setErrorMessage,
+  resetContactForm,
 } = contactFormSlice.actions;
 
 export const contactFormReducer = contactFormSlice.reducer;

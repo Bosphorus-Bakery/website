@@ -8,7 +8,9 @@ import {
   setIsValid,
   setFieldCounter,
   setErrorMessage,
+  resetContactForm,
 } from '@/lib';
+import { useState } from 'react';
 import type { ContactField, ContactFields } from '@/types';
 import {
   nameRegex,
@@ -25,6 +27,10 @@ const ContactForm = () => {
     (state) => state.contactForm.contactInfo,
   );
   const dispatch = useAppDispatch();
+
+  const [submitStatus, setSubmitStatus] = useState<
+    'idle' | 'success' | 'error'
+  >('idle');
 
   // Validates field's input
   const validateField = (regex: RegExp, value: string) => {
@@ -189,23 +195,38 @@ const ContactForm = () => {
     );
 
     // HTTP POST request to /api/contact with form data in the request body
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      // Stringify the formData object to send in the request body
-      body: JSON.stringify(formData),
-    });
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // Stringify the formData object to send in the request body
+        body: JSON.stringify(formData),
+      });
 
-    const result = await res.json();
+      const result = await res.json();
 
-    if (!result.success) {
-      // TODO: surface a user-facing error (e.g. toast)
-      console.error('Failed to send contact form', result.error);
-      return;
+      if (!result.success) {
+        console.error('Failed to send contact form', result.error);
+        setSubmitStatus('error');
+        return;
+      }
+
+      dispatch(resetContactForm());
+      setSubmitStatus('success');
+    } catch (error) {
+      console.error('Failed to send contact form', error);
+      setSubmitStatus('error');
     }
-
-    // TODO: surface a success message (e.g. toast)
   };
+
+  // If the form was submitted successfully, show a confirmation instead of the form
+  if (submitStatus === 'success') {
+    return (
+      <div className={formStyles['success-message']}>
+        <p>Thanks for reaching out! We'll get back to you shortly.</p>
+      </div>
+    );
+  }
 
   // Contact form component code
   return (
@@ -214,6 +235,16 @@ const ContactForm = () => {
       onSubmit={handleSubmit}
       noValidate
     >
+      <p
+        className={`
+          ${formStyles['error']}
+          ${submitStatus === 'error' ? formStyles['visible'] : formStyles['invisible']}
+        `}
+      >
+        {submitStatus === 'error'
+          ? 'Something went wrong sending your message. Please try again.'
+          : ' '}
+      </p>
       <div className={formStyles['field-container']}>
         <label className={formStyles['label']} htmlFor="firstName">
           {fieldConfig.firstName.label}:
