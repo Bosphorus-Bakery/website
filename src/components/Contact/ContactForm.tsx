@@ -132,7 +132,7 @@ const ContactForm = () => {
   };
 
   // Function submits validated form data
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const ContactFormFields = {
       firstName,
@@ -187,6 +187,24 @@ const ContactForm = () => {
         fieldState.value,
       ]),
     );
+
+    // HTTP POST request to /api/contact with form data in the request body
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // Stringify the formData object to send in the request body
+      body: JSON.stringify(formData),
+    });
+
+    const result = await res.json();
+
+    if (!result.success) {
+      // TODO: surface a user-facing error (e.g. toast)
+      console.error('Failed to send contact form', result.error);
+      return;
+    }
+
+    // TODO: surface a success message (e.g. toast)
   };
 
   // Contact form component code
