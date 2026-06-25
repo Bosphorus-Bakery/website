@@ -1,7 +1,9 @@
+import { locationStyles } from '@/styles';
+
 const Locations = () => {
   return (
     <div>
-      <h1>Our Store</h1>
+      <h1 className={locationStyles['banner-title']}>Our Store</h1>
     </div>
   );
 };

@@ -1,0 +1,341 @@
+.page {
+  width: 1180px;
+  max-width: 100%;
+  margin: 0 auto;
+  background-color: var(--color-bg-paper);
+  color: var(--color-text-deep-brown);
+  overflow: hidden;
+}
+
+.inner {
+  padding: 24px 72px 88px;
+}
+
+/* ── Page banner ── */
+.banner {
+  position: relative;
+  padding: 80px 72px 32px;
+  text-align: center;
+  background: radial-gradient(
+    ellipse 75% 80% at 50% -20%,
+    rgba(224, 168, 48, 0.16),
+    transparent 70%
+  );
+}
+
+.bannerEyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-amber-main);
+  margin-bottom: 14px;
+}
+
+.bannerTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+  color: var(--color-text-deep-brown);
+  margin-bottom: 16px;
+}
+
+.bannerTagline {
+  max-width: 560px;
+  margin: 0 auto;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text-warm-brown);
+}
+
+/* ── Section ── */
+.section {
+  margin-bottom: 72px;
+}
+
+.section:last-of-type {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--color-text-deep-brown);
+  margin-bottom: 44px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.sectionTitle::before,
+.sectionTitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-line);
+}
+
+.intro {
+  max-width: 640px;
+  margin: -16px auto 44px;
+  text-align: center;
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: var(--color-text-warm-brown);
+}
+
+/* ── Locations grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+
+/* ── Location card ── */
+.locationCard {
+  position: relative;
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-accent);
+  border-top: 3px solid var(--color-amber-main);
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 4px 16px -10px rgba(61, 34, 0, 0.25);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.locationCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 30px -16px rgba(61, 34, 0, 0.4);
+  border-color: var(--color-amber-light);
+}
+
+.locationName {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--color-text-deep-brown);
+}
+
+.locationMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.locationAddress {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-warm-brown);
+}
+
+.locationPhone {
+  font-size: 14px;
+  color: var(--color-text-warm-brown);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.locationPhone:hover {
+  color: var(--color-amber-main);
+}
+
+/* ── Hours table ── */
+.hoursTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.hoursRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--color-border-line);
+  font-size: 13.5px;
+}
+
+.hoursRow:last-child {
+  border-bottom: none;
+}
+
+.hoursDay {
+  color: var(--color-text-deep-brown);
+  font-weight: 500;
+}
+
+.hoursTime {
+  color: var(--color-text-warm-brown);
+}
+
+.hoursClosed {
+  color: var(--color-text-medium-brown);
+  font-style: italic;
+}
+
+/* ── Map / directions link ── */
+.mapLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-amber-main);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.mapLink:hover {
+  color: var(--color-amber-deep);
+}
+
+/* ── "Order for pickup" callout (mirrors wholesale callout) ── */
+.callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-top: 72px;
+  padding: 28px 32px;
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-accent);
+  border-left: 3px solid var(--color-amber-main);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px -10px rgba(61, 34, 0, 0.25);
+}
+
+.calloutText {
+  flex: 1;
+  min-width: 260px;
+}
+
+.calloutHeading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-deep-brown);
+  margin-bottom: 8px;
+}
+
+.calloutCopy {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-text-warm-brown);
+}
+
+.calloutCta {
+  flex-shrink: 0;
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-bg-paper);
+  text-decoration: none;
+  background-color: var(--color-amber-main);
+  padding: 13px 26px;
+  border-radius: 50px;
+  transition:
+    background-color 0.22s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.calloutCta:hover {
+  background-color: var(--color-amber-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(61, 34, 0, 0.5);
+}
+
+/* ── Footer ornament ── */
+.footerSection {
+  text-align: center;
+  margin-top: 72px;
+}
+
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.ornamentLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-ornament-gold));
+}
+
+.ornamentLineRight {
+  background: linear-gradient(270deg, transparent, var(--color-ornament-gold));
+}
+
+.ornamentDiamond {
+  width: 10px;
+  height: 10px;
+  background: var(--color-ornament-gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .inner {
+    padding: 20px 48px 64px;
+  }
+
+  .banner {
+    padding: 64px 48px 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .inner {
+    padding: 16px 24px 40px;
+  }
+
+  .banner {
+    padding: 48px 24px 24px;
+  }
+
+  .bannerTitle {
+    font-size: 36px;
+  }
+
+  .sectionTitle {
+    font-size: 28px;
+    gap: 18px;
+  }
+
+  .callout {
+    padding: 24px;
+  }
+
+  .calloutCta {
+    width: 100%;
+    text-align: center;
+  }
+}
