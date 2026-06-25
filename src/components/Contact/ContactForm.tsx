@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import {
   useAppSelector,
   useAppDispatch,
@@ -203,7 +204,15 @@ const ContactForm = () => {
   if (submitStatus === 'success') {
     return (
       <div className={formStyles['success-message']}>
-        <p>Thanks for reaching out! We'll get back to you shortly.</p>
+        <p>Thanks for reaching out! We&rsquo;ll get back to you shortly.</p>
+        <p>
+          In the meantime, <Link href="/products">explore our products</Link> or
+          call us at{' '}
+          <a href="tel:4154083037" style={{ whiteSpace: 'nowrap' }}>
+            (415) 408-3037
+          </a>
+          .
+        </p>
       </div>
     );
   }

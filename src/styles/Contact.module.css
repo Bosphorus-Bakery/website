@@ -106,6 +106,17 @@
   margin: 0;
 }
 
+.subheading a {
+  color: var(--color-amber-main);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.subheading a:hover {
+  color: var(--color-amber-deep);
+  text-decoration: underline;
+}
+
 .detail-value a {
   color: var(--color-amber-main);
   text-decoration: none;

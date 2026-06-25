@@ -10,7 +10,10 @@ const ContactPage = () => {
     <div className={contactStyles['page-container']}>
       <h1 className={contactStyles['heading-1']}>Contact Us</h1>
       <p className={contactStyles['subheading']}>
-        Send us a message and we'll get back to you shortly
+        Fill out the form below to get in touch.
+        <br />
+        Prefer to order by phone? Call us at{' '}
+        <a href="tel:4154083037" style={{ whiteSpace: 'nowrap' }}>(415) 408-3037</a>.
       </p>
       <div className={contactStyles['content-container']}>
         <div className={contactStyles['form-panel']}>

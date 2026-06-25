@@ -240,8 +240,7 @@ html {
 }
 
 .button {
-  display: block;
-  width: 100%;
+  display: inline-block;
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;
   font-weight: 600;

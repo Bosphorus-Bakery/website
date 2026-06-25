@@ -89,10 +89,23 @@
 /* Success */
 .success-message {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   text-align: center;
   padding: 40px 20px;
   font-size: 1.1rem;
   color: #333;
+}
+
+.success-message a {
+  color: var(--color-amber-main);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.success-message a:hover {
+  color: var(--color-amber-deep);
+  text-decoration: underline;
 }
