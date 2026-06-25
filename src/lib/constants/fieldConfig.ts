@@ -24,11 +24,6 @@ const fieldConfigBase = {
     invalid: 'Enter a valid value', // Here for consistency, cannot be triggered on form
     required: 'Message is required',
   },
-  selectedDate: {
-    label: 'Date',
-    invalid: 'Pick a valid date',
-    required: 'Date is required',
-  },
   fallback: {
     label: 'This field',
     invalid: 'Enter a valid value',
