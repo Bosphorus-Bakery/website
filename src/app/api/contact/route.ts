@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     // Resolves to { data: { id: '...' } | null, error: SomeErrorType | null } shape
     from: 'Bosphorous Bakery <onboarding@resend.dev>', // sandbox sender for testing
     to: process.env.CONTACT_EMAIL_TO!,
-    subject: `New contact form message from ${formData.firstName} ${formData.lastName}`,
+    subject: `New message from ${formData.firstName} ${formData.lastName}`,
     text: `
       Name: ${formData.firstName} ${formData.lastName}
       Email: ${formData.email}
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
             </table>
           </div>
           <div style="background-color: #f5efe6; padding: 12px 24px; font-size: 12px; color: #8a7a6d; text-align: center;">
-            Sent from the Bosphorous Bakery website contact form
+            Sent from the Bosphorous Bakery website
           </div>
         </div>
       </div>
