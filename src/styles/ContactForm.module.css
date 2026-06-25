@@ -5,22 +5,10 @@
   align-items: center;
 }
 
-.message-wrapper {
-  position: relative;
-  display: block;
-}
-
 .message {
   resize: none;
-}
-
-.character-counter {
-  position: absolute;
-  bottom: 5px;
-  right: 10px;
-  font-size: 12px;
-  color: #888;
-  pointer-events: none;
+  min-height: 130px;
+  overflow: hidden;
 }
 
 .field-container {
@@ -34,11 +22,13 @@
   padding: 10px;
 
   font-family: inherit;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.4;
-  border: 1px solid #ccc;
+  color: var(--color-text-deep-brown);
+  border: 1px solid var(--color-border-line);
   border-radius: 5px;
   box-sizing: border-box;
+  background-color: var(--color-bg-paper);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -51,31 +41,39 @@
 }
 
 .field:focus {
-  border-color: #007bff; /* Primary blue color for focus */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-color: var(--color-amber-main);
+  box-shadow: 0 0 5px rgba(186, 117, 23, 0.35);
   outline: none;
 }
 
 .label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  font-size: 14px;
-  color: #333;
+  margin-bottom: 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-text-warm-brown);
 }
 
 /* Errors */
 .error {
   margin: 4px 0 0;
-  color: red;
-  font-size: 0.875rem;
+  color: #b83030;
+  font-size: 0.8rem;
   line-height: 1.2rem;
   min-height: 1.2rem;
   display: block;
 }
 
+.submit-error {
+  margin-bottom: 6px;
+  text-align: center;
+}
+
 .error-border {
-  border: 2px solid red;
+  border: 2px solid #b83030;
   border-radius: 4px;
   transition: border-color 0.3s ease;
 }

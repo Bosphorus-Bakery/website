@@ -240,14 +240,29 @@ html {
 }
 
 .button {
-  width: 30%;
-  display: inline-block;
-  background-color: #007bff; /* Primary blue */
-  color: #fff;
-  font-size: 16px;
-  padding: 10px 20px;
+  display: block;
+  width: 100%;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-bg-paper);
+  background-color: var(--color-amber-main);
+  padding: 14px 26px;
   border: none;
   border-radius: 50px;
+  cursor: pointer;
+  transition:
+    background-color 0.22s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.button:hover {
+  background-color: var(--color-amber-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(61, 34, 0, 0.5);
 }
 
 @media (max-width: 480px) {

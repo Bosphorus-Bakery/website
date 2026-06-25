@@ -21,7 +21,7 @@ const fieldConfigBase = {
   },
   message: {
     label: 'Message',
-    invalid: 'Use 250 characters or less',
+    invalid: 'Enter a valid value', // Here for consistency, cannot be triggered on form
     required: 'Message is required',
   },
   selectedDate: {

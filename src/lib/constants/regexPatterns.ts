@@ -3,9 +3,6 @@ const regexPatterns = {
   emailRegex: /^[A-Za-z0-9][A-Za-z0-9\.\_\-\+\%]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/,
   phoneRegex:
     /^(\+?\d{1,3})?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}(x|ext)?\d{0,5}?$/,
-  subjectRegex: /^.{1,60}$/,
-  messageRegex: /^.{1,250}$/,
 };
 
-export const { nameRegex, emailRegex, phoneRegex, subjectRegex, messageRegex } =
-  regexPatterns;
+export const { nameRegex, emailRegex, phoneRegex } = regexPatterns;

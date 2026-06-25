@@ -21,7 +21,7 @@ const ContactPage = () => {
           <div className={contactStyles['store-detail-row']}>
             <span className={contactStyles['detail-label']}>Address</span>
             <div className={contactStyles['detail-value']}>
-              <p>1301 Maurice Avenue Rohnert Park, CA 94928</p>
+              <p>1301 Maurice Avenue<br />Rohnert Park, CA 94928</p>
             </div>
           </div>
 

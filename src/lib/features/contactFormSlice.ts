@@ -14,7 +14,6 @@ const initialFormState: FormFields = {
       value: '',
       isValid: false,
       errorMessage: '',
-      counter: 0,
     },
   },
 };
@@ -46,12 +45,6 @@ const contactFormSlice = createSlice({
     ) => {
       state.contactInfo[action.payload.field].isValid = action.payload.value;
     },
-    setFieldCounter: (
-      state,
-      action: PayloadAction<{ field: keyof ContactFields; value: number }>,
-    ) => {
-      state.contactInfo[action.payload.field].counter = action.payload.value;
-    },
     setErrorMessage: (
       state,
       action: PayloadAction<{ field: keyof ContactFields; value: string }>,
@@ -67,7 +60,6 @@ export const {
   setHasValue,
   setFieldValue,
   setIsValid,
-  setFieldCounter,
   setErrorMessage,
   resetContactForm,
 } = contactFormSlice.actions;

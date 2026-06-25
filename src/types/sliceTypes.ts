@@ -20,5 +20,4 @@ export interface ContactField {
   value: string;
   isValid: boolean;
   errorMessage: string;
-  counter?: number; // Optional field
 }

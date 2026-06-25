@@ -1,12 +1,10 @@
 'use client';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import {
   useAppSelector,
   useAppDispatch,
   setHasValue,
   setFieldValue,
   setIsValid,
-  setFieldCounter,
   setErrorMessage,
   resetContactForm,
 } from '@/lib';
@@ -16,7 +14,6 @@ import {
   nameRegex,
   emailRegex,
   phoneRegex,
-  messageRegex,
   fieldConfig,
 } from '@/lib/constants';
 import { formStyles } from '@/styles';
@@ -120,23 +117,6 @@ const ContactForm = () => {
     );
   };
 
-  // Function updates field's character counter on change
-  const handleCounter = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-    fieldName: keyof ContactFields,
-  ) => {
-    const length = e.currentTarget.value.length;
-    dispatch(setFieldCounter({ field: fieldName, value: length }));
-  };
-
-  // Character counter component code
-  const CharacterCounter = (counter: number, characterLimit: number) => {
-    const remainingChars: number = characterLimit - counter;
-    return (
-      <span className={formStyles['character-counter']}>{remainingChars} </span>
-    );
-  };
-
   // Function submits validated form data
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -206,7 +186,7 @@ const ContactForm = () => {
       const result = await res.json();
 
       if (!result.success) {
-        console.error('Failed to send contact form', result.error);
+        console.log('Failed to send contact form', result.error);
         setSubmitStatus('error');
         return;
       }
@@ -238,6 +218,7 @@ const ContactForm = () => {
       <p
         className={`
           ${formStyles['error']}
+          ${formStyles['submit-error']}
           ${submitStatus === 'error' ? formStyles['visible'] : formStyles['invisible']}
         `}
       >
@@ -321,22 +302,21 @@ const ContactForm = () => {
         <label className={formStyles['label']} htmlFor="message">
           {fieldConfig.message.label}:
         </label>
-        <div className={formStyles['message-wrapper']}>
-          <textarea
-            className={`${formStyles['field']} ${formStyles['message']}`}
-            id="message"
-            name="message"
-            placeholder="Tell us how we can help"
-            onChange={(e) => {
-              handleOnChange(e, 'message', messageRegex);
-              handleCounter(e, 'message');
-            }}
-            onBlur={(e) => {
-              handleOnBlur(e, 'message', message);
-            }}
-          />
-        </div>
-        {CharacterCounter(message.counter ?? 0, 250)}
+        <textarea
+          className={`${formStyles['field']} ${formStyles['message']}`}
+          id="message"
+          name="message"
+          placeholder="Tell us how we can help"
+          onChange={(e) => {
+            handleOnChange(e, 'message', /[\s\S]+/);
+            e.target.style.height = 'auto';
+            e.target.style.height = `${e.target.scrollHeight}px`;
+          }}
+          onBlur={(e) => {
+            handleOnBlur(e, 'message', message);
+          }}
+          maxLength={1000}
+        />
         {ErrorMessage(message)}
       </div>
       <button className="button" type="submit">
