@@ -81,7 +81,7 @@ const ContactForm = () => {
           value: fieldConfig[fieldName].required,
         }),
       );
-      e.currentTarget.classList.add(formStyles['error-border']);
+      e.currentTarget.classList.add(formStyles.errorBorder);
 
       // If field has invalid value then display incorrect format error and apply error styles
     } else {
@@ -94,12 +94,12 @@ const ContactForm = () => {
               fieldConfig['fallback'].invalid,
           }),
         );
-        e.currentTarget.classList.add(formStyles['error-border']);
+        e.currentTarget.classList.add(formStyles.errorBorder);
 
         // If field has a valid value then clear error message and remove error styling
       } else {
         dispatch(setErrorMessage({ field: fieldName, value: '' }));
-        e.currentTarget.classList.remove(formStyles['error-border']);
+        e.currentTarget.classList.remove(formStyles.errorBorder);
       }
     }
   };
@@ -109,8 +109,8 @@ const ContactForm = () => {
     return (
       <p
         className={`
-          ${formStyles['error']} 
-          ${field.errorMessage ? formStyles['visible'] : formStyles['invisible']}
+          ${formStyles.error}
+          ${field.errorMessage ? formStyles.visible : formStyles.invisible}
         `}
       >
         {field.errorMessage || '\u00A0'}
@@ -149,7 +149,7 @@ const ContactForm = () => {
               fieldConfig[key]?.required ?? fieldConfig['fallback'].required,
           }),
         );
-        fieldElement?.classList.add(formStyles['error-border']);
+        fieldElement?.classList.add(formStyles.errorBorder);
         isFormValid = false;
       } else if (!fieldState.isValid) {
         dispatch(
@@ -158,7 +158,7 @@ const ContactForm = () => {
             value: fieldConfig[key]?.invalid ?? fieldConfig['fallback'].invalid,
           }),
         );
-        fieldElement?.classList.add(formStyles['error-border']);
+        fieldElement?.classList.add(formStyles.errorBorder);
         isFormValid = false;
       }
     });
@@ -203,7 +203,7 @@ const ContactForm = () => {
   // If the form was submitted successfully, show a confirmation instead of the form
   if (submitStatus === 'success') {
     return (
-      <div className={formStyles['success-message']}>
+      <div className={formStyles.successMessage}>
         <p>Thanks for reaching out! We&rsquo;ll get back to you shortly.</p>
         <p>
           In the meantime, <Link href="/products">explore our products</Link> or
@@ -220,27 +220,27 @@ const ContactForm = () => {
   // Contact form component code
   return (
     <form
-      className={formStyles['form-container']}
+      className={formStyles.formContainer}
       onSubmit={handleSubmit}
       noValidate
     >
       <p
         className={`
-          ${formStyles['error']}
-          ${formStyles['submit-error']}
-          ${submitStatus === 'error' ? formStyles['visible'] : formStyles['invisible']}
+          ${formStyles.error}
+          ${formStyles.submitError}
+          ${submitStatus === 'error' ? formStyles.visible : formStyles.invisible}
         `}
       >
         {submitStatus === 'error'
           ? 'Something went wrong sending your message. Please try again.'
           : ' '}
       </p>
-      <div className={formStyles['field-container']}>
-        <label className={formStyles['label']} htmlFor="firstName">
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="firstName">
           {fieldConfig.firstName.label}:
         </label>
         <input
-          className={formStyles['field']}
+          className={formStyles.field}
           id="firstName"
           name="firstName"
           type="text"
@@ -253,12 +253,12 @@ const ContactForm = () => {
         />
         {ErrorMessage(firstName)}
       </div>
-      <div className={formStyles['field-container']}>
-        <label className={formStyles['label']} htmlFor="lastName">
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="lastName">
           {fieldConfig.lastName.label}:
         </label>
         <input
-          className={formStyles['field']}
+          className={formStyles.field}
           id="lastName"
           name="lastName"
           type="text"
@@ -271,12 +271,12 @@ const ContactForm = () => {
         />
         {ErrorMessage(lastName)}
       </div>
-      <div className={formStyles['field-container']}>
-        <label className={formStyles['label']} htmlFor="email">
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="email">
           {fieldConfig.email.label}:
         </label>
         <input
-          className={formStyles['field']}
+          className={formStyles.field}
           id="email"
           name="email"
           type="email"
@@ -289,12 +289,12 @@ const ContactForm = () => {
         />
         {ErrorMessage(email)}
       </div>
-      <div className={formStyles['field-container']}>
-        <label className={formStyles['label']} htmlFor="phone">
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="phone">
           {fieldConfig.phone.label}:
         </label>
         <input
-          className={formStyles['field']}
+          className={formStyles.field}
           id="phone"
           name="phone"
           type="tel"
@@ -307,12 +307,12 @@ const ContactForm = () => {
         />
         {ErrorMessage(phone)}
       </div>
-      <div className={formStyles['field-container']}>
-        <label className={formStyles['label']} htmlFor="message">
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="message">
           {fieldConfig.message.label}:
         </label>
         <textarea
-          className={`${formStyles['field']} ${formStyles['message']}`}
+          className={`${formStyles.field} ${formStyles.message}`}
           id="message"
           name="message"
           placeholder="Tell us how we can help"

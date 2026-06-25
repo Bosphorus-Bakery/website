@@ -7,57 +7,57 @@ import {
 } from '@icons-pack/react-simple-icons';
 const ContactPage = () => {
   return (
-    <div className={contactStyles['page-container']}>
-      <h1 className={contactStyles['heading-1']}>Contact Us</h1>
-      <p className={contactStyles['subheading']}>
+    <div className={contactStyles.pageContainer}>
+      <h1 className={contactStyles.heading1}>Contact Us</h1>
+      <p className={contactStyles.subheading}>
         Fill out the form below to get in touch.
         <br />
         Prefer to order by phone? Call us at{' '}
         <a href="tel:4154083037" style={{ whiteSpace: 'nowrap' }}>(415) 408-3037</a>.
       </p>
-      <div className={contactStyles['content-container']}>
-        <div className={contactStyles['form-panel']}>
+      <div className={contactStyles.contentContainer}>
+        <div className={contactStyles.formPanel}>
           <ContactForm />
         </div>
 
-        <div className={contactStyles['store-details-container']}>
-          <div className={contactStyles['store-detail-row']}>
-            <span className={contactStyles['detail-label']}>Address</span>
-            <div className={contactStyles['detail-value']}>
+        <div className={contactStyles.storeDetailsContainer}>
+          <div className={contactStyles.storeDetailRow}>
+            <span className={contactStyles.detailLabel}>Address</span>
+            <div className={contactStyles.detailValue}>
               <p>1301 Maurice Avenue<br />Rohnert Park, CA 94928</p>
             </div>
           </div>
 
-          <div className={contactStyles['store-detail-row']}>
-            <span className={contactStyles['detail-label']}>Hours</span>
-            <div className={contactStyles['detail-value']}>
+          <div className={contactStyles.storeDetailRow}>
+            <span className={contactStyles.detailLabel}>Hours</span>
+            <div className={contactStyles.detailValue}>
               <p>Mon - Thurs 9:00am - 2:00pm</p>
             </div>
           </div>
 
-          <div className={contactStyles['store-detail-row']}>
-            <span className={contactStyles['detail-label']}>Phone</span>
-            <div className={contactStyles['detail-value']}>
+          <div className={contactStyles.storeDetailRow}>
+            <span className={contactStyles.detailLabel}>Phone</span>
+            <div className={contactStyles.detailValue}>
               <a href="tel:4154083037">(415) 408-3037</a>
             </div>
           </div>
 
-          <div className={contactStyles['store-detail-row']}>
-            <span className={contactStyles['detail-label']}>Email</span>
-            <div className={contactStyles['detail-value']}>
+          <div className={contactStyles.storeDetailRow}>
+            <span className={contactStyles.detailLabel}>Email</span>
+            <div className={contactStyles.detailValue}>
               <a href="mailto:owner@bosphorusbakery.com">
                 owner@bosphorusbakery.com
               </a>
             </div>
           </div>
 
-          <div className={contactStyles['store-detail-row']}>
-            <span className={contactStyles['detail-label']}>Socials</span>
-            <ul className={contactStyles['socials-bar']}>
+          <div className={contactStyles.storeDetailRow}>
+            <span className={contactStyles.detailLabel}>Socials</span>
+            <ul className={contactStyles.socialsBar}>
               <li>
                 <a
                   href="https://www.yelp.com/biz/bosphorus-baklava-novato"
-                  className={contactStyles['social-link']}
+                  className={contactStyles.socialLink}
                   aria-label="Yelp"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -68,7 +68,7 @@ const ContactPage = () => {
               <li>
                 <a
                   href="https://www.facebook.com/BosphorusBaklava"
-                  className={contactStyles['social-link']}
+                  className={contactStyles.socialLink}
                   aria-label="Facebook"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -79,7 +79,7 @@ const ContactPage = () => {
               <li>
                 <a
                   href="https://www.instagram.com/bosphorus_baklava"
-                  className={contactStyles['social-link']}
+                  className={contactStyles.socialLink}
                   aria-label="Instagram"
                   target="_blank"
                   rel="noopener noreferrer"
