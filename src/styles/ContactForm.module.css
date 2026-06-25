@@ -99,6 +99,10 @@
   color: #333;
 }
 
+.success-message p {
+  margin: 0;
+}
+
 .success-message a {
   color: var(--color-amber-main);
   text-decoration: none;
