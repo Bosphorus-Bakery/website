@@ -1,47 +1,36 @@
 'use client';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import Link from 'next/link';
 import {
   useAppSelector,
   useAppDispatch,
   setHasValue,
   setFieldValue,
   setIsValid,
-  setFieldCounter,
   setErrorMessage,
-  setQuantity,
-  updateSubtotal,
+  resetContactForm,
 } from '@/lib';
-import type { ContactField, ContactFields, Item } from '@/types';
+import { useState } from 'react';
+import type { ContactField, ContactFields } from '@/types';
 import {
   nameRegex,
   emailRegex,
   phoneRegex,
-  descriptionRegex,
-  errorMessages,
-  descriptionLimit,
-  itemDetails,
+  fieldConfig,
 } from '@/lib/constants';
 import { formStyles } from '@/styles';
 
 const ContactForm = () => {
   // Get contact info form state
-  const { firstName, lastName, email, phone, subject, description } =
-    useAppSelector((state) => state.contactForm.contactInfo);
-
-  // Get order state values
-  const { cart, subtotal } = useAppSelector((state) => state.contactForm.order);
-
+  const { firstName, lastName, email, phone, message } = useAppSelector(
+    (state) => state.contactForm.contactInfo,
+  );
   const dispatch = useAppDispatch();
 
-  // Function updates the subject state based on subject clicked
-  const handleSubject = (
-    fieldName: keyof ContactFields,
-    e: React.MouseEvent<HTMLInputElement>,
-  ) => {
-    dispatch(setFieldValue({ field: fieldName, value: e.currentTarget.value }));
-  };
+  const [submitStatus, setSubmitStatus] = useState<
+    'idle' | 'success' | 'error'
+  >('idle');
 
-  // Function validates field's input against its regex
+  // Validates field's input
   const validateField = (regex: RegExp, value: string) => {
     return regex.test(value) ? true : false;
   };
@@ -84,12 +73,15 @@ const ContactForm = () => {
     fieldName: keyof ContactFields,
     field: ContactField,
   ) => {
-    // If field does not have value then display required error and apply error styles
+    // If field is empty then display a field-specific required error
     if (!field.hasValue) {
       dispatch(
-        setErrorMessage({ field: fieldName, value: errorMessages['required'] }),
+        setErrorMessage({
+          field: fieldName,
+          value: fieldConfig[fieldName].required,
+        }),
       );
-      e.currentTarget.classList.add(formStyles['error-border']);
+      e.currentTarget.classList.add(formStyles.errorBorder);
 
       // If field has invalid value then display incorrect format error and apply error styles
     } else {
@@ -97,263 +89,158 @@ const ContactForm = () => {
         dispatch(
           setErrorMessage({
             field: fieldName,
-            value: errorMessages[fieldName],
+            value:
+              fieldConfig[fieldName]?.invalid ??
+              fieldConfig['fallback'].invalid,
           }),
         );
-        e.currentTarget.classList.add(formStyles['error-border']);
+        e.currentTarget.classList.add(formStyles.errorBorder);
 
         // If field has a valid value then clear error message and remove error styling
       } else {
         dispatch(setErrorMessage({ field: fieldName, value: '' }));
-        e.currentTarget.classList.remove(formStyles['error-border']);
+        e.currentTarget.classList.remove(formStyles.errorBorder);
       }
     }
   };
 
-  // Error message component code
+  // Error message conditionally renders based on state
   const ErrorMessage = (field: ContactField) => {
-    if (field.errorMessage !== '') {
-      return <span className={formStyles['error']}>{field.errorMessage} </span>;
-    }
-  };
-
-  // Function updates field's character counter on change
-  const handleCounter = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-    fieldName: keyof ContactFields,
-  ) => {
-    const length = e.currentTarget.value.length;
-    dispatch(setFieldCounter({ field: fieldName, value: length }));
-  };
-
-  // Character counter component code
-  const CharacterCounter = (counter: number, characterLimit: number) => {
-    const remainingChars: number = characterLimit - counter;
     return (
-      <span className={formStyles['character-counter']}>{remainingChars} </span>
+      <p
+        className={`
+          ${formStyles.error}
+          ${field.errorMessage ? formStyles.visible : formStyles.invisible}
+        `}
+      >
+        {field.errorMessage || '\u00A0'}
+      </p>
     );
   };
 
   // Function submits validated form data
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const ContactFormFields = {
       firstName,
       lastName,
       email,
       phone,
-      subject,
-      description,
+      message,
     };
 
-    const fieldValues = Object.entries(ContactFormFields) // Transforms state object into array of key value pairs
-      .map(([fieldName, fieldValue]) => ({
-        // Iterates through key value pairs and extracts the field name and field value
-        field: fieldName,
-        value: fieldValue,
-      }));
-    console.log('handleSubmit called');
-    console.log(`fieldValues: ${fieldValues}`);
-  };
-  // TO DO: Send data to server to create email
+    // Iterate through each fields state and checks if any field is empty or has invalid value
+    let isFormValid = true;
 
-  // Submit button component code
-  const SubmitButton = (subject: ContactField) => {
-    // Renders "Submit" or "Order" based on subject state
-    if (subject.value === 'order') {
-      return (
-        <button className="button" type="submit">
-          Place order
-        </button>
-      );
-    } else {
-      return (
-        <button className="button" type="submit">
-          Submit
-        </button>
-      );
+    Object.entries(ContactFormFields).forEach(([fieldName, fieldState]) => {
+      const key = fieldName as keyof ContactFields;
+
+      // Get the element for each field using its name attribute
+      const fieldElement = e.currentTarget.elements.namedItem(key) as
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | null;
+
+      if (!fieldState.hasValue) {
+        dispatch(
+          setErrorMessage({
+            field: key,
+            value:
+              fieldConfig[key]?.required ?? fieldConfig['fallback'].required,
+          }),
+        );
+        fieldElement?.classList.add(formStyles.errorBorder);
+        isFormValid = false;
+      } else if (!fieldState.isValid) {
+        dispatch(
+          setErrorMessage({
+            field: key,
+            value: fieldConfig[key]?.invalid ?? fieldConfig['fallback'].invalid,
+          }),
+        );
+        fieldElement?.classList.add(formStyles.errorBorder);
+        isFormValid = false;
+      }
+    });
+
+    if (!isFormValid) {
+      return;
+    }
+
+    // Flatten ContactFormFields into a plain { fieldName: value } object for the request body
+    const formData = Object.fromEntries(
+      Object.entries(ContactFormFields).map(([fieldName, fieldState]) => [
+        fieldName,
+        fieldState.value,
+      ]),
+    );
+
+    // HTTP POST request to /api/contact with form data in the request body
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // Stringify the formData object to send in the request body
+        body: JSON.stringify(formData),
+      });
+
+      const result = await res.json();
+
+      if (!result.success) {
+        console.log('Failed to send contact form', result.error);
+        setSubmitStatus('error');
+        return;
+      }
+
+      dispatch(resetContactForm());
+      setSubmitStatus('success');
+    } catch (error) {
+      console.error('Failed to send contact form', error);
+      setSubmitStatus('error');
     }
   };
 
-  // Item checkbox components
-  const ItemList = () => {
-    // Function runs when checkbox is clicked
-    const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log('handleCheckbox called');
-
-      // Get item id of checkbox clicked
-      const checkboxId = e.currentTarget.value;
-
-      // Get item's corresponding quantity controls
-      const quantityControls = e.currentTarget.closest(
-        `#${checkboxId}-item`,
-      )?.lastElementChild;
-
-      // Exit if corresponding quantity controls not found
-      if (!quantityControls) return;
-
-      // Get checkbox status
-      const isChecked = e.currentTarget.checked;
-
-      // If item is checked, set its quantity to 1, update cart subtotal, and show its quantity controls
-      if (isChecked) {
-        dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ONE' }));
-        dispatch(updateSubtotal());
-        quantityControls.className = formStyles['quantity-container-checked'];
-
-        // If item is unchecked, then set its quantity to 0, update subtotal, and hide quantity controls
-      } else {
-        dispatch(setQuantity({ itemId: checkboxId, type: 'SET_TO_ZERO' }));
-        dispatch(updateSubtotal());
-        quantityControls.className = formStyles['quantity-container-unchecked'];
-      }
-    };
-
-    // Function increments item quantity state
-    const handleQuantity = (
-      e: React.MouseEvent<HTMLButtonElement>,
-      operator: string,
-    ) => {
-      // Get id of item incremented or decremented
-      const itemId = e.currentTarget.value;
-
-      // Get item's current quantity
-      const item = cart.find((item) => item.id === itemId);
-      const itemQuantity = item?.quantity;
-
-      // Get item's corresponding quantity controls elem to hide if quantity = 0
-      const quantityControls = e.currentTarget.parentElement;
-
-      // Get item's corresponding checkbox elem to uncheck if quantity = 0
-      const itemCheckbox = document.querySelector(
-        `#${itemId}-checkbox`,
-      ) as HTMLInputElement;
-
-      if (
-        // If user decrements while quantity is 1, then decrement quantity, hide checkbox, and update subtotal
-        operator === '-' &&
-        itemQuantity === 1 &&
-        itemCheckbox.checked &&
-        quantityControls
-      ) {
-        dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-        dispatch(updateSubtotal());
-        itemCheckbox.checked = false;
-        quantityControls.className = formStyles['quantity-container-unchecked'];
-
-        // If decrement button clicked and item quantity is not 1
-      } else if (operator === '-') {
-        dispatch(setQuantity({ itemId: itemId, type: 'DECREMENT' }));
-        dispatch(updateSubtotal());
-      } else {
-        dispatch(setQuantity({ itemId: itemId, type: 'INCREMENT' }));
-        dispatch(updateSubtotal());
-      }
-    };
-
+  // If the form was submitted successfully, show a confirmation instead of the form
+  if (submitStatus === 'success') {
     return (
-      // List of all item checkboxes
-      <ul className={formStyles['item-list']}>
-        {/* Render each item's details */}
-        {cart.map((item: Item, index: number) => (
-          <li key={index} className={formStyles['item']} id={`${item.id}-item`}>
-            <div className={formStyles['item-details']}>
-              {/* Checkbox for item */}
-              <div className={formStyles['item-checkbox']}>
-                <input
-                  id={`${item.id}-checkbox`}
-                  type="checkbox"
-                  value={item.id}
-                  onChange={handleCheckbox}
-                />
-                {/* Item name */}
-                <label
-                  className={formStyles['label']}
-                  htmlFor={`${item.id}-checkbox`}
-                >
-                  {item.name}
-                </label>
-              </div>
-              {/* Price of item */}
-              <span id={`${item.id}-price`}>${item.price}</span>
-            </div>
-            {/* Controls to adjust quantity */}
-            <div
-              className={formStyles['quantity-container-unchecked']}
-              id={`${item.id}-quantity-controls`}
-            >
-              {/* Decrement button */}
-              <button
-                className={`${formStyles['quantity-button']} ${item.id}`}
-                // id={`${item.id}-decrement-button`}
-                type="button"
-                value={item.id}
-                onClick={(e) => {
-                  handleQuantity(e, '-');
-                }}
-              >
-                <span className={formStyles['quantity-modifier-span']}>-</span>
-              </button>
-              <span className={formStyles['item-quantity']}>
-                {item.quantity}
-              </span>
-              {/* Increment button */}
-              <button
-                className={`${formStyles['quantity-button']} ${item.id}`}
-                // id={`${item.id}-increment-button`}
-                type="button"
-                value={item.id}
-                onClick={(e) => {
-                  handleQuantity(e, '+');
-                }}
-              >
-                <span className={formStyles['quantity-modifier-span']}>+</span>
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className={formStyles.successMessage}>
+        <p>Thanks for reaching out! We&rsquo;ll get back to you shortly.</p>
+        <p>
+          In the meantime, <Link href="/products">explore our products</Link> or
+          call us at{' '}
+          <a href="tel:4154083037" style={{ whiteSpace: 'nowrap' }}>
+            (415) 408-3037
+          </a>
+          .
+        </p>
+      </div>
     );
-  };
+  }
 
   // Contact form component code
   return (
     <form
-      className={formStyles['form-container']}
+      className={formStyles.formContainer}
       onSubmit={handleSubmit}
       noValidate
     >
-      {/* noValidate disables native form validation */}
-      <div className={formStyles['radio-group']}>
-        <input
-          className={formStyles['radio-button']}
-          type="radio"
-          id="general"
-          name="request_type"
-          value="general"
-          onClick={(e) => handleSubject('subject', e)}
-        />
-        <label className={formStyles['radio-label']} htmlFor="subject">
-          General
+      <p
+        className={`
+          ${formStyles.error}
+          ${formStyles.submitError}
+          ${submitStatus === 'error' ? formStyles.visible : formStyles.invisible}
+        `}
+      >
+        {submitStatus === 'error'
+          ? 'Something went wrong sending your message. Please try again.'
+          : ' '}
+      </p>
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="firstName">
+          {fieldConfig.firstName.label}:
         </label>
         <input
-          className={formStyles['radio-button']}
-          type="radio"
-          id="order"
-          name="request_type"
-          value="order"
-          onClick={(e) => handleSubject('subject', e)}
-        />
-        <label className={formStyles['radio-label']} htmlFor="order">
-          Order (Pick Up)
-        </label>
-      </div>
-      <div className={formStyles['field-container']}>
-        <label className={formStyles['label']} htmlFor="firstName">
-          First Name:
-        </label>
-        <input
-          className={formStyles['field']}
+          className={formStyles.field}
           id="firstName"
           name="firstName"
           type="text"
@@ -366,12 +253,12 @@ const ContactForm = () => {
         />
         {ErrorMessage(firstName)}
       </div>
-      <div className={formStyles['field-container']}>
-        <label className={formStyles['label']} htmlFor="lastName">
-          Last Name:
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="lastName">
+          {fieldConfig.lastName.label}:
         </label>
         <input
-          className={formStyles['field']}
+          className={formStyles.field}
           id="lastName"
           name="lastName"
           type="text"
@@ -384,12 +271,12 @@ const ContactForm = () => {
         />
         {ErrorMessage(lastName)}
       </div>
-      <div className={formStyles['field-container']}>
-        <label className={formStyles['label']} htmlFor="email">
-          Email:
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="email">
+          {fieldConfig.email.label}:
         </label>
         <input
-          className={formStyles['field']}
+          className={formStyles.field}
           id="email"
           name="email"
           type="email"
@@ -402,12 +289,12 @@ const ContactForm = () => {
         />
         {ErrorMessage(email)}
       </div>
-      <div className={formStyles['field-container']}>
-        <label className={formStyles['label']} htmlFor="phone">
-          Phone:
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="phone">
+          {fieldConfig.phone.label}:
         </label>
         <input
-          className={formStyles['field']}
+          className={formStyles.field}
           id="phone"
           name="phone"
           type="tel"
@@ -420,58 +307,30 @@ const ContactForm = () => {
         />
         {ErrorMessage(phone)}
       </div>
-      {/* If user selects "General" subject */}
-      {subject.value == 'general' && (
-        <div className={formStyles['field-container']}>
-          <label className={formStyles['label']} htmlFor="description">
-            Description:
-          </label>
-          <div className={formStyles['description-wrapper']}>
-            <textarea
-              className={`${formStyles['field']} ${formStyles['description']}`}
-              id="description"
-              name="description"
-              placeholder="Tell us how we can help"
-              onChange={(e) => {
-                handleOnChange(e, 'description', descriptionRegex);
-                handleCounter(e, 'description');
-              }}
-              onBlur={(e) => {
-                handleOnBlur(e, 'description', description);
-              }}
-            />
-          </div>
-          {CharacterCounter(description.counter ?? 0, 250)}
-          {ErrorMessage(description)}
-        </div>
-      )}
-      {/* If user selects "Order" subject */}
-      {subject.value == 'order' && (
-        <div className={formStyles['all-order-fields-container']}>
-          <div className={formStyles['order-field-container']}>
-            <label className={formStyles['label']} htmlFor="location">
-              Location:
-            </label>
-            <select
-              className={formStyles['field']}
-              name="location"
-              id="location"
-            >
-              <option className={formStyles['option']} value="rohnertPark">
-                1301 Maurice Ave, Cotati, CA 94928
-              </option>
-            </select>
-          </div>
-          <div className={formStyles['order-field-container']}>
-            <label className={formStyles['label']} htmlFor="pickUpDate">
-              Pick-up on:
-            </label>
-          </div>
-          {ItemList()}
-          <span id={formStyles.subtotal}>Subtotal: ${subtotal}</span>
-        </div>
-      )}
-      {SubmitButton(subject)}
+      <div className={formStyles.fieldContainer}>
+        <label className={formStyles.label} htmlFor="message">
+          {fieldConfig.message.label}:
+        </label>
+        <textarea
+          className={`${formStyles.field} ${formStyles.message}`}
+          id="message"
+          name="message"
+          placeholder="Tell us how we can help"
+          onChange={(e) => {
+            handleOnChange(e, 'message', /[\s\S]+/);
+            e.target.style.height = 'auto';
+            e.target.style.height = `${e.target.scrollHeight}px`;
+          }}
+          onBlur={(e) => {
+            handleOnBlur(e, 'message', message);
+          }}
+          maxLength={1000}
+        />
+        {ErrorMessage(message)}
+      </div>
+      <button className="button" type="submit">
+        Submit
+      </button>
     </form>
   );
 };
