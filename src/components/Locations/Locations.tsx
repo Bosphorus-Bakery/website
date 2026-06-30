@@ -5,6 +5,7 @@ import {
   SiInstagram,
 } from '@icons-pack/react-simple-icons';
 import { locationStyles } from '@/styles';
+import ImageCarousel from './ImageCarousel';
 
 const Locations = () => {
   return (
@@ -13,7 +14,7 @@ const Locations = () => {
         <p className={locationStyles.bannerEyebrow}>Where to find us</p>
         <h1 className={locationStyles.bannerTitle}>Our Store</h1>
         <p className={locationStyles.bannerTagline}>
-          SStop by our bakery in Rohnert Park, CA, just off campus from Sonoma
+          Stop by our bakery in Rohnert Park, CA, just off campus from Sonoma
           State, and grab your order fresh.
         </p>
       </div>
@@ -111,6 +112,37 @@ const Locations = () => {
             >
               Get Directions
             </a>
+          </div>
+        </div>
+
+        <div className={locationStyles.retailersBanner}>
+          <h2 className={locationStyles.retailersBannerTitle}>
+            Find Us In Stores
+          </h2>
+          <p className={locationStyles.retailersBannerTagline}>
+            Can&apos;t make it to the bakery? You can find our baklava on the
+            shelves at select Bay Area grocers and specialty markets, stocked
+            fresh every week.
+          </p>
+        </div>
+
+        <div className={locationStyles.retailersBlock}>
+          <ImageCarousel />
+
+          <div className={locationStyles.retailersListBlock}>
+            <p className={locationStyles.retailersListTitle}>
+              Available At:
+            </p>
+            <ul className={locationStyles.retailersList}>
+              <li>Whole Foods</li>
+              <li>Andronico&apos;s</li>
+              <li>Mollie Stone&apos;s</li>
+              <li>New Leaf</li>
+              <li>Berkeley Bowl</li>
+              <li>Woodlands Market</li>
+              <li>Oliver&apos;s Market</li>
+              <li>Rainbow Grocery</li>
+            </ul>
           </div>
         </div>
       </div>
