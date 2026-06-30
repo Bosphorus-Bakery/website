@@ -30,7 +30,7 @@ const Locations = () => {
             />
           </div>
 
-          <div>
+          <div className={locationStyles.storeDetails}>
             <div className={locationStyles.storeDetailRow}>
               <span className={locationStyles.detailLabel}>Address</span>
               <div className={locationStyles.detailValue}>
@@ -116,10 +116,8 @@ const Locations = () => {
         </div>
 
         <div className={locationStyles.retailersBanner}>
-          <h2 className={locationStyles.retailersBannerTitle}>
-            Find Us In Stores
-          </h2>
-          <p className={locationStyles.retailersBannerTagline}>
+          <h2 className={locationStyles.sectionTitle}>Also Available</h2>
+          <p className={locationStyles.intro}>
             Can&apos;t make it to the bakery? You can find our baklava on the
             shelves at select Bay Area grocers and specialty markets, stocked
             fresh every week.

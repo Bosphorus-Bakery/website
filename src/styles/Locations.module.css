@@ -301,7 +301,7 @@
   grid-template-columns: auto auto;
   justify-content: center;
   gap: 56px;
-  align-items: center;
+  align-items: stretch;
   background-color: var(--color-card-bg);
   border: 1px solid var(--color-border-accent);
   border-top: 3px solid var(--color-amber-main);
@@ -322,13 +322,20 @@
   object-fit: cover;
 }
 
+.storeDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
 /* ── Store detail rows ── */
 .storeDetailRow {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   column-gap: 16px;
   align-items: start;
-  padding: 10px 0;
+  padding: 18px 0;
   border-bottom: 1px solid var(--color-border-line);
 }
 
@@ -414,7 +421,10 @@
 
 .directionsBtn {
   display: inline-block;
-  margin-top: 20px;
+  align-self: center;
+  width: 80%;
+  text-align: center;
+  margin-top: 32px;
   font-family: 'Montserrat', sans-serif;
   font-size: 12px;
   font-weight: 600;
@@ -439,26 +449,7 @@
 
 /* ── Find us in stores ── */
 .retailersBanner {
-  text-align: center;
   margin-top: 72px;
-  margin-bottom: 36px;
-}
-
-.retailersBannerTitle {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 38px;
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  color: var(--color-text-deep-brown);
-  margin-bottom: 14px;
-}
-
-.retailersBannerTagline {
-  max-width: 560px;
-  margin: 0 auto;
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--color-text-warm-brown);
 }
 
 .retailersBlock {
@@ -568,6 +559,10 @@
     width: 100%;
   }
 
+  .storeDetails {
+    height: auto;
+  }
+
   .retailersBlock {
     grid-template-columns: 1fr;
     gap: 24px;
@@ -592,10 +587,6 @@
 
   .bannerTitle {
     font-size: 36px;
-  }
-
-  .retailersBannerTitle {
-    font-size: 30px;
   }
 
   .sectionTitle {
