@@ -112,25 +112,23 @@ const Locations = () => {
             >
               Get Directions
             </a>
+            <a href="/contact" className={locationStyles.contactBtn}>
+              Contact Us
+            </a>
           </div>
         </div>
 
         <div className={locationStyles.retailersBanner}>
           <h2 className={locationStyles.sectionTitle}>Also Available</h2>
           <p className={locationStyles.intro}>
-            Can&apos;t make it to the bakery? You can find our baklava on the
-            shelves at select Bay Area grocers and specialty markets, stocked
-            fresh every week.
+            You can also find our baklava on the shelves at select Bay Area
+            grocers and specialty markets, stocked fresh every week.
           </p>
         </div>
 
         <div className={locationStyles.retailersBlock}>
-          <ImageCarousel />
-
           <div className={locationStyles.retailersListBlock}>
-            <p className={locationStyles.retailersListTitle}>
-              Available At:
-            </p>
+            <p className={locationStyles.retailersListTitle}>Available At:</p>
             <ul className={locationStyles.retailersList}>
               <li>Whole Foods</li>
               <li>Andronico&apos;s</li>
@@ -141,7 +139,12 @@ const Locations = () => {
               <li>Oliver&apos;s Market</li>
               <li>Rainbow Grocery</li>
             </ul>
+            <p className={locationStyles.retailersMore}>
+              &amp; many more across the Bay Area
+            </p>
           </div>
+
+          <ImageCarousel />
         </div>
       </div>
     </div>
