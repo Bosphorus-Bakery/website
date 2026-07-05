@@ -13,7 +13,10 @@ const ContactPage = () => {
         Fill out the form below to get in touch.
         <br />
         Prefer to order by phone? Call us at{' '}
-        <a href="tel:4154083037" style={{ whiteSpace: 'nowrap' }}>(415) 408-3037</a>.
+        <a href="tel:4154083037" style={{ whiteSpace: 'nowrap' }}>
+          (415) 408-3037
+        </a>
+        .
       </p>
       <div className={contactStyles.contentContainer}>
         <div className={contactStyles.formPanel}>
@@ -24,14 +27,22 @@ const ContactPage = () => {
           <div className={contactStyles.storeDetailRow}>
             <span className={contactStyles.detailLabel}>Address</span>
             <div className={contactStyles.detailValue}>
-              <p>1301 Maurice Avenue<br />Rohnert Park, CA 94928</p>
+              <p>
+                1301 Maurice Avenue
+                <br />
+                Rohnert Park, CA 94928
+              </p>
             </div>
           </div>
 
           <div className={contactStyles.storeDetailRow}>
             <span className={contactStyles.detailLabel}>Hours</span>
             <div className={contactStyles.detailValue}>
-              <p>Mon - Thurs 9:00am - 2:00pm</p>
+              <p>
+                Mon - Thurs
+                <br />
+                9:00am - 2:00pm
+              </p>
             </div>
           </div>
 
