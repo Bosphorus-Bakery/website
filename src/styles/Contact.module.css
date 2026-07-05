@@ -65,8 +65,8 @@
 
 .storeDetailRow {
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  column-gap: 16px;
+  grid-template-columns: 85px minmax(0, 1fr);
+  column-gap: 12px;
   row-gap: 8px;
   align-items: start;
   padding: 10px 0;
@@ -78,7 +78,7 @@
 }
 
 .detailLabel {
-  justify-self: end;
+  justify-self: start;
   font-family: 'Montserrat', sans-serif;
   font-size: 11px;
   font-weight: 600;
@@ -128,10 +128,10 @@
 .socialsBar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
   list-style: none;
-  margin: 0;
+  margin: 8px 0 0 0;
   padding: 0;
 }
 
