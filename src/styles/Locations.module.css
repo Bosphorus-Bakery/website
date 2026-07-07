@@ -572,7 +572,7 @@
 .retailersList {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -586,7 +586,7 @@
   font-size: 13px;
   font-style: italic;
   color: var(--color-text-warm-brown);
-  margin-top: 6px;
+  margin-top: 20px;
 }
 
 .retailersList li {
