@@ -40,9 +40,10 @@
 }
 
 .nav-container {
-  display: flex;
+  max-width: 1280px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
   gap: 3rem;
   margin: 0 auto;
 }
@@ -51,6 +52,14 @@
   display: flex;
   align-items: center;
   gap: 3rem;
+}
+
+.nav-links-left {
+  justify-self: start;
+}
+
+.nav-links-right {
+  justify-self: end;
 }
 
 .nav-logo-button {
@@ -434,6 +443,7 @@ html {
   }
 
   .nav-container {
+    display: flex;
     justify-content: space-between;
     gap: 0;
   }

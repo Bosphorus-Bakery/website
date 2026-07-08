@@ -40,6 +40,15 @@ const About = () => {
   };
 
   useEffect(() => {
+    if (section1.ref.current) {
+      const targetPosition =
+        section1.ref.current.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo(0, targetPosition);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const isScrollingDown = currentScrollY > lastScrollY;
@@ -86,7 +95,7 @@ const About = () => {
       {/* Section 1: The Origin */}
       <section
         ref={section1.ref}
-        className={`${aboutStyles.section} ${aboutStyles.section1} ${section1.isInView ? aboutStyles.visible : ''}`}
+        className={`${aboutStyles.section} ${aboutStyles.stackedSection} ${section1.isInView ? aboutStyles.visible : ''}`}
       >
         <div className={aboutStyles.sectionContent}>
           <div className={aboutStyles.imageBlock}>
@@ -94,25 +103,26 @@ const About = () => {
               <Image
                 src="/bosphorus-bakery-logo.png"
                 alt="Bosphorus Bakery Logo"
-                width={300}
-                height={300}
+                width={400}
+                height={400}
                 priority
               />
             </div>
           </div>
           <div className={aboutStyles.textBlock}>
-            <h1 className={aboutStyles.sectionTitle}>In Search of a Name</h1>
+            <h1 className={aboutStyles.sectionTitle}>
+              From the Bosphorus to the Golden Gate
+            </h1>
             <p className={aboutStyles.sectionText}>
-              In search of a name for our bakery, we wanted something that would
-              connect culture and cuisine, and reflect our dedication to
-              diversity, acceptance, and love for one another.
+              Since 2004, our family has celebrated the flavors of Istanbul with
+              Northern California, and in 2017, we opened our first bakery in
+              Rohnert Park. We named it after the Bosphorus Bridge, which
+              connects two continents in our home city.
             </p>
             <p className={aboutStyles.sectionText}>
-              The Bosphorus Bridge, spanning across The Bosphorus Strait,
-              connects Asia to Europe in the heart of the only city in the world
-              that rests on two continents. Our journey from Istanbul to San
-              Francisco - Bosphorus to Golden Gate, has always been a symbol of
-              our multifaceted identity, of East meets West.
+              Our story has always been about connection: between cultures, and
+              between our family and yours. Thank you for letting us be part of
+              your special occasions.
             </p>
           </div>
         </div>
@@ -121,41 +131,34 @@ const About = () => {
       {/* Section 2: Our Journey & Craft */}
       <section
         ref={section2.ref}
-        className={`${aboutStyles.section} ${section2.isInView ? aboutStyles.visible : ''}`}
+        className={`${aboutStyles.section} ${aboutStyles.stackedSection} ${section2.isInView ? aboutStyles.visible : ''}`}
       >
         <div className={aboutStyles.sectionContent}>
           <div className={aboutStyles.imageBlock}>
-            <div className={aboutStyles.imageGrid}>
-              <div className={aboutStyles.imageWrapper}>
-                <Image
-                  src="/family-photo.png"
-                  alt="Bosphorus Bakery Family"
-                  width={280}
-                  height={280}
-                />
-              </div>
-              <div className={aboutStyles.imageWrapper}>
-                <Image
-                  src="/baklava-closeup.png"
-                  alt="Fresh Baklava"
-                  width={280}
-                  height={280}
-                />
-              </div>
+            <div className={aboutStyles.logoWrapper}>
+              <Image
+                src="/baklava-closeup.png"
+                alt="Fresh Baklava"
+                width={400}
+                height={400}
+              />
             </div>
           </div>
           <div className={aboutStyles.textBlock}>
-            <h2 className={aboutStyles.sectionTitle}>Our Story & Craft</h2>
+            <h2 className={aboutStyles.sectionTitle}>Lighter by Design</h2>
             <p className={aboutStyles.sectionText}>
-              Our story is an uplifting tale of an immigrant family, who has
-              shared and celebrated an iconic piece of their culture and cuisine
-              with Northern California residents since 2004.
+              Ever say to yourself, "I love baklava, but it's too sweet"? So did
+              we. That's why ours is made light, without honey or excessive
+              syrup. Our best kept secret is simple: we let the natural flavors
+              speak for themselves.
             </p>
             <p className={aboutStyles.sectionText}>
-              Ever say to yourself - I love baklava but it's too sweet? That's
-              how we felt too and made our baklava very light without honey or
-              excessive syrup. Our best kept secret is that we let all the
-              natural flavors speak for themselves.
+              Every batch starts with delicate layers of hand-rolled phyllo,
+              real butter, and generous amounts of premium pistachios and
+              walnuts, baked fresh daily in small batches. From classic
+              pistachio baklava to walnut, [sarma / şöbiyet / chocolate — your
+              varieties here], each piece is finished with just enough light
+              syrup to bring the flavors together, never to drown them out.
             </p>
           </div>
         </div>
