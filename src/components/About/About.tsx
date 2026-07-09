@@ -135,12 +135,12 @@ const About = () => {
       >
         <div className={aboutStyles.sectionContent}>
           <div className={aboutStyles.imageBlock}>
-            <div className={aboutStyles.logoWrapper}>
+            <div className={`${aboutStyles.logoWrapper} ${aboutStyles.baklavaImage}`}>
               <Image
-                src="/baklava-closeup.png"
+                src="/baklava-sketch-cropped.png"
                 alt="Fresh Baklava"
-                width={400}
-                height={400}
+                width={560}
+                height={560}
               />
             </div>
           </div>

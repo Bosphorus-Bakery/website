@@ -170,6 +170,11 @@
   object-fit: contain;
 }
 
+.baklavaImage {
+  width: 560px;
+  transform: translate(-40px, 40px);
+}
+
 .ctaGroup {
   display: flex;
   gap: 16px;
@@ -252,6 +257,11 @@
 
   .sectionTitle {
     font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .baklavaImage {
+    width: 100%;
+    transform: translate(-16px, 20px);
   }
 
   .ctaGroup {
