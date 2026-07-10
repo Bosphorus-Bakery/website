@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from '@/lib';
 import { aboutStyles } from '@/styles';
 import Link from 'next/link';
@@ -12,9 +12,9 @@ const About = () => {
   const section3 = useInView({ threshold: 0.2 });
   const [lastScrollY, setLastScrollY] = useState(0);
   const [hasTriggeredScroll, setHasTriggeredScroll] = useState(false);
+  const [hasUserScrolled, setHasUserScrolled] = useState(false);
 
-  const smoothScrollTo = (element: HTMLElement, duration: number = 2000) => {
-    const targetPosition = element.getBoundingClientRect().top + window.scrollY;
+  const smoothScrollTo = (targetPosition: number, duration: number = 2000) => {
     const startPosition = window.scrollY;
     const distance = targetPosition - startPosition;
     const startTime = performance.now();
@@ -39,18 +39,25 @@ const About = () => {
     requestAnimationFrame(scroll);
   };
 
-  useEffect(() => {
-    if (section1.ref.current) {
-      const targetPosition =
-        section1.ref.current.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo(0, targetPosition);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleScrollCueClick = () => {
+    if (!section2.ref.current) return;
+    setHasUserScrolled(true);
+    setHasTriggeredScroll(true);
+    smoothScrollTo(
+      section2.ref.current.getBoundingClientRect().top + window.scrollY,
+      2000,
+    );
+    setTimeout(() => setHasTriggeredScroll(false), 2500);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+
+      if (currentScrollY > 10) {
+        setHasUserScrolled(true);
+      }
+
       const isScrollingDown = currentScrollY > lastScrollY;
       const isScrollingUp = currentScrollY < lastScrollY;
       const minScrollAmount = 0; // Minimum scroll distance to trigger snap
@@ -64,9 +71,11 @@ const About = () => {
           scrollDelta > minScrollAmount &&
           section1.isInView
         ) {
-          console.log('Scrolling down from section 1, snapping to section 2');
           setHasTriggeredScroll(true);
-          smoothScrollTo(section2.ref.current, 2000);
+          smoothScrollTo(
+            section2.ref.current.getBoundingClientRect().top + window.scrollY,
+            2000,
+          );
           setTimeout(() => setHasTriggeredScroll(false), 2500);
         }
 
@@ -76,9 +85,9 @@ const About = () => {
           scrollDelta > minScrollAmount &&
           section2.isInView
         ) {
-          console.log('Scrolling up from section 2, snapping to section 1');
           setHasTriggeredScroll(true);
-          smoothScrollTo(section1.ref.current, 2000);
+          // Snap to true page top so the sticky navbar doesn't overlap the logo
+          smoothScrollTo(0, 2000);
           setTimeout(() => setHasTriggeredScroll(false), 2500);
         }
       }
@@ -103,8 +112,8 @@ const About = () => {
               <Image
                 src="/bosphorus-bakery-logo.png"
                 alt="Bosphorus Bakery Logo"
-                width={400}
-                height={400}
+                width={520}
+                height={520}
                 priority
               />
             </div>
@@ -117,15 +126,21 @@ const About = () => {
               Since 2004, our family has celebrated the flavors of Istanbul with
               Northern California, and in 2017, we opened our first bakery in
               Rohnert Park. We named it after the Bosphorus Bridge, which
-              connects two continents in our home city.
-            </p>
-            <p className={aboutStyles.sectionText}>
-              Our story has always been about connection: between cultures, and
-              between our family and yours. Thank you for letting us be part of
-              your special occasions.
+              connects two continents in our home city. Our story has always
+              been about connection: between cultures, and between our family
+              and yours. Thank you for letting us be part of your special
+              occasions.
             </p>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={handleScrollCueClick}
+          className={`${aboutStyles.scrollCue} ${hasUserScrolled ? aboutStyles.scrollCueHidden : ''}`}
+          aria-label="Scroll to next section"
+        >
+          <span className={aboutStyles.scrollCueChevron} />
+        </button>
       </section>
 
       {/* Section 2: Our Journey & Craft */}
@@ -135,7 +150,9 @@ const About = () => {
       >
         <div className={aboutStyles.sectionContent}>
           <div className={aboutStyles.imageBlock}>
-            <div className={`${aboutStyles.logoWrapper} ${aboutStyles.baklavaImage}`}>
+            <div
+              className={`${aboutStyles.logoWrapper} ${aboutStyles.baklavaImage}`}
+            >
               <Image
                 src="/baklava-sketch-cropped.png"
                 alt="Fresh Baklava"
@@ -150,15 +167,11 @@ const About = () => {
               Ever say to yourself, "I love baklava, but it's too sweet"? So did
               we. That's why ours is made light, without honey or excessive
               syrup. Our best kept secret is simple: we let the natural flavors
-              speak for themselves.
-            </p>
-            <p className={aboutStyles.sectionText}>
-              Every batch starts with delicate layers of hand-rolled phyllo,
-              real butter, and generous amounts of premium pistachios and
-              walnuts, baked fresh daily in small batches. From classic
-              pistachio baklava to walnut, [sarma / şöbiyet / chocolate — your
-              varieties here], each piece is finished with just enough light
-              syrup to bring the flavors together, never to drown them out.
+              speak for themselves. Every batch starts with delicate layers of
+              hand-rolled phyllo, real butter, and generous amounts of premium
+              pistachios and walnuts, baked fresh daily in small batches. Each
+              piece is finished with just enough light syrup to bring the
+              flavors together, never to drown them out.
             </p>
           </div>
         </div>

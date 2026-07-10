@@ -1,54 +1,64 @@
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
 .pageContainer {
+  /* Fast start, long luxurious settle */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Slight overshoot so images "settle" into place */
+  --ease-settle: cubic-bezier(0.34, 1.4, 0.64, 1);
   width: 100%;
   background-color: var(--color-bg-paper);
   color: var(--color-text-deep-brown);
 }
 
 .section {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 60px 32px;
-  opacity: 0;
-  transition: opacity 0.8s ease;
 }
 
-.section.visible {
+/* Reveal system: children cascade in when the section gains .visible.
+   Hidden state has no transition-delay, so scrolling away hides instantly. */
+.imageBlock {
+  opacity: 0;
+  transform: translateX(32px);
+  transition:
+    opacity 0.8s var(--ease-soft),
+    transform 0.8s var(--ease-soft);
+}
+
+.textBlock > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s var(--ease-soft),
+    transform 0.7s var(--ease-soft);
+}
+
+.section.visible .imageBlock,
+.section.visible .textBlock > * {
   opacity: 1;
+  transform: none;
+}
+
+.section.visible .textBlock > *:nth-child(1) {
+  transition-delay: 0.15s;
+}
+
+.section.visible .textBlock > *:nth-child(2) {
+  transition-delay: 0.3s;
+}
+
+.section.visible .textBlock > *:nth-child(3) {
+  transition-delay: 0.45s;
+}
+
+.section.visible .textBlock > *:nth-child(4) {
+  transition-delay: 0.6s;
+}
+
+.section.visible .textBlock > *:nth-child(5) {
+  transition-delay: 0.75s;
 }
 
 /* Stacked layout: image on top, centered text below (Sections 1 & 2) */
@@ -65,21 +75,12 @@
   text-align: center;
 }
 
-.stackedSection .textBlock {
-  animation: fadeInUp 0.8s ease 0.2s backwards;
-}
-
-.stackedSection.visible .textBlock {
-  animation: fadeInUp 0.8s ease 0.2s forwards;
-}
-
 .stackedSection .imageBlock {
-  animation: fadeInUp 0.8s ease 0.4s backwards;
-}
-
-.stackedSection.visible .imageBlock {
-  animation: fadeInUp 0.8s ease 0.4s forwards;
   order: -1;
+  transform: translateY(24px) scale(0.94);
+  transition:
+    opacity 0.8s var(--ease-soft),
+    transform 0.9s var(--ease-settle);
 }
 
 .sectionContent {
@@ -89,22 +90,6 @@
   grid-template-columns: 1fr 1fr;
   gap: 64px;
   align-items: center;
-}
-
-.textBlock {
-  animation: slideInLeft 0.8s ease 0.2s backwards;
-}
-
-.section.visible .textBlock {
-  animation: slideInLeft 0.8s ease 0.2s forwards;
-}
-
-.imageBlock {
-  animation: slideInRight 0.8s ease 0.2s backwards;
-}
-
-.section.visible .imageBlock {
-  animation: slideInRight 0.8s ease 0.2s forwards;
 }
 
 .sectionTitle {
@@ -118,8 +103,36 @@
   text-align: left;
 }
 
+.sectionTitle::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 20px;
+  background: linear-gradient(
+    90deg,
+    var(--color-amber-main),
+    var(--color-amber-light)
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s var(--ease-soft);
+}
+
+.section.visible .sectionTitle::after {
+  transform: scaleX(1);
+  transition-delay: 0.7s;
+}
+
 .stackedSection .sectionTitle {
   text-align: center;
+}
+
+.stackedSection .sectionTitle::after {
+  margin-left: auto;
+  margin-right: auto;
+  transform-origin: center;
 }
 
 .sectionText {
@@ -158,21 +171,73 @@
 
 .logoWrapper {
   position: relative;
-  width: 400px;
+  width: 520px;
   max-width: 100%;
-  aspect-ratio: 1 / 1;
-  margin: 0 auto;
+  margin: 0 auto -24px;
 }
 
 .logoWrapper img {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
 }
 
 .baklavaImage {
   width: 560px;
+  margin-bottom: 0;
   transform: translate(-40px, 40px);
+}
+
+/* Scroll cue: appears as the final beat of section 1's entrance,
+   drifts gently, and fades out permanently on first scroll */
+.scrollCue {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-soft);
+}
+
+.scrollCue:hover .scrollCueChevron {
+  border-color: var(--color-amber-deep);
+}
+
+.section.visible .scrollCue {
+  opacity: 1;
+  transition-delay: 1.1s;
+}
+
+.section.visible .scrollCueHidden {
+  opacity: 0;
+  transition-delay: 0s;
+  pointer-events: none;
+}
+
+.scrollCueChevron {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid var(--color-amber-main);
+  border-bottom: 2px solid var(--color-amber-main);
+  border-radius: 1px;
+  transform: rotate(45deg);
+  animation: chevronDrift 2.2s ease-in-out infinite;
+}
+
+@keyframes chevronDrift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(8px) rotate(45deg);
+    opacity: 0.45;
+  }
 }
 
 .ctaGroup {
@@ -239,20 +304,8 @@
     gap: 40px;
   }
 
-  .textBlock {
-    animation: fadeInUp 0.8s ease 0.2s backwards;
-  }
-
-  .section.visible .textBlock {
-    animation: fadeInUp 0.8s ease 0.2s forwards;
-  }
-
-  .imageBlock {
-    animation: fadeInUp 0.8s ease 0.4s backwards;
-  }
-
-  .section.visible .imageBlock {
-    animation: fadeInUp 0.8s ease 0.4s forwards;
+  .section .imageBlock {
+    transform: translateY(24px);
   }
 
   .sectionTitle {
@@ -273,5 +326,23 @@
   .ctaSecondary {
     width: 100%;
     text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section .imageBlock,
+  .section .textBlock > *,
+  .section .sectionTitle::after {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .stackedSection .imageBlock {
+    transform: none;
+  }
+
+  .scrollCueChevron {
+    animation: none;
   }
 }
