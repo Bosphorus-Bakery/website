@@ -187,16 +187,100 @@
   transform: translate(-40px, 40px);
 }
 
+/* Sketch annotations (Section 2): SVG overlay sized to the image.
+   Strokes carry pathLength="1", so dasharray/dashoffset of 1 hides
+   them and transitioning dashoffset to 0 "draws" them on. Sequence:
+   image settles (0.8s) -> arrow draws -> arrowhead -> label fades. */
+.annotations {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* the phyllo label hangs left of the viewBox */
+  overflow: visible;
+}
+
+.annoStroke {
+  fill: none;
+  stroke: var(--color-text-medium-brown);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.6s var(--ease-soft);
+}
+
+.annoLabel {
+  fill: var(--color-text-deep-brown);
+  font-family: 'Nothing You Could Do', cursive;
+  font-size: 40px;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-soft);
+}
+
+.section.visible .annoStroke {
+  stroke-dashoffset: 0;
+}
+
+.section.visible .annoLabel {
+  opacity: 1;
+}
+
+/* Sequence, one annotation at a time: pistachios -> phyllo -> walnut.
+   Strokes and texts are counted separately (nth-of-type is per tag). */
+.section.visible .annoStroke:nth-of-type(1) {
+  transition-delay: 0.9s;
+}
+
+.section.visible .annoStroke:nth-of-type(2) {
+  transition-duration: 0.25s;
+  transition-delay: 1.45s;
+}
+
+.section.visible .annoLabel:nth-of-type(1),
+.section.visible .annoLabel:nth-of-type(2) {
+  transition-delay: 1.5s;
+}
+
+.section.visible .annoStroke:nth-of-type(3) {
+  transition-duration: 0.7s;
+  transition-delay: 1.8s;
+}
+
+.section.visible .annoLabel:nth-of-type(3),
+.section.visible .annoLabel:nth-of-type(4) {
+  transition-delay: 2.3s;
+}
+
+.section.visible .annoStroke:nth-of-type(4) {
+  transition-duration: 0.45s;
+  transition-delay: 2.5s;
+}
+
+.section.visible .annoLabel:nth-of-type(5) {
+  transition-delay: 2.8s;
+}
+
 /* Scroll cue: appears as the final beat of section 1's entrance,
    drifts gently, and fades out permanently on first scroll */
 .scrollCue {
   position: absolute;
-  bottom: 28px;
+  /* pin to where the viewport bottom is when the section rests below
+     the 133px navbar (sections can be taller than the viewport, which
+     would put a bottom-anchored cue below the fold); clamp to the
+     section bottom for content that fits */
+  top: min(calc(100vh - 199px), calc(100% - 66px));
   left: 50%;
   transform: translateX(-50%);
-  background: none;
-  border: none;
-  padding: 12px;
+  /* floats over section content when a section is taller than the
+     viewport, so give it a paper chip to stay legible */
+  background: var(--color-bg-paper);
+  border: 1px solid var(--color-border-accent);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(61, 34, 0, 0.12);
+  padding: 12px 12px 14px;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.6s var(--ease-soft);
@@ -238,6 +322,147 @@
     transform: translateY(8px) rotate(45deg);
     opacity: 0.45;
   }
+}
+
+/* Section 3 anchors its content low in the viewport so the polaroid
+   cluster clears the sticky navbar when the page is fully scrolled
+   (the footer would otherwise push it up underneath); the bottom
+   padding floats it back up toward center */
+.communitySection {
+  align-items: flex-end;
+  padding-bottom: 140px;
+}
+
+@media (max-height: 950px) {
+  .communitySection {
+    padding-bottom: 80px;
+  }
+}
+
+/* Scrapbook: overlapping polaroid cluster (Section 3).
+   The container animation is disabled so each polaroid can
+   cascade in on its own, settling into its tilt. */
+.scrapbookBlock {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.scrapbook {
+  position: relative;
+  /* the vh term shrinks the cluster on short viewports so it stays
+     clear of the sticky navbar at the page-bottom resting point */
+  width: min(100%, 500px, 44vh);
+  /* short enough that the bottom polaroid tucks in under the top two
+     (messy scrapbook look); their captions stay readable because the
+     bottom polaroid paints beneath them */
+  aspect-ratio: 7 / 8;
+  margin: 0 auto;
+}
+
+/* the vh-shrunk cluster keeps its fixed-size captions, which deepens
+   the overlap; give it back some height so the bottom polaroid isn't
+   buried */
+@media (max-height: 950px) {
+  .scrapbook {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+.polaroid {
+  position: absolute;
+  margin: 0;
+  background-color: #fffdf8;
+  padding: 10px 10px 12px;
+  border: 1px solid var(--color-border-accent);
+  border-radius: 3px;
+  box-shadow: 0 10px 24px rgba(61, 34, 0, 0.16);
+  opacity: 0;
+  transform: translateY(28px) rotate(0deg);
+  transition:
+    opacity 0.8s var(--ease-soft),
+    transform 0.9s var(--ease-settle),
+    box-shadow 0.3s ease;
+}
+
+.polaroid img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Tape strip holding each photo down */
+.polaroid::before {
+  content: '';
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  width: 68px;
+  height: 22px;
+  transform: translateX(-50%) rotate(-2deg);
+  background-color: rgba(230, 197, 138, 0.45);
+  box-shadow: 0 1px 3px rgba(61, 34, 0, 0.08);
+}
+
+.polaroidCaption {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--color-text-warm-brown);
+  padding-top: 8px;
+}
+
+.polaroidGuyFieri {
+  top: 0;
+  left: 0;
+  width: 42%;
+  --tilt: -4deg;
+  z-index: 2;
+}
+
+.polaroidFamily {
+  top: 10%;
+  right: 0;
+  width: 45%;
+  --tilt: 3deg;
+  /* above the storefront polaroid so its caption never gets covered */
+  z-index: 2;
+}
+
+.polaroidStorefront {
+  bottom: 0;
+  left: 24%;
+  width: 50%;
+  --tilt: -2deg;
+  /* tucked under the top two so their captions stay readable on
+     short viewports (hover still lifts it via the z-index: 10 rule) */
+  z-index: 1;
+}
+
+.section.visible .polaroid {
+  opacity: 1;
+  transform: translateY(0) rotate(var(--tilt));
+}
+
+.section.visible .polaroidGuyFieri {
+  transition-delay: 0.25s;
+}
+
+.section.visible .polaroidFamily {
+  transition-delay: 0.45s;
+}
+
+.section.visible .polaroidStorefront {
+  transition-delay: 0.65s;
+}
+
+.section.visible .polaroid:hover {
+  transform: translateY(-6px) rotate(0deg) scale(1.03);
+  box-shadow: 0 18px 36px rgba(61, 34, 0, 0.22);
+  z-index: 10;
+  transition-delay: 0s;
 }
 
 .ctaGroup {
@@ -317,6 +542,34 @@
     transform: translate(-16px, 20px);
   }
 
+  /* On phones the left-hanging phyllo label would clip off-screen;
+     tuck it into the white corner inside the sketch instead
+     (SVG text x/y can't be set from CSS, so shift by transform). */
+  .annoLabel:nth-of-type(3),
+  .annoLabel:nth-of-type(4) {
+    transform: translate(228px, 290px);
+  }
+
+  .section .scrapbookBlock {
+    transform: none;
+  }
+
+  /* Sections aren't viewport-height on mobile, so no need to float
+     the community content up */
+  .communitySection {
+    padding-bottom: 48px;
+  }
+
+  .scrapbook {
+    /* mobile sections aren't viewport-height, so drop the vh cap */
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .polaroidCaption {
+    font-size: 13px;
+  }
+
   .ctaGroup {
     flex-direction: column;
     width: 100%;
@@ -342,7 +595,23 @@
     transform: none;
   }
 
+  .section .polaroid {
+    opacity: 1;
+    transform: rotate(var(--tilt));
+    transition: none;
+  }
+
   .scrollCueChevron {
     animation: none;
+  }
+
+  .annoStroke {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  .annoLabel {
+    opacity: 1;
+    transition: none;
   }
 }
