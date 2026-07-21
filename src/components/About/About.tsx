@@ -19,6 +19,12 @@ const About = () => {
     duration: number = 2000,
     onComplete?: () => void,
   ) => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.scrollTo(0, targetPosition);
+      onComplete?.();
+      return;
+    }
+
     const startPosition = window.scrollY;
     const distance = targetPosition - startPosition;
     const startTime = performance.now();
@@ -91,7 +97,16 @@ const About = () => {
       const isScrollingDown = currentScrollY > lastScrollY;
       const isScrollingUp = currentScrollY < lastScrollY;
 
+      // Snapping is desktop-only: on phones the sections collapse to
+      // min-height auto, so nearly every touch flick reads as "between
+      // sections" and the 2s hijack fights momentum scrolling. Reduced-
+      // motion users shouldn't get animated hijacks either.
+      const snapDisabled =
+        window.matchMedia('(max-width: 768px)').matches ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
       if (
+        !snapDisabled &&
         !hasTriggeredScroll &&
         section1.ref.current &&
         section2.ref.current &&
@@ -107,6 +122,11 @@ const About = () => {
         const betweenSections1And2 = section2Top > navbarHeight + 1;
         const betweenSections2And3 =
           !betweenSections1And2 && section3Top > navbarHeight + 1;
+        // Strictly below section 2's resting point — NOT merely "not above"
+        // it. At the resting point itself (section2Top ≈ navbarHeight) both
+        // comparisons are false, so a sub-pixel first wheel event can't
+        // trigger a snap back to where the user already is.
+        const belowSection2Rest = section2Top < navbarHeight - 1;
 
         // User is between sections and scrolls DOWN → snap to the next section
         if (isScrollingDown && betweenSections1And2) {
@@ -125,7 +145,7 @@ const About = () => {
 
         // Anywhere below section 2's resting point (including section 3 at
         // the page bottom), a single upward scroll returns to section 2
-        if (isScrollingUp && !betweenSections1And2) {
+        if (isScrollingUp && belowSection2Rest) {
           snapTo(getSectionTarget(section2.ref));
         }
       }
@@ -228,7 +248,7 @@ const About = () => {
                 <text
                   className={aboutStyles.annoLabel}
                   x="140"
-                  y="138"
+                  y="153"
                   textAnchor="middle"
                 >
                   pistachios
@@ -254,7 +274,7 @@ const About = () => {
                 <text
                   className={aboutStyles.annoLabel}
                   x="2"
-                  y="543"
+                  y="558"
                   textAnchor="end"
                 >
                   phyllo dough
@@ -273,7 +293,41 @@ const About = () => {
                 >
                   sweet walnut filling
                 </text>
+                {/* standalone notes (no leader lines) hanging right of the
+                    viewBox, mirroring the phyllo label on the left */}
+                <text
+                  className={aboutStyles.annoLabel}
+                  x="1022"
+                  y="470"
+                  textAnchor="start"
+                >
+                  no honey
+                </text>
+                <text
+                  className={aboutStyles.annoLabel}
+                  x="1022"
+                  y="545"
+                  textAnchor="start"
+                >
+                  no excessive syrup
+                </text>
+                <text
+                  className={aboutStyles.annoLabel}
+                  x="1022"
+                  y="620"
+                  textAnchor="start"
+                >
+                  perfectly sweet
+                </text>
               </svg>
+              {/* On narrow viewports the right-hanging notes would run off
+                  the screen edge, so they collapse into this block below
+                  the sketch (the SVG notes hide at the same breakpoint) */}
+              <p className={aboutStyles.sketchNotesMobile}>
+                no honey · no excessive syrup
+                <br />
+                perfectly sweet
+              </p>
             </div>
           </div>
           <div className={aboutStyles.textBlock}>
@@ -290,10 +344,13 @@ const About = () => {
             </p>
           </div>
         </div>
+        {/* section3.isInView latches on first view, so this cue retires
+            permanently once the user has reached section 3 (same
+            philosophy as section 1's cue after the first scroll) */}
         <button
           type="button"
           onClick={handleScrollCue2Click}
-          className={aboutStyles.scrollCue}
+          className={`${aboutStyles.scrollCue} ${section3.isInView ? aboutStyles.scrollCueHidden : ''}`}
           aria-label="Scroll to next section"
         >
           <span className={aboutStyles.scrollCueChevron} />
