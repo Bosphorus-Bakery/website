@@ -273,8 +273,7 @@
 /* The right-side notes are the payoff, so they arrive at half the
    tempo of the callouts above: longer fades, a full beat between each */
 .section.visible .annoLabel:nth-of-type(6),
-.section.visible .annoLabel:nth-of-type(7),
-.section.visible .annoLabel:nth-of-type(8) {
+.section.visible .annoLabel:nth-of-type(7) {
   transition-duration: 1s;
 }
 
@@ -284,33 +283,6 @@
 
 .section.visible .annoLabel:nth-of-type(7) {
   transition-delay: 4.6s;
-}
-
-.section.visible .annoLabel:nth-of-type(8) {
-  transition-delay: 5.3s;
-}
-
-/* Narrow-viewport stand-in for the right-hanging notes; enabled in the
-   980px annotation media query below */
-.sketchNotesMobile {
-  display: none;
-  font-family: 'Reenie Beanie', cursive;
-  font-size: 22px;
-  line-height: 1.5;
-  letter-spacing: 0.5px;
-  text-align: center;
-  color: var(--color-text-deep-brown);
-  margin-top: 36px;
-  /* pulls the H2 below it closer, trimming into the sectionContent
-     grid gap the same way .logoWrapper's negative margin does above */
-  margin-bottom: -20px;
-  opacity: 0;
-  transition: opacity 1s var(--ease-soft);
-}
-
-.section.visible .sketchNotesMobile {
-  opacity: 1;
-  transition-delay: 3.9s;
 }
 
 /* Scroll cue: appears as the final beat of section 1's entrance,
@@ -566,24 +538,6 @@
   box-shadow: 0 6px 20px rgba(102, 179, 83, 0.25);
 }
 
-/* Right-side notes overflow guard: unlike the phyllo/walnut annotations
-   below (which hang left/low, inside or near the frame, and read fine
-   tucked into the sketch), these hang off the viewBox's right edge with
-   nothing to tuck into — the sketch fills that side of the frame — so
-   they clip past the viewport below ~980px and get replaced with the
-   plain-text line under the image instead. */
-@media (max-width: 980px) {
-  .annoLabel:nth-of-type(6),
-  .annoLabel:nth-of-type(7),
-  .annoLabel:nth-of-type(8) {
-    display: none;
-  }
-
-  .sketchNotesMobile {
-    display: block;
-  }
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .section {
@@ -624,30 +578,13 @@
 
   /* On phones the left-hanging phyllo label would clip off-screen;
      tuck it into the white corner inside the sketch instead
-     (SVG text x/y can't be set from CSS, so shift by transform). */
+     (SVG text x/y can't be set from CSS, so shift by transform).
+     The other annotations sit inside the viewBox and map 1:1 onto the
+     image now that the overlay is exactly image-sized, so they keep
+     their desktop coordinates with no mobile nudges. */
   .annoLabel:nth-of-type(3),
   .annoLabel:nth-of-type(4) {
-    transform: translate(228px, 115px);
-  }
-
-  /* Mobile-only nudges for the other three annotations, tuned against
-     screenshots of the phone layout: these are deliberately scoped here
-     rather than baked into the shared `d`/x/y values above, so desktop
-     keeps its original hand-drawn placement untouched. */
-  .annoStroke:nth-of-type(1),
-  .annoStroke:nth-of-type(2),
-  .annoLabel:nth-of-type(1),
-  .annoLabel:nth-of-type(2) {
-    transform: translate(0px, -155px);
-  }
-
-  .annoStroke:nth-of-type(3) {
-    transform: translate(0px, -150px);
-  }
-
-  .annoStroke:nth-of-type(4),
-  .annoLabel:nth-of-type(5) {
-    transform: translate(90px, -110px);
+    transform: translate(220px, 260px);
   }
 
   .section .scrapbookBlock {
@@ -711,11 +648,6 @@
   }
 
   .annoLabel {
-    opacity: 1;
-    transition: none;
-  }
-
-  .section .sketchNotesMobile {
     opacity: 1;
     transition: none;
   }

@@ -287,47 +287,33 @@ const About = () => {
                 />
                 <text
                   className={aboutStyles.annoLabel}
-                  x="210"
+                  x="300"
                   y="930"
                   textAnchor="middle"
                 >
                   sweet walnut filling
                 </text>
-                {/* standalone notes (no leader lines) hanging right of the
-                    viewBox, mirroring the phyllo label on the left */}
+                {/* standalone notes (no leader lines) in the sketch's white
+                    space: top-right corner and right of the bottom edge.
+                    Inside the viewBox, so placement is identical across
+                    viewports — no media-query shifts needed */}
                 <text
                   className={aboutStyles.annoLabel}
-                  x="1022"
-                  y="470"
-                  textAnchor="start"
-                >
-                  no honey
-                </text>
-                <text
-                  className={aboutStyles.annoLabel}
-                  x="1022"
-                  y="545"
+                  x="775"
+                  y="135"
                   textAnchor="start"
                 >
                   no excessive syrup
                 </text>
                 <text
                   className={aboutStyles.annoLabel}
-                  x="1022"
-                  y="620"
+                  x="900"
+                  y="880"
                   textAnchor="start"
                 >
-                  perfectly sweet
+                  no honey
                 </text>
               </svg>
-              {/* On narrow viewports the right-hanging notes would run off
-                  the screen edge, so they collapse into this block below
-                  the sketch (the SVG notes hide at the same breakpoint) */}
-              <p className={aboutStyles.sketchNotesMobile}>
-                no honey · no excessive syrup
-                <br />
-                perfectly sweet
-              </p>
             </div>
           </div>
           <div className={aboutStyles.textBlock}>
