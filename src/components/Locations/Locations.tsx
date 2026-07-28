@@ -6,8 +6,11 @@ import {
 } from '@icons-pack/react-simple-icons';
 import { locationStyles } from '@/styles';
 import ImageCarousel from './ImageCarousel';
+import StoreLocator from './StoreLocator';
 
 const Locations = () => {
+  const mapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
   return (
     <div className={locationStyles.page}>
       <div className={locationStyles.banner}>
@@ -125,6 +128,21 @@ const Locations = () => {
             grocers and specialty markets, stocked fresh every week.
           </p>
         </div>
+
+        {mapsApiKey ? (
+          <StoreLocator apiKey={mapsApiKey} />
+        ) : (
+          <div className={locationStyles.mapBlock}>
+            <iframe
+              title="Map showing Bosphorus Bakery retailers"
+              src="https://www.google.com/maps?q=1301+Maurice+Avenue,+Rohnert+Park,+CA+94928&output=embed"
+              className={locationStyles.mapFrame}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
+        )}
 
         <div className={locationStyles.retailersBlock}>
           <div className={locationStyles.retailersListBlock}>

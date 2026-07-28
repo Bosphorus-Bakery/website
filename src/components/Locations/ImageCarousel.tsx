@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { locationStyles } from '@/styles';
 
@@ -33,17 +33,30 @@ const ImageCarousel = () => {
       onMouseLeave={() => setIsPaused(false)}
     >
       <div className={locationStyles.carousel}>
-        {images.map((image, i) => (
-          <Image
-            key={image.src}
-            src={image.src}
-            alt={image.alt}
-            fill
-            className={`${locationStyles.carouselImage} ${
-              i === index ? locationStyles.carouselImageActive : ''
-            }`}
-          />
-        ))}
+        <div
+          className={locationStyles.carouselTrack}
+          style={{ '--active-index': index } as CSSProperties}
+        >
+          {images.map((image, i) => (
+            <button
+              key={image.src}
+              type="button"
+              className={`${locationStyles.carouselSlide} ${
+                i === index ? locationStyles.carouselSlideActive : ''
+              }`}
+              onClick={() => setIndex(i)}
+              aria-label={`Show image ${i + 1} of ${images.length}`}
+              aria-current={i === index}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className={locationStyles.carouselImage}
+              />
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className={locationStyles.carouselDots}>
