@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
   APIProvider,
   Map,
@@ -9,6 +9,8 @@ import {
   useMap,
   useMapsLibrary,
 } from '@vis.gl/react-google-maps';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
+import type { Renderer } from '@googlemaps/markerclusterer';
 import { storeLocations } from '@/lib/constants';
 import type { StoreLocation } from '@/lib/constants';
 import { locationStyles } from '@/styles';
@@ -20,21 +22,6 @@ interface StoreLocatorProps {
 type LatLng = StoreLocation['position'];
 
 const BOUNDS_PADDING_DEG = 0.05;
-
-const mapBounds = {
-  north:
-    Math.max(...storeLocations.map((l) => l.position.lat)) +
-    BOUNDS_PADDING_DEG,
-  south:
-    Math.min(...storeLocations.map((l) => l.position.lat)) -
-    BOUNDS_PADDING_DEG,
-  east:
-    Math.max(...storeLocations.map((l) => l.position.lng)) +
-    BOUNDS_PADDING_DEG,
-  west:
-    Math.min(...storeLocations.map((l) => l.position.lng)) -
-    BOUNDS_PADDING_DEG,
-};
 
 // Zoom for a clicked store: block/plaza level — enough to see the shopping
 // center and adjacent streets without diving to parking-lot detail.
@@ -59,6 +46,22 @@ const milesBetween = (a: LatLng, b: LatLng) => {
   return 2 * earthRadiusMiles * Math.asin(Math.sqrt(h));
 };
 
+// Initial framing: the bakery's home turf (Sonoma County + central Marin),
+// not every pin — the full retailer list spans Windsor to Aptos, and fitting
+// it all shrinks the map into a blur. ZIP search and "Use My Location"
+// re-frame to include the visitor.
+const HOME_RADIUS_MILES = 30;
+const homePins = storeLocations.filter(
+  (l) =>
+    milesBetween(storeLocations[0].position, l.position) <= HOME_RADIUS_MILES,
+);
+const homeBounds = {
+  north: Math.max(...homePins.map((l) => l.position.lat)) + BOUNDS_PADDING_DEG,
+  south: Math.min(...homePins.map((l) => l.position.lat)) - BOUNDS_PADDING_DEG,
+  east: Math.max(...homePins.map((l) => l.position.lng)) + BOUNDS_PADDING_DEG,
+  west: Math.min(...homePins.map((l) => l.position.lng)) - BOUNDS_PADDING_DEG,
+};
+
 const directionsUrl = (location: StoreLocation) =>
   `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     location.address,
@@ -76,6 +79,37 @@ const StarIcon = () => (
   </svg>
 );
 
+// Cluster bubbles for grouped retailer pins, styled to match the amber Pin
+// palette. The renderer runs outside React, so the badge is a plain styled
+// div handed to an AdvancedMarkerElement.
+const clusterRenderer: Renderer = {
+  render: ({ count, position }) => {
+    const size = count < 10 ? 38 : count < 25 ? 46 : 54;
+    const badge = document.createElement('div');
+    badge.textContent = String(count);
+    Object.assign(badge.style, {
+      width: `${size}px`,
+      height: `${size}px`,
+      borderRadius: '50%',
+      background: '#BA7517',
+      border: '2px solid #a87010',
+      color: '#fff8e8',
+      display: 'grid',
+      placeItems: 'center',
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: '600',
+      fontSize: '0.95rem',
+      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.35)',
+    });
+    return new google.maps.marker.AdvancedMarkerElement({
+      position,
+      content: badge,
+      // Above unclustered retailer pins (1), below the flagship star (5).
+      zIndex: 2,
+    });
+  },
+};
+
 const StoreLocatorContent = () => {
   const map = useMap();
   const geocodingLib = useMapsLibrary('geocoding');
@@ -91,6 +125,57 @@ const StoreLocatorContent = () => {
     atTop: true,
     atBottom: true,
   });
+
+  // Retailer pins are clustered; the flagship star and the search-origin pin
+  // stay out of the clusterer so they are always individually visible. The
+  // clusterer works on raw AdvancedMarkerElements, collected via marker refs.
+  const clustererRef = useRef<MarkerClusterer | null>(null);
+  const [markers, setMarkers] = useState<
+    Record<string, google.maps.marker.AdvancedMarkerElement>
+  >({});
+
+  // One stable ref callback per store: an inline arrow would get a new
+  // identity every render, making React detach (null) and re-attach the ref
+  // each time — a setState-in-ref infinite loop.
+  const markerRefs = useMemo(() => {
+    const refs: Record<
+      string,
+      (marker: google.maps.marker.AdvancedMarkerElement | null) => void
+    > = {};
+    for (const { id } of storeLocations) {
+      refs[id] = (marker) => {
+        setMarkers((prev) => {
+          if (marker) {
+            return prev[id] === marker ? prev : { ...prev, [id]: marker };
+          }
+          if (!(id in prev)) return prev;
+          const next = { ...prev };
+          delete next[id];
+          return next;
+        });
+      };
+    }
+    return refs;
+  }, []);
+
+  useEffect(() => {
+    if (!map) return;
+    clustererRef.current = new MarkerClusterer({
+      map,
+      renderer: clusterRenderer,
+    });
+    return () => {
+      clustererRef.current?.clearMarkers();
+      clustererRef.current = null;
+    };
+  }, [map]);
+
+  useEffect(() => {
+    const clusterer = clustererRef.current;
+    if (!clusterer) return;
+    clusterer.clearMarkers();
+    clusterer.addMarkers(Object.values(markers));
+  }, [map, markers]);
 
   const updateScrollEdges = () => {
     const list = listRef.current;
@@ -275,7 +360,7 @@ const StoreLocatorContent = () => {
     setSearchError(null);
     setSelectedId(null);
     listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-    fitAllPins();
+    map?.fitBounds(homeBounds, 48);
   };
 
   return (
@@ -405,7 +490,7 @@ const StoreLocatorContent = () => {
             className={`${locationStyles.locatorMap} ${
               isMapFading ? locationStyles.locatorMapFaded : ''
             }`}
-            defaultBounds={mapBounds}
+            defaultBounds={homeBounds}
             // AdvancedMarker needs a Map ID; DEMO_MAP_ID is Google's dev
             // placeholder — swap in a real one from the Cloud console to
             // customize map styling.
@@ -418,14 +503,20 @@ const StoreLocatorContent = () => {
               return (
                 <AdvancedMarker
                   key={location.id}
+                  ref={isFlagship ? undefined : markerRefs[location.id]}
                   position={location.position}
                   title={location.name}
                   zIndex={isSelected ? 10 : isFlagship ? 5 : 1}
                   onClick={() => selectStore(location, true)}
                 >
+                  {/* The flagship star wears the brand green so it can't be
+                      mistaken for the amber cluster circles; retailers stay
+                      amber (filled when selected). */}
                   <Pin
-                    background={isFilled ? '#BA7517' : '#fff8e8'}
-                    borderColor="#a87010"
+                    background={
+                      isFlagship ? '#7da040' : isFilled ? '#BA7517' : '#fff8e8'
+                    }
+                    borderColor={isFlagship ? '#5a8020' : '#a87010'}
                     glyphColor={isFilled ? '#fff8e8' : '#BA7517'}
                     glyph={badge}
                     scale={
@@ -447,9 +538,10 @@ const StoreLocatorContent = () => {
                 title="Searched ZIP code"
                 zIndex={20}
               >
+                {/* Deep brown, not green — green now marks the bakery. */}
                 <Pin
-                  background="#7da040"
-                  borderColor="#5c7a2e"
+                  background="#3d2200"
+                  borderColor="#2a1800"
                   glyphColor="#fff8e8"
                 />
               </AdvancedMarker>

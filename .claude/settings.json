@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx next *)",
+      "Bash(chromium-cli --session locations)"
+    ]
+  }
+}

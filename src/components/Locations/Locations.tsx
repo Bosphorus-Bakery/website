@@ -122,7 +122,7 @@ const Locations = () => {
         </div>
 
         <div className={locationStyles.retailersBanner}>
-          <h2 className={locationStyles.sectionTitle}>Also Available</h2>
+          <h2 className={locationStyles.sectionTitle}>Where to find us</h2>
           <p className={locationStyles.intro}>
             You can also find our baklava on the shelves at select Bay Area
             grocers and specialty markets, stocked fresh every week.
@@ -145,23 +145,6 @@ const Locations = () => {
         )}
 
         <div className={locationStyles.retailersBlock}>
-          <div className={locationStyles.retailersListBlock}>
-            <p className={locationStyles.retailersListTitle}>Available At:</p>
-            <ul className={locationStyles.retailersList}>
-              <li>Whole Foods</li>
-              <li>Andronico&apos;s</li>
-              <li>Mollie Stone&apos;s</li>
-              <li>New Leaf</li>
-              <li>Berkeley Bowl</li>
-              <li>Woodlands Market</li>
-              <li>Oliver&apos;s Market</li>
-              <li>Rainbow Grocery</li>
-            </ul>
-            <p className={locationStyles.retailersMore}>
-              &amp; many more across the Bay Area
-            </p>
-          </div>
-
           <ImageCarousel />
         </div>
       </div>

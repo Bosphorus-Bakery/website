@@ -5,11 +5,27 @@ import Image from 'next/image';
 import { locationStyles } from '@/styles';
 
 const images = [
-  { src: '/whole-foods.jpg', alt: 'Whole Foods Market storefront' },
-  { src: '/safeway.jpg', alt: 'Safeway storefront' },
-  { src: '/olivers-market.jpg', alt: "Oliver's Market storefront" },
-  { src: '/pirooz-market.jpg', alt: 'Pirooz Market storefront' },
-  { src: '/wild-roots.jpg', alt: 'Wild Roots Market storefront' },
+  {
+    src: '/whole-foods.jpg',
+    alt: 'Whole Foods Market storefront',
+    name: 'Whole Foods Market',
+  },
+  { src: '/safeway.jpg', alt: 'Safeway storefront', name: 'Safeway' },
+  {
+    src: '/olivers-market.jpg',
+    alt: "Oliver's Market storefront",
+    name: "Oliver's Market",
+  },
+  {
+    src: '/pirooz-market.jpg',
+    alt: 'Pirooz Market storefront',
+    name: 'Pirooz Market',
+  },
+  {
+    src: '/wild-roots.jpg',
+    alt: 'Wild Roots Market storefront',
+    name: 'Wild Roots Market',
+  },
 ];
 
 const ImageCarousel = () => {
@@ -58,6 +74,11 @@ const ImageCarousel = () => {
           ))}
         </div>
       </div>
+
+      {/* Keyed on index so the fade-in animation replays per slide. */}
+      <p key={index} className={locationStyles.carouselCaption}>
+        {images[index].name}
+      </p>
 
       <div className={locationStyles.carouselDots}>
         {images.map((_, i) => (
