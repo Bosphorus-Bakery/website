@@ -1,5 +1,217 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: min(660px, calc(100svh - 170px));
+  display: flex;
+  align-items: center;
+  border-radius: 24px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.heroImage {
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(30, 16, 2, 0.85) 0%,
+      rgba(30, 16, 2, 0.6) 42%,
+      rgba(30, 16, 2, 0.2) 72%,
+      rgba(30, 16, 2, 0.05) 100%
+    ),
+    linear-gradient(to top, rgba(30, 16, 2, 0.45), transparent 35%);
+}
+
+.heroContent {
+  position: relative;
+  max-width: 640px;
+  padding: clamp(2rem, 6vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  animation: heroFadeUp 0.9s ease both;
+}
+
+.heroEyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-amber-pale);
+  margin-bottom: 1.1rem;
+}
+
+.heroHeading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.6rem, 5.5vw, 4.25rem);
+  font-weight: 600;
+  line-height: 1.08;
+  color: #fffdf6;
+  margin-bottom: 1.25rem;
+}
+
+.heroSubheading {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  line-height: 1.7;
+  color: rgba(255, 248, 232, 0.88);
+  max-width: 44ch;
+  margin-bottom: 2.25rem;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.heroSecondaryCta {
+  width: fit-content;
+  padding: 14px 36px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fffdf6;
+  background: transparent;
+  border: 1.5px solid rgba(255, 248, 232, 0.55);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, border-color 0.25s ease,
+    transform 0.25s ease;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 0.08em;
+}
+
+.heroSecondaryCta:hover {
+  background-color: rgba(255, 248, 232, 0.14);
+  border-color: rgba(255, 248, 232, 0.9);
+  transform: translateY(-2px);
+}
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroContent {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: min(560px, calc(100svh - 150px));
+    border-radius: 16px;
+  }
+
+  .heroActions {
+    width: 100%;
+  }
+
+  .heroActions a {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
+
+.visit {
+  width: min(100%, 1100px);
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-line);
+  border-radius: 24px;
+  padding: 1.75rem clamp(1.5rem, 4vw, 3rem);
+  margin-bottom: 40px;
+}
+
+.visitItem {
+  flex: 1;
+}
+
+.visitLabel {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-amber-main);
+  margin-bottom: 0.35rem;
+}
+
+.visitText {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-medium-brown);
+}
+
+.visitDivider {
+  width: 1px;
+  align-self: stretch;
+  background-color: var(--color-border-line);
+}
+
+.visitCta {
+  white-space: nowrap;
+  padding: 12px 28px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-amber-main);
+  border: 1.5px solid var(--color-amber-main);
+  border-radius: 999px;
+  transition: background-color 0.25s ease, color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.visitCta:hover {
+  background-color: var(--color-amber-main);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .visit {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .visitDivider {
+    width: 100%;
+    height: 1px;
+    align-self: auto;
+  }
+
+  .visitCta {
+    width: 100%;
+    text-align: center;
+  }
+}
+
 .aboutBaklavaContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -69,4 +281,223 @@
   background: linear-gradient(135deg, var(--color-amber-light) 0%, var(--color-amber-deep) 100%);
   transform: translateY(-2px);
   box-shadow: 0 16px 30px rgba(186, 117, 23, 0.28);
+}
+
+.storesSection {
+  width: 100%;
+  padding: 3rem 0;
+  display: grid;
+  justify-items: center;
+}
+
+.storesHeading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.9rem, 2.2vw, 2.4rem);
+  color: var(--color-text-dark-brown);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.storesCarousel {
+  width: min(100%, 1100px);
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+.storesTrack {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: storesScroll 30s linear infinite;
+}
+
+.storesLogoCard {
+  margin-right: 4rem;
+  padding: 1rem 1.5rem;
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-line);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+}
+
+.storesLogo {
+  width: 180px;
+  height: 72px;
+  object-fit: contain;
+}
+
+@keyframes storesScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .storesTrack {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .storesLogoCard {
+    margin-right: 2rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .storesTrack {
+    animation-duration: 20s;
+  }
+}
+
+.reviewsSection {
+  width: 100%;
+  padding: 3rem 1.5rem 5rem;
+  display: grid;
+  /* Pin the column to the container width; an implicit `auto` column would grow
+     to the carousel track's max-content and shove everything off-center. */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+}
+
+.reviewsHeading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.9rem, 2.2vw, 2.4rem);
+  color: var(--color-text-dark-brown);
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.reviewsCarousel {
+  width: min(100%, 1100px);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reviewsTrack {
+  display: flex;
+  gap: 1.5rem;
+  flex: 1;
+  /* Allow the flex item to shrink below its content width so it stays within
+     the carousel and scrolls, instead of overflowing to the right. */
+  min-width: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 0.75rem 0.25rem;
+  /* Hide the native scrollbar — navigation is via the arrows. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.reviewsTrack::-webkit-scrollbar {
+  display: none;
+}
+
+.reviewsArrow {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-line);
+  background-color: var(--color-bg-paper);
+  color: var(--color-amber-main);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+}
+
+.reviewsArrow:hover:not(:disabled) {
+  background-color: var(--color-amber-main);
+  color: var(--color-bg-paper);
+  transform: translateY(-2px);
+}
+
+.reviewsArrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.reviewCard {
+  flex: 0 0 320px;
+  max-width: 85vw;
+  scroll-snap-align: start;
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-line);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 24px rgba(186, 117, 23, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reviewCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(186, 117, 23, 0.16);
+}
+
+.reviewStars {
+  color: var(--color-amber-main);
+  font-size: 1.1rem;
+  letter-spacing: 0.15rem;
+  margin-bottom: 1rem;
+}
+
+.reviewText {
+  color: var(--color-text-medium-brown);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.reviewAuthor {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.reviewAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.reviewAvatarFallback {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-amber-main);
+  color: var(--color-bg-paper);
+  font-weight: 600;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.reviewAuthorMeta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.reviewName {
+  font-weight: 600;
+  color: var(--color-text-dark-brown);
+}
+
+.reviewDate {
+  font-size: 0.85rem;
+  color: var(--color-text-muted-amber);
 }

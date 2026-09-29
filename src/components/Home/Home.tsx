@@ -6,6 +6,7 @@ import Locations from './Locations';
 import Reviews from './Reviews';
 import About from './About';
 import Baklava from './Baklava';
+import Stores from './Stores';
 import { HomeStyles } from '@/styles';
 
 const Home = () => {
@@ -19,6 +20,7 @@ const Home = () => {
         <About></About>
         <Baklava></Baklava>
       </div>
+      <Stores></Stores>
       <Reviews></Reviews>
     </div>
   );

@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^13.13.0",
@@ -21,7 +21,8 @@
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^10.4.0",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.10",
     "typescript": "^6"
   },
   "allowScripts": {
