@@ -1,0 +1,654 @@
+.pageContainer {
+  /* Fast start, long luxurious settle */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Slight overshoot so images "settle" into place */
+  --ease-settle: cubic-bezier(0.34, 1.4, 0.64, 1);
+  width: 100%;
+  background-color: var(--color-bg-paper);
+  color: var(--color-text-deep-brown);
+}
+
+.section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 32px;
+}
+
+/* Reveal system: children cascade in when the section gains .visible.
+   Hidden state has no transition-delay, so scrolling away hides instantly. */
+.imageBlock {
+  opacity: 0;
+  transform: translateX(32px);
+  transition:
+    opacity 0.8s var(--ease-soft),
+    transform 0.8s var(--ease-soft);
+}
+
+.textBlock > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s var(--ease-soft),
+    transform 0.7s var(--ease-soft);
+}
+
+.section.visible .imageBlock,
+.section.visible .textBlock > * {
+  opacity: 1;
+  transform: none;
+}
+
+.section.visible .textBlock > *:nth-child(1) {
+  transition-delay: 0.15s;
+}
+
+.section.visible .textBlock > *:nth-child(2) {
+  transition-delay: 0.3s;
+}
+
+.section.visible .textBlock > *:nth-child(3) {
+  transition-delay: 0.45s;
+}
+
+.section.visible .textBlock > *:nth-child(4) {
+  transition-delay: 0.6s;
+}
+
+.section.visible .textBlock > *:nth-child(5) {
+  transition-delay: 0.75s;
+}
+
+/* Stacked layout: image on top, centered text below (Sections 1 & 2) */
+.stackedSection {
+  min-height: calc(100vh - 133px);
+  box-sizing: border-box;
+  padding: 80px 32px 120px;
+}
+
+.stackedSection .sectionContent {
+  max-width: 800px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px;
+  text-align: center;
+}
+
+.stackedSection .imageBlock {
+  order: -1;
+  transform: translateY(24px) scale(0.94);
+  transition:
+    opacity 0.8s var(--ease-soft),
+    transform 0.9s var(--ease-settle);
+}
+
+/* minmax(0, 1fr) instead of bare 1fr: a 1fr track's minimum is the
+   content's min-content size, so fixed-width children (the 520px logo
+   wrapper) blow the track out past the viewport on phones — their
+   max-width: 100% can't resolve during track sizing */
+.sectionContent {
+  max-width: 1200px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--color-text-deep-brown);
+  margin-bottom: 24px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.sectionTitle::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 20px;
+  background: linear-gradient(
+    90deg,
+    var(--color-amber-main),
+    var(--color-amber-light)
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s var(--ease-soft);
+}
+
+.section.visible .sectionTitle::after {
+  transform: scaleX(1);
+  transition-delay: 0.7s;
+}
+
+.stackedSection .sectionTitle {
+  text-align: center;
+}
+
+.stackedSection .sectionTitle::after {
+  margin-left: auto;
+  margin-right: auto;
+  transform-origin: center;
+}
+
+.sectionText {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--color-text-warm-brown);
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.stackedSection .sectionText {
+  text-align: center;
+  font-size: 16px;
+}
+
+.sectionText:last-of-type {
+  margin-bottom: 32px;
+}
+
+.imageWrapper {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-border-accent);
+  box-shadow: 0 8px 24px rgba(61, 34, 0, 0.15);
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logoWrapper {
+  position: relative;
+  width: 520px;
+  max-width: 100%;
+  margin: 0 auto -24px;
+}
+
+.logoWrapper img {
+  width: 100%;
+  height: auto;
+}
+
+.baklavaImage {
+  width: 560px;
+  margin-bottom: 0;
+  transform: translate(-40px, 40px);
+}
+
+/* Sketch annotations (Section 2): SVG overlay sized to the image.
+   Strokes carry pathLength="1", so dasharray/dashoffset of 1 hides
+   them and transitioning dashoffset to 0 "draws" them on. Sequence:
+   image settles (0.8s) -> arrow draws -> arrowhead -> label fades. */
+.annotations {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* the phyllo label hangs left of the viewBox */
+  overflow: visible;
+}
+
+.annoStroke {
+  fill: none;
+  stroke: var(--color-text-medium-brown);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.75s var(--ease-soft);
+}
+
+.annoLabel {
+  fill: var(--color-text-deep-brown);
+  font-family: 'Reenie Beanie', cursive;
+  /* Reenie Beanie runs small and thin, so it gets a size bump over the
+     40px the previous annotation font used */
+  font-size: 56px;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-soft);
+}
+
+.section.visible .annoStroke {
+  stroke-dashoffset: 0;
+}
+
+.section.visible .annoLabel {
+  opacity: 1;
+}
+
+/* Sequence, one annotation at a time: pistachios -> phyllo -> walnut ->
+   right-side notes. Strokes and texts are counted separately
+   (nth-of-type is per tag). Paced so the last label lands at ~5s. */
+.section.visible .annoStroke:nth-of-type(1) {
+  transition-delay: 1.1s;
+}
+
+.section.visible .annoStroke:nth-of-type(2) {
+  transition-duration: 0.3s;
+  transition-delay: 1.8s;
+}
+
+.section.visible .annoLabel:nth-of-type(1),
+.section.visible .annoLabel:nth-of-type(2) {
+  transition-delay: 1.85s;
+}
+
+.section.visible .annoStroke:nth-of-type(3) {
+  transition-duration: 0.85s;
+  transition-delay: 2.2s;
+}
+
+.section.visible .annoLabel:nth-of-type(3),
+.section.visible .annoLabel:nth-of-type(4) {
+  transition-delay: 2.85s;
+}
+
+.section.visible .annoStroke:nth-of-type(4) {
+  transition-duration: 0.55s;
+  transition-delay: 3.1s;
+}
+
+.section.visible .annoLabel:nth-of-type(5) {
+  transition-delay: 3.45s;
+}
+
+/* The right-side notes are the payoff, so they arrive at half the
+   tempo of the callouts above: longer fades, a full beat between each */
+.section.visible .annoLabel:nth-of-type(6),
+.section.visible .annoLabel:nth-of-type(7) {
+  transition-duration: 1s;
+}
+
+.section.visible .annoLabel:nth-of-type(6) {
+  transition-delay: 3.9s;
+}
+
+.section.visible .annoLabel:nth-of-type(7) {
+  transition-delay: 4.6s;
+}
+
+/* Scroll cue: appears as the final beat of section 1's entrance,
+   drifts gently, and fades out permanently on first scroll */
+.scrollCue {
+  position: absolute;
+  /* pin to where the viewport bottom is when the section rests below
+     the 133px navbar (sections can be taller than the viewport, which
+     would put a bottom-anchored cue below the fold); clamp to the
+     section bottom for content that fits */
+  top: min(calc(100vh - 199px), calc(100% - 66px));
+  left: 50%;
+  transform: translateX(-50%);
+  /* strip native <button> chrome so only the chevron shows */
+  background: none;
+  border: none;
+  padding: 12px 12px 14px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-soft);
+}
+
+.scrollCue:hover .scrollCueChevron {
+  border-color: var(--color-amber-deep);
+}
+
+.section.visible .scrollCue {
+  opacity: 1;
+  transition-delay: 1.1s;
+}
+
+.section.visible .scrollCueHidden {
+  opacity: 0;
+  transition-delay: 0s;
+  pointer-events: none;
+}
+
+.scrollCueChevron {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid var(--color-amber-main);
+  border-bottom: 2px solid var(--color-amber-main);
+  border-radius: 1px;
+  transform: rotate(45deg);
+  animation: chevronDrift 2.2s ease-in-out infinite;
+}
+
+@keyframes chevronDrift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(8px) rotate(45deg);
+    opacity: 0.45;
+  }
+}
+
+/* Section 3 anchors its content low in the viewport so the polaroid
+   cluster clears the sticky navbar when the page is fully scrolled
+   (the footer would otherwise push it up underneath); the bottom
+   padding floats it back up toward center */
+.communitySection {
+  align-items: flex-end;
+  padding-bottom: 140px;
+}
+
+@media (max-height: 950px) {
+  .communitySection {
+    padding-bottom: 80px;
+  }
+}
+
+/* Scrapbook: overlapping polaroid cluster (Section 3).
+   The container animation is disabled so each polaroid can
+   cascade in on its own, settling into its tilt. */
+.scrapbookBlock {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.scrapbook {
+  position: relative;
+  /* the vh term shrinks the cluster on short viewports so it stays
+     clear of the sticky navbar at the page-bottom resting point */
+  width: min(100%, 500px, 44vh);
+  /* short enough that the bottom polaroid tucks in under the top two
+     (messy scrapbook look); their captions stay readable because the
+     bottom polaroid paints beneath them */
+  aspect-ratio: 7 / 8;
+  margin: 0 auto;
+}
+
+/* the vh-shrunk cluster keeps its fixed-size captions, which deepens
+   the overlap; give it back some height so the bottom polaroid isn't
+   buried */
+@media (max-height: 950px) {
+  .scrapbook {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+.polaroid {
+  position: absolute;
+  margin: 0;
+  background-color: #fffdf8;
+  padding: 10px 10px 12px;
+  border: 1px solid var(--color-border-accent);
+  border-radius: 3px;
+  box-shadow: 0 10px 24px rgba(61, 34, 0, 0.16);
+  opacity: 0;
+  transform: translateY(28px) rotate(0deg);
+  transition:
+    opacity 0.8s var(--ease-soft),
+    transform 0.9s var(--ease-settle),
+    box-shadow 0.3s ease;
+}
+
+.polaroid img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Tape strip holding each photo down */
+.polaroid::before {
+  content: '';
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  width: 68px;
+  height: 22px;
+  transform: translateX(-50%) rotate(-2deg);
+  background-color: rgba(230, 197, 138, 0.45);
+  box-shadow: 0 1px 3px rgba(61, 34, 0, 0.08);
+}
+
+.polaroidCaption {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--color-text-warm-brown);
+  padding-top: 8px;
+}
+
+.polaroidGuyFieri {
+  top: 0;
+  left: 0;
+  width: 42%;
+  --tilt: -4deg;
+  z-index: 2;
+}
+
+.polaroidFamily {
+  top: 10%;
+  right: 0;
+  width: 45%;
+  --tilt: 3deg;
+  /* above the storefront polaroid so its caption never gets covered */
+  z-index: 2;
+}
+
+.polaroidStorefront {
+  bottom: 0;
+  left: 24%;
+  width: 50%;
+  --tilt: -2deg;
+  /* tucked under the top two so their captions stay readable on
+     short viewports (hover still lifts it via the z-index: 10 rule) */
+  z-index: 1;
+}
+
+.section.visible .polaroid {
+  opacity: 1;
+  transform: translateY(0) rotate(var(--tilt));
+}
+
+.section.visible .polaroidGuyFieri {
+  transition-delay: 0.25s;
+}
+
+.section.visible .polaroidFamily {
+  transition-delay: 0.45s;
+}
+
+.section.visible .polaroidStorefront {
+  transition-delay: 0.65s;
+}
+
+.section.visible .polaroid:hover {
+  transform: translateY(-6px) rotate(0deg) scale(1.03);
+  box-shadow: 0 18px 36px rgba(61, 34, 0, 0.22);
+  z-index: 10;
+  transition-delay: 0s;
+}
+
+.ctaGroup {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+.ctaPrimary,
+.ctaSecondary {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  /* keeps width: 100% (mobile) from overflowing by the padding width */
+  box-sizing: border-box;
+  border-radius: 8px;
+  text-decoration: none;
+  transition:
+    all 0.3s ease,
+    transform 0.2s ease;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.ctaPrimary {
+  background: linear-gradient(
+    135deg,
+    var(--color-green-primary) 0%,
+    var(--color-green-dark) 100%
+  );
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(102, 179, 83, 0.25);
+}
+
+.ctaPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 179, 83, 0.35);
+}
+
+.ctaSecondary {
+  background-color: transparent;
+  color: var(--color-green-primary);
+  border: 2px solid var(--color-green-primary);
+}
+
+.ctaSecondary:hover {
+  background-color: var(--color-green-primary);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 179, 83, 0.25);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .section {
+    min-height: auto;
+    padding: 48px 24px;
+  }
+
+  /* the scroll cue pins ~66px above the section bottom, so stacked
+     sections keep enough bottom padding that it clears the text */
+  .stackedSection {
+    padding-bottom: 110px;
+  }
+
+  /* mobile sections aren't viewport-height, so the desktop viewport-
+     bottom pin (100vh - 199px) would drop the cue mid-content; pin it
+     to the section bottom instead */
+  .scrollCue {
+    top: calc(100% - 66px);
+  }
+
+  .sectionContent {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .section .imageBlock {
+    transform: translateY(24px);
+  }
+
+  .sectionTitle {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .baklavaImage {
+    width: 100%;
+    transform: translate(-16px, 20px);
+  }
+
+  /* On phones the left-hanging phyllo label would clip off-screen;
+     tuck it into the white corner inside the sketch instead
+     (SVG text x/y can't be set from CSS, so shift by transform).
+     The other annotations sit inside the viewBox and map 1:1 onto the
+     image now that the overlay is exactly image-sized, so they keep
+     their desktop coordinates with no mobile nudges. */
+  .annoLabel:nth-of-type(3),
+  .annoLabel:nth-of-type(4) {
+    transform: translate(220px, 260px);
+  }
+
+  .section .scrapbookBlock {
+    transform: none;
+  }
+
+  /* Sections aren't viewport-height on mobile, so no need to float
+     the community content up */
+  .communitySection {
+    padding-bottom: 48px;
+  }
+
+  .scrapbook {
+    /* mobile sections aren't viewport-height, so drop the vh cap */
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .polaroidCaption {
+    font-size: 13px;
+  }
+
+  .ctaGroup {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .ctaPrimary,
+  .ctaSecondary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section .imageBlock,
+  .section .textBlock > *,
+  .section .sectionTitle::after {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .stackedSection .imageBlock {
+    transform: none;
+  }
+
+  .section .polaroid {
+    opacity: 1;
+    transform: rotate(var(--tilt));
+    transition: none;
+  }
+
+  .scrollCueChevron {
+    animation: none;
+  }
+
+  .annoStroke {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  .annoLabel {
+    opacity: 1;
+    transition: none;
+  }
+}
