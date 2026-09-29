@@ -24,17 +24,13 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close the mobile menu whenever the route changes
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
   const renderLink = ({ href, label }: { href: string; label: string }) => (
     <Link
       key={href}
       href={href}
       className={pathname === href ? 'nav-link-active' : undefined}
       aria-current={pathname === href ? 'page' : undefined}
+      onClick={() => setMenuOpen(false)}
     >
       {label}
     </Link>
@@ -51,7 +47,11 @@ const Navbar = () => {
         </div>
 
         <div className="nav-logo-button">
-          <Link href="/" aria-label="Bosphorus Bakery home">
+          <Link
+            href="/"
+            aria-label="Bosphorus Bakery home"
+            onClick={() => setMenuOpen(false)}
+          >
             <Image
               alt="Bosphorus Bakery logo"
               src="/bosphorus-bakery-logo.png"
