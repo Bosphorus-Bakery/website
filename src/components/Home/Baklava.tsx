@@ -11,8 +11,8 @@ const Baklava = () => {
       <p className={HomeStyles.text}>
        We craft our baklava with a delicate touch — made fresh and never too sweet. Our best kept secret: we let premium ingredients speak for themselves. The result is a baklava even non-believers reach for twice.
       </p>
-      <Link href="/baklava" className={HomeStyles.cta}>
-        Baklava
+      <Link href="/products" className={HomeStyles.cta}>
+        Products
       </Link>
     </div>
   );
